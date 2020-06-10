@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="trivia:jar">
+    <output-path>$PROJECT_DIR$/../../Spigot-test/Test Server/plugins</output-path>
+    <root id="archive" name="untitled.jar">
+      <element id="module-output" name="untitled" />
+    </root>
+  </artifact>
+</component>

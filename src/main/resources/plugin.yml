@@ -1,0 +1,9 @@
+name: Trivia
+version: ${project.version}
+main: me.marcarrots.trivia.Trivia
+api-version: 1.13
+authors: [MarCarrot]
+description: Trivia plugin for Minecraft Spigot
+commands:
+  trivia:
+    description: Trivia command.

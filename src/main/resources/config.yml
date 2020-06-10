@@ -1,0 +1,13 @@
+
+# This is a score between 0 and 1 which will determine how similar an answer must be to be considered right.
+# for 1, this would require the user to have an exact answer.
+# for 0.9, this would require the user to have a mostly identical answer.
+# for 0.8, this would require the user to have only a partially correct answer.
+Similarity score: 0.85
+
+# These are the questions and answers. The two are separated between a /$/.
+Questions and Answers:
+  - "this is the question /$/ this is the answer."
+  - "second question /$/ second answer."
+  - "third question /$/ third answer."
+  - "fourth question /$/ fourth answer."
