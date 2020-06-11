@@ -1,5 +1,8 @@
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.menu.PromptType;
+import org.bukkit.Bukkit;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -60,6 +63,45 @@ public class QuestionHolder {
 
     public void setUniqueQuestions(boolean uniqueQuestions) {
         this.uniqueQuestions = uniqueQuestions;
+    }
+
+    public void clear() {
+        triviaQuestionList.clear();
+    }
+
+    public Question getQuestion(String question) {
+        for (Question q : triviaQuestionList) {
+            if (q.getQuestionString().equals(question)) {
+                return q;
+            }
+        }
+        return null;
+    }
+
+    public void updateQuestionToFile(Trivia trivia, Question question, String newString, PromptType promptType) {
+
+        List<String> unparsedQuestions = trivia.getConfig().getStringList("Questions and Answers");
+        if (unparsedQuestions.size() == 0) {
+            Bukkit.getLogger().info("There are no questions loaded.");
+            return;
+        }
+        String lineString = question.getQuestionString() + " /$/ " + question.getAnswerString();
+        for (int i = 0; i < unparsedQuestions.size(); i++) {
+            String s = unparsedQuestions.get(i).trim();
+            if (s.equals(lineString)) {
+                if (promptType == PromptType.EDIT_QUESTION) {
+                    unparsedQuestions.set(i, newString + " /$/ " + question.getAnswerString());
+                } else if (promptType == PromptType.EDIT_ANSWER) {
+                    unparsedQuestions.set(i, question.getQuestionString() + " /$/ " + newString);
+                } else if (promptType == PromptType.DELETE) {
+                    unparsedQuestions.remove(i);
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        trivia.getConfig().set("Questions and Answers", unparsedQuestions);
+        trivia.saveConfig();
     }
 
 }

@@ -8,31 +8,26 @@ import java.util.function.Consumer;
 public class Timer implements Runnable {
 
     // Main class for Bukkit scheduling
-    private JavaPlugin plugin;
-
-    // Our scheduled task's assigned id, needed for canceling
-    private Integer assignedTaskId;
+    private final JavaPlugin plugin;
+    private final int rounds;
 
     // Seconds
-
-    private Game game;
-    private int rounds;
-    private int roundsLeft;
-    private long secondsPer;
+    private final long secondsPer;
+    private final Consumer<Timer> everySecond;
+    private final Runnable beforeTimer;
     // Actions to perform while counting down, before and after
-
-    private Consumer<Timer> everySecond;
-    private Runnable beforeTimer;
-    private Runnable afterTimer;
+    private final Runnable afterTimer;
+    // Our scheduled task's assigned id, needed for canceling
+    private Integer assignedTaskId;
+    private int roundsLeft;
     // Construct a timer, you could create multiple so for example if
     // you do not want these "actions"
 
-    public Timer(JavaPlugin plugin, Game game, int rounds, long secondsPer,
+    public Timer(JavaPlugin plugin, int rounds, long secondsPer,
                  Runnable beforeTimer, Runnable afterTimer,
                  Consumer<Timer> everySecond) {
         // Initializing fields
         this.plugin = plugin;
-        this.game = game;
 
         this.rounds = rounds;
         this.roundsLeft = rounds;

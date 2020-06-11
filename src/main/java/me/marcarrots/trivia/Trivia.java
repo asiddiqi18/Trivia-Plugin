@@ -15,6 +15,15 @@ public final class Trivia extends JavaPlugin {
     private final QuestionHolder questionHolder = new QuestionHolder();
     private final ChatEvent chatEvent = new ChatEvent();
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
+    private boolean gameActive;
+
+    public boolean isGameActive() {
+        return gameActive;
+    }
+
+    public void setGameActive(boolean gameActive) {
+        this.gameActive = gameActive;
+    }
 
     public PlayerMenuUtility getPlayerMenuUtility(Player player) {
         PlayerMenuUtility playerMenuUtility;
@@ -31,6 +40,7 @@ public final class Trivia extends JavaPlugin {
     public void onEnable() {
         loadConfig();
         parseFiles();
+        gameActive = false;
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
         getServer().getPluginManager().registerEvents(chatEvent, this);
         getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder, chatEvent));
@@ -46,7 +56,8 @@ public final class Trivia extends JavaPlugin {
         saveDefaultConfig();
     }
 
-    private void parseFiles() {
+    public void parseFiles() {
+        questionHolder.clear();
         List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
         if (unparsedQuestions.size() == 0) {
             Bukkit.getLogger().info("There are no questions loaded.");

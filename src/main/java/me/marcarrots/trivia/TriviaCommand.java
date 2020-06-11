@@ -36,5 +36,4 @@ public class TriviaCommand implements CommandExecutor {
     }
 
 
-
 }

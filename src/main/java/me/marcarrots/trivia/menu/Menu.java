@@ -13,16 +13,17 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 public abstract class Menu implements InventoryHolder {
 
-    protected Inventory inventory;
-
-    protected PlayerMenuUtility playerMenuUtility;
     protected final Trivia trivia;
     protected final QuestionHolder questionHolder;
     protected final ChatEvent chatEvent;
-
+    protected Inventory inventory;
+    protected PlayerMenuUtility playerMenuUtility;
     protected ItemStack FILLER_GLASS;
 
     protected ItemStack BACK;
@@ -72,11 +73,43 @@ public abstract class Menu implements InventoryHolder {
     }
 
     protected void fillRest() {
-        for (int i = 0; i < 27; i++) {
-            if (inventory.getItem(i) != null) {
-                inventory.setItem(13, FILLER_GLASS);
+        for (int i = 0; i < getSlots(); i++) {
+            if (inventory.getItem(i) == null) {
+                inventory.setItem(i, FILLER_GLASS);
             }
         }
+    }
+
+    protected void insertItem(Material material, String s, int i) {
+        ItemStack amountItem = new ItemStack(material, 1);
+        ItemMeta amountMeta = amountItem.getItemMeta();
+        if (amountMeta != null) {
+            amountMeta.setDisplayName(ChatColor.GREEN + s);
+        }
+        amountItem.setItemMeta(amountMeta);
+        inventory.setItem(i, amountItem);
+    }
+
+    protected void insertItem(Material material, String s, String s2, int i) {
+        ItemStack amountItem = new ItemStack(material, 1);
+        ItemMeta amountMeta = amountItem.getItemMeta();
+        if (amountMeta != null) {
+            amountMeta.setDisplayName(ChatColor.GREEN + s);
+            amountMeta.setLore(Arrays.asList(s2, ChatColor.RED + "Click here to change."));
+        }
+        amountItem.setItemMeta(amountMeta);
+        inventory.setItem(i, amountItem);
+    }
+
+    protected List<String> WordWrapLore(String string) {
+        StringBuilder sb = new StringBuilder(string);
+        int wordWrapLength = 50;
+        int i = 0;
+        while (i + wordWrapLength < sb.length() && (i = sb.lastIndexOf(" ", i + wordWrapLength)) != -1) {
+            sb.replace(i, i + 1, "\n§d");
+        }
+        return Arrays.asList(sb.toString().split("\n"));
+
     }
 
 }

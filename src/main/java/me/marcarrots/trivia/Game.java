@@ -1,72 +1,82 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.listeners.ChatEvent;
+import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import me.marcarrots.trivia.utils.StringSimilarity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitScheduler;
-
-import java.util.List;
 
 import static org.bukkit.Bukkit.getServer;
 
 public class Game {
 
     private final QuestionHolder questionHolder;
-    private Question currentQuestion;
     private final ChatEvent chatEvent;
     private final Trivia trivia;
     private final long timePerQuestion;
     private final int amountOfRounds;
+    private final boolean doRepetition;
     private final PlayerScoreHolder scores;
-    private Timer timer;
     private final double similarityScore;
+    private final Player player;
+    private Question currentQuestion;
+    private Timer timer;
 
-    public Game(Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent) {
+    public Game(Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerMenuUtility playerMenuUtility) {
         this.trivia = trivia;
         this.questionHolder = new QuestionHolder(questionHolder);
         this.chatEvent = chatEvent;
-        timePerQuestion = 10;
-        amountOfRounds = 4;
+        timePerQuestion = playerMenuUtility.getTimePer();
+        amountOfRounds = playerMenuUtility.getTotalRounds();
+        doRepetition = playerMenuUtility.isRepeatEnabled();
+        player = playerMenuUtility.getOwner();
         similarityScore = trivia.getConfig().getDouble("Similarity score");
-        scores = new PlayerScoreHolder();
+        scores = new PlayerScoreHolder(trivia);
 
     }
 
-    public void setRandomQuestion() {
+    private void setRandomQuestion() {
         currentQuestion = questionHolder.getRandomQuestion().getQuestionObj();
     }
 
-    public Question getCurrentQuestion() {
+    private Question getCurrentQuestion() {
         return currentQuestion;
     }
 
-    public void start(CommandSender sender) {
+    public void start() {
 
         if (questionHolder.getSize() == 0) {
-            sender.sendMessage(ChatColor.RED + "There are no trivia questions loaded.");
+            player.sendMessage(ChatColor.RED + "There are no trivia questions loaded.");
             return;
         }
 
-        if (questionHolder.getSize() < amountOfRounds) {
-            sender.sendMessage("There are more rounds than questions, so questions will repeat.");
+        if (doRepetition) {
             questionHolder.setUniqueQuestions(false);
         } else {
-            questionHolder.setUniqueQuestions(true);
+            if (questionHolder.getSize() < amountOfRounds) {
+                player.sendMessage("There are more rounds than questions, so questions will repeat.");
+                questionHolder.setUniqueQuestions(false);
+            } else {
+                questionHolder.setUniqueQuestions(true);
+            }
         }
 
         chatEvent.setGame(this);
         scores.addPlayersToGame();
+        trivia.setGameActive(true);
         Bukkit.broadcastMessage(ChatColor.YELLOW + "Trivia is commencing. Get ready!");
-        timer = new Timer(trivia, this, amountOfRounds, timePerQuestion,
-                () -> {},
+        timer = new Timer(trivia, amountOfRounds, timePerQuestion,
+                () -> {
+                },
                 () -> {
                     Bukkit.broadcastMessage(ChatColor.YELLOW + "Trivia is over!");
                     Bukkit.broadcastMessage(ChatColor.GOLD + "Winners:");
                     scores.getLargestScores();
                     chatEvent.setGame(null);
+                    trivia.setGameActive(false);
 
                 },
                 (t) -> {
