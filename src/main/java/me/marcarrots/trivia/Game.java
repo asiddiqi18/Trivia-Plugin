@@ -26,6 +26,7 @@ public class Game {
     private final Player player;
     private Question currentQuestion;
     private Timer timer;
+    private boolean wasAnswered;
 
     public Game(Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerMenuUtility playerMenuUtility, PlayerJoin playerJoin) {
         this.trivia = trivia;
@@ -37,7 +38,7 @@ public class Game {
         player = playerMenuUtility.getOwner();
         similarityScore = trivia.getConfig().getDouble("Similarity score");
         scores = new PlayerScoreHolder(trivia);
-
+        wasAnswered = true;
         this.playerJoin = playerJoin;
     }
 
@@ -84,6 +85,10 @@ public class Game {
 
                 },
                 (t) -> {
+                    if (!wasAnswered) {
+                        Bukkit.broadcastMessage(ChatColor.RED + "Time is up! Next question...");
+                    }
+                    wasAnswered = false;
                     setRandomQuestion();
                     Bukkit.broadcastMessage(ChatColor.GOLD + "(" + Math.subtractExact(timer.getRounds() + 1, timer.getRoundsLeft()) + ") " + ChatColor.YELLOW + getCurrentQuestion().getQuestionString());
                 }
@@ -104,6 +109,7 @@ public class Game {
                 Bukkit.broadcastMessage(e.getPlayer().getDisplayName() + ChatColor.GREEN + " has answered the question correctly! The answer was " + ChatColor.DARK_GREEN + currentQuestion.getAnswerString());
                 scores.addScore(e.getPlayer());
                 timer.nextQuestion();
+                wasAnswered = true;
 
             }, 2L);
         }
