@@ -2,6 +2,7 @@ package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.listeners.ChatEvent;
 import me.marcarrots.trivia.listeners.InventoryClick;
+import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,6 +15,7 @@ public final class Trivia extends JavaPlugin {
 
     private final QuestionHolder questionHolder = new QuestionHolder();
     private final ChatEvent chatEvent = new ChatEvent();
+    private final PlayerJoin playerJoin = new PlayerJoin();
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
     private boolean gameActive;
 
@@ -30,7 +32,7 @@ public final class Trivia extends JavaPlugin {
         if (playerMenuUtilityMap.containsKey(player)) {
             return playerMenuUtilityMap.get(player);
         } else {
-            playerMenuUtility = new PlayerMenuUtility(player);
+            playerMenuUtility = new PlayerMenuUtility(getConfig(), player);
             playerMenuUtilityMap.put(player, playerMenuUtility);
             return playerMenuUtility;
         }
@@ -43,7 +45,8 @@ public final class Trivia extends JavaPlugin {
         gameActive = false;
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
         getServer().getPluginManager().registerEvents(chatEvent, this);
-        getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder, chatEvent));
+        getServer().getPluginManager().registerEvents(playerJoin, this);
+        getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder, chatEvent, playerJoin));
     }
 
     @Override
@@ -60,7 +63,7 @@ public final class Trivia extends JavaPlugin {
         questionHolder.clear();
         List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
         if (unparsedQuestions.size() == 0) {
-            Bukkit.getLogger().info("There are no questions loaded.");
+            Bukkit.getLogger().info("There are no trivia questions loaded.");
             return;
         }
         for (String item : unparsedQuestions) {
@@ -73,9 +76,7 @@ public final class Trivia extends JavaPlugin {
             Question triviaQuestion = new Question();
             triviaQuestion.setQuestion(item.substring(0, posBefore).trim());
             triviaQuestion.setAnswer(item.substring(posAfter).trim());
-            Bukkit.getLogger().info(triviaQuestion.toString());
             questionHolder.add(triviaQuestion);
-            Bukkit.getLogger().info("Current size: " + questionHolder.getSize());
         }
 
     }

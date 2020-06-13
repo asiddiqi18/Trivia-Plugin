@@ -1,13 +1,19 @@
-# This is a score between 0 and 1 which will determine how similar an answer must be to be considered right.
+# This is a score between 0 and 1 which will determine how similar an answer must be for it to be recognized recognized right.
 # for 1, this would require the user to have an exact answer.
 # for 0.9, this would require the user to have a mostly identical answer.
 # for 0.8, this would require the user to have only a partially correct answer.
 Similarity score: 0.85
 
-# If set to 3, this will show the top 3 players from the trivia game.
+# This is the default value for the maximum amount of time players will have to answer a question.
+Default time per round: 15
+
+# This is the default value for the total amount of rounds in a game.
+Default rounds: 10
+
+# This many amount of players will be shown as winners after a trivia game.
 Top winner amount: 3
 
-# These are the questions and answers. The two are separated between a /$/.
+# These are the questions and answers. The two are separated between a ' /$/ '.
 Questions and Answers:
   - "this is the question /$/ this is the answer."
   - "second question /$/ second answer."

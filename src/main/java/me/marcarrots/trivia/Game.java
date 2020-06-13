@@ -1,6 +1,7 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.listeners.ChatEvent;
+import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import me.marcarrots.trivia.utils.StringSimilarity;
 import org.bukkit.Bukkit;
@@ -20,12 +21,13 @@ public class Game {
     private final int amountOfRounds;
     private final boolean doRepetition;
     private final PlayerScoreHolder scores;
+    private final PlayerJoin playerJoin;
     private final double similarityScore;
     private final Player player;
     private Question currentQuestion;
     private Timer timer;
 
-    public Game(Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerMenuUtility playerMenuUtility) {
+    public Game(Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerMenuUtility playerMenuUtility, PlayerJoin playerJoin) {
         this.trivia = trivia;
         this.questionHolder = new QuestionHolder(questionHolder);
         this.chatEvent = chatEvent;
@@ -36,6 +38,7 @@ public class Game {
         similarityScore = trivia.getConfig().getDouble("Similarity score");
         scores = new PlayerScoreHolder(trivia);
 
+        this.playerJoin = playerJoin;
     }
 
     private void setRandomQuestion() {
@@ -65,6 +68,7 @@ public class Game {
         }
 
         chatEvent.setGame(this);
+        playerJoin.setPlayerScoreHolder(scores);
         scores.addPlayersToGame();
         trivia.setGameActive(true);
         Bukkit.broadcastMessage(ChatColor.YELLOW + "Trivia is commencing. Get ready!");
@@ -74,7 +78,7 @@ public class Game {
                 () -> {
                     Bukkit.broadcastMessage(ChatColor.YELLOW + "Trivia is over!");
                     Bukkit.broadcastMessage(ChatColor.GOLD + "Winners:");
-                    scores.getLargestScores();
+                    scores.broadcastLargestScores();
                     chatEvent.setGame(null);
                     trivia.setGameActive(false);
 

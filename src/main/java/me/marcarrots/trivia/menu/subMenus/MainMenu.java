@@ -3,6 +3,7 @@ package me.marcarrots.trivia.menu.subMenus;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.listeners.ChatEvent;
+import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.MenuType;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
@@ -13,8 +14,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class MainMenu extends Menu {
 
 
-    public MainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent) {
-        super(playerMenuUtility, trivia, questionHolder, chatEvent);
+    public MainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
+        super(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin);
     }
 
     @Override
@@ -37,9 +38,9 @@ public class MainMenu extends Menu {
 
         playerMenuUtility.setPreviousMenu(MenuType.MAIN_MENU);
         if (type == Material.GREEN_TERRACOTTA) {
-            new ParameterMenu(playerMenuUtility, trivia, questionHolder, chatEvent).open();
+            new ParameterMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
         } else if (type == Material.PAPER) {
-            new ListMenu(playerMenuUtility, trivia, questionHolder, chatEvent).open();
+            new ListMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }

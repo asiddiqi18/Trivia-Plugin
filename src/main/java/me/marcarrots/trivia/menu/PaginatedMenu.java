@@ -3,6 +3,7 @@ package me.marcarrots.trivia.menu;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.listeners.ChatEvent;
+import me.marcarrots.trivia.listeners.PlayerJoin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -14,8 +15,8 @@ public abstract class PaginatedMenu extends Menu {
     protected int maxItemsPerPage = 28;
     protected int index = 0;
 
-    public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent) {
-        super(playerMenuUtility, trivia, questionHolder, chatEvent);
+    public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
+        super(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin);
 
     }
 

@@ -4,6 +4,7 @@ import me.marcarrots.trivia.Question;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.listeners.ChatEvent;
+import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.subMenus.ListMenu;
 import me.marcarrots.trivia.menu.subMenus.ParameterMenu;
 import me.marcarrots.trivia.menu.subMenus.ViewMenu;
@@ -23,23 +24,26 @@ public class ConversationPrompt extends StringPrompt {
     private final Trivia trivia;
     private final QuestionHolder questionHolder;
     private final ChatEvent chatEvent;
+    private final PlayerJoin playerJoin;
     private final Question question;
 
-    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent) {
+    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
         this.promptType = promptType;
         this.playerMenuUtility = playerMenuUtility;
         this.trivia = trivia;
         this.questionHolder = questionHolder;
         this.chatEvent = chatEvent;
+        this.playerJoin = playerJoin;
         this.question = null;
     }
 
-    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, Question question) {
+    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin, Question question) {
         this.promptType = promptType;
         this.playerMenuUtility = playerMenuUtility;
         this.trivia = trivia;
         this.questionHolder = questionHolder;
         this.chatEvent = chatEvent;
+        this.playerJoin = playerJoin;
         this.question = question;
     }
 
@@ -94,7 +98,7 @@ public class ConversationPrompt extends StringPrompt {
 
                     if (question.getQuestionString() == null) {
                         question.setQuestion(input);
-                        return new ConversationPrompt(PromptType.NEW_QUESTION, playerMenuUtility, trivia, questionHolder, chatEvent, question);
+                        return new ConversationPrompt(PromptType.NEW_QUESTION, playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin, question);
                     } else if (question.getAnswerString() == null) {
                         question.setAnswer(input);
                         List<String> unparsedQuestions = trivia.getConfig().getStringList("Questions and Answers");
@@ -103,7 +107,7 @@ public class ConversationPrompt extends StringPrompt {
                         trivia.saveConfig();
                         trivia.parseFiles();
                         player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been added to the pool."));
-                        new ListMenu(playerMenuUtility, trivia, questionHolder, chatEvent).open();
+                        new ListMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
                         return Prompt.END_OF_CONVERSATION;
                     }
                 case EDIT_QUESTION:
@@ -111,21 +115,21 @@ public class ConversationPrompt extends StringPrompt {
                     trivia.parseFiles();
                     player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been modified."));
                     playerMenuUtility.setQuestionString(input);
-                    new ViewMenu(playerMenuUtility, trivia, questionHolder, chatEvent).open();
+                    new ViewMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
                     return Prompt.END_OF_CONVERSATION;
                 case EDIT_ANSWER:
                     questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
                     trivia.parseFiles();
                     player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This answer has been been modified."));
                     playerMenuUtility.setAnswerString(input);
-                    new ViewMenu(playerMenuUtility, trivia, questionHolder, chatEvent).open();
+                    new ViewMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
                     return Prompt.END_OF_CONVERSATION;
             }
         } catch (NumberFormatException e) {
             player.sendMessage("Please enter a valid number.");
         }
 
-        ParameterMenu menu = new ParameterMenu(playerMenuUtility, trivia, questionHolder, chatEvent);
+        ParameterMenu menu = new ParameterMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin);
         menu.open();
         return Prompt.END_OF_CONVERSATION;
     }

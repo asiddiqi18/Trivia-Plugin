@@ -82,7 +82,6 @@ public class QuestionHolder {
 
         List<String> unparsedQuestions = trivia.getConfig().getStringList("Questions and Answers");
         if (unparsedQuestions.size() == 0) {
-            Bukkit.getLogger().info("There are no questions loaded.");
             return;
         }
         String lineString = question.getQuestionString() + " /$/ " + question.getAnswerString();

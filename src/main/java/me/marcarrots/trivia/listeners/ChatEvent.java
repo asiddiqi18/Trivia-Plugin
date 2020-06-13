@@ -15,14 +15,13 @@ public class ChatEvent implements Listener {
     }
 
     @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent e) {
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
 
         if (game == null) {
-            Bukkit.getLogger().info("The game is null.");
             return;
         }
 
-        game.playerAnswer(e);
+        game.playerAnswer(event);
 
     }
 

@@ -4,6 +4,7 @@ import me.marcarrots.trivia.Question;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.listeners.ChatEvent;
+import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,8 +23,8 @@ import java.util.List;
 public class ListMenu extends PaginatedMenu {
 
 
-    public ListMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent) {
-        super(playerMenuUtility, trivia, questionHolder, chatEvent);
+    public ListMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
+        super(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin);
     }
 
 
@@ -48,13 +49,13 @@ public class ListMenu extends PaginatedMenu {
         if (type == Material.EMERALD) {
             Question question = new Question();
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.NEW_QUESTION
-                    , playerMenuUtility, trivia, questionHolder, chatEvent, question)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin, question)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.PAPER) {
             playerMenuUtility.setPreviousMenu(MenuType.LIST_MENU);
             playerMenuUtility.setQuestion(questionHolder.getQuestion(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(trivia, "trivia_question"), PersistentDataType.STRING)));
-            new ViewMenu(playerMenuUtility, trivia, questionHolder, chatEvent).open();
+            new ViewMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         } else if (type == Material.DARK_OAK_BUTTON) {
@@ -76,7 +77,7 @@ public class ListMenu extends PaginatedMenu {
             }
         } else if (type == Material.ARROW) {
             playerMenuUtility.setPreviousMenu(MenuType.LIST_MENU);
-            new MainMenu(playerMenuUtility, trivia, questionHolder, chatEvent).open();
+            new MainMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
         } else {
             event.setCancelled(true);
         }

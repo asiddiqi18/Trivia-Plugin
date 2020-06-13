@@ -1,11 +1,13 @@
 package me.marcarrots.trivia.menu;
 
 import me.marcarrots.trivia.Question;
+import me.marcarrots.trivia.Trivia;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class PlayerMenuUtility {
 
-    private Player owner;
+    private final Player owner;
 
     private int totalRounds;
 
@@ -15,10 +17,10 @@ public class PlayerMenuUtility {
     private Question question;
     private MenuType previousMenu = null;
 
-    public PlayerMenuUtility(Player owner) {
+    public PlayerMenuUtility(FileConfiguration config, Player owner) {
         this.owner = owner;
-        totalRounds = 4;
-        timePer = 10;
+        totalRounds = config.getInt("Default rounds", 10);
+        timePer = config.getLong("Default time per round", 10L);;
     }
 
     public Question getQuestion() {
