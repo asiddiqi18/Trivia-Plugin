@@ -42,6 +42,7 @@ public final class Trivia extends JavaPlugin {
     public void onEnable() {
         loadConfig();
         parseFiles();
+        Lang.setFile(getConfig());
         gameActive = false;
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
         getServer().getPluginManager().registerEvents(chatEvent, this);

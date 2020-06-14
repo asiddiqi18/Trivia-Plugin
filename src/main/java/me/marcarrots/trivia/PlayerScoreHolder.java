@@ -47,13 +47,13 @@ public class PlayerScoreHolder {
     public void broadcastLargestScores() {
         int displayAmount = Math.min(scores.size(), trivia.getConfig().getInt("Top winner amount", 3));
         if (scores.size() == 0 || scores.peek().getPoints() == 0) {
-            Bukkit.broadcastMessage(ChatColor.GOLD + "There are no winners of the trivia event!");
+            Bukkit.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format());
             return;
         }
         for (int i = 0; i < displayAmount; i++) {
             final PlayerScore score = scores.poll();
             if (score != null) {
-                Bukkit.broadcastMessage(ChatColor.BLACK + "➤ " + ChatColor.DARK_AQUA + score.getPlayer().getDisplayName() + ": " + ChatColor.WHITE + score.getPoints());
+                Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(score.getPlayer().getDisplayName(), null, null, 0, score.getPoints()));
             }
         }
     }

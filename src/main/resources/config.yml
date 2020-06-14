@@ -19,3 +19,20 @@ Questions and Answers:
   - "second question /$/ second answer."
   - "third question /$/ third answer."
   - "fourth question /$/ fourth answer."
+
+# These are the messages that will be displayed during a trivia game.
+# Feel free to modify them to your liking.
+# Placeholders:
+# %player% - player's display name.
+# %points% - the amount of trivia questions a player has solved.
+# %question% and %answer% - question and answer respectively.
+# %questionNum% - the question number.
+Messages:
+  Trivia Start: "&eTrivia is commencing. Get ready!"
+  Trivia Over: "&eTrivia is over!"
+  Winner Line: "&6Winners:"
+  Winner List: "&0➤ &3%player%: &b%points%"
+  No Winners: "&6There are no winners of this trivia event!"
+  Solved Message: "&a%player% has answered the question correctly! The answer was &2%answer%&a."
+  Question Time Up: "&cTime is up! Next question..."
+  Question Display: "&6(%questionNumber%) &e%question%"

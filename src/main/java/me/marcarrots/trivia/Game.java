@@ -72,13 +72,13 @@ public class Game {
         playerJoin.setPlayerScoreHolder(scores);
         scores.addPlayersToGame();
         trivia.setGameActive(true);
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "Trivia is commencing. Get ready!");
+        Bukkit.broadcastMessage(Lang.TRIVIA_START.format());
         timer = new Timer(trivia, amountOfRounds, timePerQuestion,
                 () -> {
                 },
                 () -> {
-                    Bukkit.broadcastMessage(ChatColor.YELLOW + "Trivia is over!");
-                    Bukkit.broadcastMessage(ChatColor.GOLD + "Winners:");
+                    Bukkit.broadcastMessage(Lang.TRIVIA_OVER.format());
+                    Bukkit.broadcastMessage(Lang.TRIVIA_OVER_WINNER_LINE.format());
                     scores.broadcastLargestScores();
                     chatEvent.setGame(null);
                     trivia.setGameActive(false);
@@ -86,17 +86,21 @@ public class Game {
                 },
                 (t) -> {
                     if (!wasAnswered) {
-                        Bukkit.broadcastMessage(ChatColor.RED + "Time is up! Next question...");
+                        Bukkit.broadcastMessage(Lang.TIME_UP.format());
                     }
                     wasAnswered = false;
                     setRandomQuestion();
-                    Bukkit.broadcastMessage(ChatColor.GOLD + "(" + Math.subtractExact(timer.getRounds() + 1, timer.getRoundsLeft()) + ") " + ChatColor.YELLOW + getCurrentQuestion().getQuestionString());
+                    Bukkit.broadcastMessage(Lang.QUESTION.format(null, getCurrentQuestion().getQuestionString(), getCurrentQuestion().getAnswerString(), getQuestionNum(), 0));
                 }
 
         );
 
         timer.scheduleTimer();
 
+    }
+
+    private int getQuestionNum() {
+        return Math.subtractExact(timer.getRounds() + 1, timer.getRoundsLeft());
     }
 
 
@@ -106,7 +110,8 @@ public class Game {
 
             BukkitScheduler scheduler = getServer().getScheduler();
             scheduler.scheduleSyncDelayedTask(trivia, () -> {
-                Bukkit.broadcastMessage(e.getPlayer().getDisplayName() + ChatColor.GREEN + " has answered the question correctly! The answer was " + ChatColor.DARK_GREEN + currentQuestion.getAnswerString());
+                Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(e.getPlayer().getDisplayName(), getCurrentQuestion().getQuestionString(), getCurrentQuestion().getAnswerString(), getQuestionNum(), 0));
+
                 scores.addScore(e.getPlayer());
                 timer.nextQuestion();
                 wasAnswered = true;
