@@ -7,3 +7,4 @@ description: Trivia plugin for Minecraft Spigot
 commands:
   trivia:
     description: Trivia command.
+    permission: trivia.admin

@@ -27,6 +27,8 @@ public class TriviaCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
 
         Player player;
+
+
         if (commandSender instanceof Player) {
             player = (Player) commandSender;
         } else {
