@@ -122,5 +122,9 @@ public class Game {
 
     }
 
+    public void stopGame() {
+        timer.stop();
+    }
+
 
 }

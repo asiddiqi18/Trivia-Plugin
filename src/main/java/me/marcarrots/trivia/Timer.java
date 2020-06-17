@@ -38,6 +38,10 @@ public class Timer implements Runnable {
         this.everySecond = everySecond;
     }
 
+    public void stop() {
+        roundsLeft = rounds;
+        nextQuestion();
+    }
 
     @Override
     public void run() {

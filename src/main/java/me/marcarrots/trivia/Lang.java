@@ -6,14 +6,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Objects;
 
 public enum Lang {
-    TRIVIA_START("Messages.Trivia Start", "&eTrivia is commencing. Get ready!"),
-    TRIVIA_OVER("Messages.Trivia Over", "&eTrivia is over!"),
-    TRIVIA_OVER_WINNER_LINE("Messages.Winner Line", "&6Winners:"),
-    TRIVIA_ANNOUNCE_WINNER_LIST("Messages.Winner List", "&0➤ &3%player%: &b%points%"),
-    TRIVIA_NO_WINNERS("Messages.No Winners", "&6There are no winners of this trivia event!"),
-    SOLVED_MESSAGE("Messages.Solved Message", "&a%player% has answered the question correctly! The answer was &2%answer%&a."),
-    TIME_UP("Messages.Question Time Up", "&cTime is up! Next question..."),
-    QUESTION("Messages.Question Display", "&6(%questionNumber%) &e%question%"),
+    TRIVIA_START("Messages.Trivia-Start", "&eTrivia is commencing. Get ready!"),
+    TRIVIA_OVER("Messages.Trivia-Over", "&eTrivia is over!"),
+    TRIVIA_OVER_WINNER_LINE("Messages.Winner-Line", "&6Winners:"),
+    TRIVIA_ANNOUNCE_WINNER_LIST("Messages.Winner-List", "&0➤ &3%player%: &b%points%"),
+    TRIVIA_NO_WINNERS("Messages.No-Winners", "&6There are no winners of this trivia event!"),
+    SOLVED_MESSAGE("Messages.Solved-Message", "&a%player% has answered the question correctly! The answer was &2%answer%&a."),
+    TIME_UP("Messages.Question-Time-Up", "&cTime is up! Next question..."),
+    QUESTION("Messages.Question-Display", "&6(%questionNumber%) &e%question%"),
 
     ;
 

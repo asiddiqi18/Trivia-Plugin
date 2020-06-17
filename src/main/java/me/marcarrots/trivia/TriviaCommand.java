@@ -33,15 +33,15 @@ public class TriviaCommand implements CommandExecutor {
             return false;
         }
 
-        if (strings.length == 1 && strings[0].equalsIgnoreCase("reload")) {
-            trivia.reloadConfig();
-//            saveDefaultConfig();
-//            config = getConfig();
-//            config.options().copyDefaults(true);
-//            saveConfig();
-            trivia.parseFiles();
-            player.sendMessage(ChatColor.GREEN + "Trivia files have been reloaded.");
-            return false;
+        if (strings.length == 1) {
+
+            if (strings[0].equalsIgnoreCase("reload")) {
+                trivia.reloadConfig();
+                trivia.parseFiles();
+                player.sendMessage(ChatColor.GREEN + "Trivia files have been reloaded.");
+                return false;
+            }
+
         }
 
         MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder, chatEvent, playerJoin);
