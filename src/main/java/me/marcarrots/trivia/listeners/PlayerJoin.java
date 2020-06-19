@@ -18,7 +18,6 @@ public class PlayerJoin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         if (playerScoreHolder == null) {
-            Bukkit.getLogger().info("playerScoreHolder is null.");
             return;
         }
 

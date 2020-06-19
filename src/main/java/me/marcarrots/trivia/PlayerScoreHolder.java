@@ -4,17 +4,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class PlayerScoreHolder {
 
-    private final PriorityQueue<PlayerScore> scores;
+    private final List<PlayerScore> scores;
     private final Trivia trivia;
 
     public PlayerScoreHolder(Trivia trivia) {
-        scores = new PriorityQueue<>(new PlayerScoreComparator());
+        scores = new ArrayList<>();
         this.trivia = trivia;
     }
 
@@ -41,17 +39,19 @@ public class PlayerScoreHolder {
             if (score.getPlayer() == player) {
                 score.addScore();
             }
+
         }
     }
 
     public void broadcastLargestScores() {
         int displayAmount = Math.min(scores.size(), trivia.getConfig().getInt("Top winner amount", 3));
-        if (scores.size() == 0 || scores.peek().getPoints() == 0) {
-            Bukkit.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format());
-            return;
-        }
+//        if (scores.size() == 0 || scores.peek().getPoints() == 0) {
+//            Bukkit.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format());
+//            return;
+//        }
+        Collections.sort(scores);
         for (int i = 0; i < displayAmount; i++) {
-            final PlayerScore score = scores.poll();
+            final PlayerScore score = scores.get(i);
             if (score != null) {
                 Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(score.getPlayer().getDisplayName(), null, null, 0, score.getPoints()));
             }

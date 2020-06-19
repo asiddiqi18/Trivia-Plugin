@@ -82,7 +82,7 @@ public class Game {
                     scores.broadcastLargestScores();
                     chatEvent.setGame(null);
                     trivia.setGameActive(false);
-
+                    playerJoin.setPlayerScoreHolder(null);
                 },
                 (t) -> {
                     if (!wasAnswered) {

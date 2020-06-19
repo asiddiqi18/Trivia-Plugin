@@ -1,3 +1,7 @@
+/*
+ * Trivia by MarCarrot, 2020
+ */
+
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.listeners.ChatEvent;

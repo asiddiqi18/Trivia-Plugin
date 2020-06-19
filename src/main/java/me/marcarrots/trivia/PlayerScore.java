@@ -2,7 +2,7 @@ package me.marcarrots.trivia;
 
 import org.bukkit.entity.Player;
 
-public class PlayerScore {
+public class PlayerScore implements Comparable<PlayerScore> {
 
     private Player player;
 
@@ -25,5 +25,8 @@ public class PlayerScore {
         return points;
     }
 
-
+    @Override
+    public int compareTo(PlayerScore o) {
+        return Integer.compare(o.getPoints(), this.getPoints());
+    }
 }

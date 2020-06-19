@@ -72,9 +72,9 @@ public class ParameterMenu extends Menu {
     @Override
     public void setMenuItems() {
 
-        insertItem(Material.OAK_SIGN, "Total rounds", ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds(), 10);
+        insertItem(Material.OAK_SIGN, "Total rounds", ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds() + " rounds.", 10);
 
-        insertItem(Material.CLOCK, "Time Per Question", ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer(), 12);
+        insertItem(Material.CLOCK, "Time Per Question", ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer() + " seconds.", 12);
 
 
         if (playerMenuUtility.isRepeatEnabled()) {
