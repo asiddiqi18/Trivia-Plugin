@@ -132,7 +132,6 @@ public class Game {
 
         try {
             float pitchVal = Float.parseFloat(trivia.getConfig().getString(pitchPath, "1"));
-            Bukkit.getLogger().info("The pitch is: " + pitchVal + " for path " + pitchPath);
             player.playSound(player.getLocation(), Sound.valueOf(soundString), 0.6f, pitchVal);
         } catch (IllegalArgumentException | NullPointerException exception) {
             if (soundString != null && !soundString.equalsIgnoreCase("none")) {
