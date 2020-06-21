@@ -6,6 +6,7 @@ import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import me.marcarrots.trivia.utils.StringSimilarity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -73,12 +74,14 @@ public class Game {
         scores.addPlayersToGame();
         trivia.setGameActive(true);
         Bukkit.broadcastMessage(Lang.TRIVIA_START.format());
+        playSoundToAll("Game start sound", "Game start pitch");
         timer = new Timer(trivia, amountOfRounds, timePerQuestion,
                 () -> {
                 },
                 () -> {
                     Bukkit.broadcastMessage(Lang.TRIVIA_OVER.format());
                     Bukkit.broadcastMessage(Lang.TRIVIA_OVER_WINNER_LINE.format());
+                    playSoundToAll("Game over sound", "Game over pitch");
                     scores.broadcastLargestScores();
                     chatEvent.setGame(null);
                     trivia.setGameActive(false);
@@ -87,6 +90,7 @@ public class Game {
                 (t) -> {
                     if (!wasAnswered) {
                         Bukkit.broadcastMessage(Lang.TIME_UP.format());
+                        playSoundToAll("Time up sound", "Time up pitch");
                     }
                     wasAnswered = false;
                     setRandomQuestion();
@@ -98,6 +102,7 @@ public class Game {
         timer.scheduleTimer();
 
     }
+
 
     private int getQuestionNum() {
         return Math.subtractExact(timer.getRounds() + 1, timer.getRoundsLeft());
@@ -111,7 +116,7 @@ public class Game {
             BukkitScheduler scheduler = getServer().getScheduler();
             scheduler.scheduleSyncDelayedTask(trivia, () -> {
                 Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(e.getPlayer().getDisplayName(), getCurrentQuestion().getQuestionString(), getCurrentQuestion().getAnswerString(), getQuestionNum(), 0));
-
+                playSound(e.getPlayer(), "Answer correct sound", "Answer correct pitch");
                 scores.addScore(e.getPlayer());
                 timer.nextQuestion();
                 wasAnswered = true;
@@ -120,6 +125,34 @@ public class Game {
         }
 
 
+    }
+
+    private void playSound(Player player, String soundPath, String pitchPath) {
+        String soundString = trivia.getConfig().getString(soundPath);
+
+        try {
+            float pitchVal = Float.parseFloat(trivia.getConfig().getString(pitchPath, "1"));
+            Bukkit.getLogger().info("The pitch is: " + pitchVal + " for path " + pitchPath);
+            player.playSound(player.getLocation(), Sound.valueOf(soundString), 0.6f, pitchVal);
+        } catch (IllegalArgumentException | NullPointerException exception) {
+            if (soundString != null && !soundString.equalsIgnoreCase("none")) {
+                switch (soundPath) {
+                    case "Answer correct sound":
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.6f, 1.5f);
+                        break;
+                    case "Time up sound":
+                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6f, 0.9f);
+                        break;
+                }
+            }
+        }
+
+    }
+
+    private void playSoundToAll(String path, String pitch) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playSound(player, path, pitch);
+        }
     }
 
     public void stopGame() {

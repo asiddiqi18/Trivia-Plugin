@@ -13,6 +13,26 @@ Default rounds: 10
 # This many amount of players will be shown as winners after a trivia game.
 Top winner amount: 3
 
+# If true, this will summon a random firework at the location of the trivia winners.
+Summon fireworks: true
+
+# This sound will be played after a player answers the question correctly. Enter 'none' to play no sound.
+# Use sound values found at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+Answer correct sound: BLOCK_NOTE_BLOCK_PLING
+Answer correct pitch: 1.5
+
+# This sound will be played after no one has answered the question correctly in time.
+Time up sound: ENTITY_VILLAGER_NO
+Time up pitch: 0.9
+
+# This sound will be played when the trivia game starts. By default, there is no sound.
+Game start sound: none
+Game start pitch: 1.0
+
+# This sound will be played after the trivia game is over.
+Game over sound: ENTITY_PLAYER_LEVELUP
+Game over pitch: 0.9
+
 # These are the questions and answers. The two are separated between a ' /$/ '.
 Questions and Answers:
   - "Who is the original creator of Minecraft? /$/ notch"

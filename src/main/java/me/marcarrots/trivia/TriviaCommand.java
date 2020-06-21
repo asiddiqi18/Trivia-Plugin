@@ -32,7 +32,6 @@ public class TriviaCommand implements CommandExecutor {
 
         Player player;
 
-
         if (commandSender instanceof Player) {
             player = (Player) commandSender;
         } else {
