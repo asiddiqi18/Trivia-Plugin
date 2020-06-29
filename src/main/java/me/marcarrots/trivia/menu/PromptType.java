@@ -7,6 +7,8 @@ public enum PromptType {
     NEW_QUESTION,
     EDIT_QUESTION,
     EDIT_ANSWER,
-    DELETE;
+    DELETE,
+    SET_MONEY,
+    SET_WIN_MESSAGE;
 
 }

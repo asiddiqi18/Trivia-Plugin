@@ -4,9 +4,11 @@ import me.marcarrots.trivia.listeners.ChatEvent;
 import me.marcarrots.trivia.listeners.InventoryClick;
 import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public final class Trivia extends JavaPlugin {
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
     private Rewards[] rewards;
     private Game game;
+    private static Economy econ = null;
 
     public Rewards[] getRewards() {
         return rewards;
@@ -60,6 +63,10 @@ public final class Trivia extends JavaPlugin {
         getServer().getPluginManager().registerEvents(chatEvent, this);
         getServer().getPluginManager().registerEvents(playerJoin, this);
         getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder, chatEvent, playerJoin));
+        if (!setupEconomy() ) {
+            Bukkit.getLogger().info(String.format("[%s] - No Vault Detected, Disabling Vault Integration...", getDescription().getName()));
+            return;
+        }
         generateRewards();
     }
 
@@ -102,7 +109,22 @@ public final class Trivia extends JavaPlugin {
             rewards[i] = new Rewards(this, i);
         }
 
+    }
 
+    private boolean setupEconomy() {
+        if (!vaultEnabled()) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+
+    public boolean vaultEnabled() {
+        return getServer().getPluginManager().getPlugin("Vault") != null;
     }
 
 

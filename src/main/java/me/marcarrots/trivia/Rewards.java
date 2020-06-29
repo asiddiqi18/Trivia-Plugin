@@ -17,9 +17,20 @@ public class Rewards {
     Trivia trivia;
     int place;
     double money;
+    String message;
     List<ItemStack> items = new ArrayList<>();
 
+    public String getMessage() {
+        if (message == null) {
+            return "No message is set.";
+        }
+        return message;
+    }
 
+    public void setMessage(String message) {
+        this.message = message;
+        trivia.getConfig().set("Rewards." + place + ".Message", message);
+    }
 
     public double getMoney() {
         return money;
@@ -27,6 +38,8 @@ public class Rewards {
 
     public void setMoney(double money) {
         this.money = money;
+        trivia.getConfig().set("Rewards." + place + ".Money", money);
+
     }
 
     public List<ItemStack> getItems() {
@@ -35,6 +48,7 @@ public class Rewards {
 
     public void setItems(List<ItemStack> items) {
         this.items = items;
+        trivia.getConfig().set("Rewards." + place + ".Items", items);
     }
 
     public Rewards(Trivia trivia, int place) {

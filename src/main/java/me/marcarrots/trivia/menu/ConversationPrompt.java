@@ -7,6 +7,7 @@ import me.marcarrots.trivia.listeners.ChatEvent;
 import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.subMenus.ListMenu;
 import me.marcarrots.trivia.menu.subMenus.ParameterMenu;
+import me.marcarrots.trivia.menu.subMenus.RewardsSpecificMenu;
 import me.marcarrots.trivia.menu.subMenus.ViewMenu;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -25,6 +26,8 @@ public class ConversationPrompt extends StringPrompt {
     private final QuestionHolder questionHolder;
     private final Question question;
 
+    private int place;
+
     public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
         this.promptType = promptType;
         this.playerMenuUtility = playerMenuUtility;
@@ -41,6 +44,10 @@ public class ConversationPrompt extends StringPrompt {
         this.question = question;
     }
 
+    public ConversationPrompt setPlace(int place) {
+        this.place = place;
+        return this;
+    }
 
     @Override
     public String getPromptText(ConversationContext context) {
@@ -60,6 +67,12 @@ public class ConversationPrompt extends StringPrompt {
                 return ChatColor.DARK_AQUA + "Enter the new question you'd like. Type" + ChatColor.RED + " 'back' " + ChatColor.DARK_AQUA + "to return.";
             case EDIT_ANSWER:
                 return ChatColor.DARK_AQUA + "Enter the new answer you'd like. Type" + ChatColor.RED + " 'back' " + ChatColor.DARK_AQUA + "to return.";
+            case DELETE:
+                break;
+            case SET_MONEY:
+                return ChatColor.DARK_AQUA + "Enter the amount of money this winner will receive. Type" + ChatColor.RED + " 'back' " + ChatColor.DARK_AQUA + "to return.";
+            case SET_WIN_MESSAGE:
+                return ChatColor.DARK_AQUA + "Enter the message this winner will receive when they win. Type" + ChatColor.RED + " 'back' " + ChatColor.DARK_AQUA + "to return.";
             default:
                 throw new IllegalStateException("Unexpected value: " + promptType);
         }
@@ -118,13 +131,28 @@ public class ConversationPrompt extends StringPrompt {
                     playerMenuUtility.setAnswerString(input);
                     new ViewMenu(playerMenuUtility, trivia, questionHolder).open();
                     return Prompt.END_OF_CONVERSATION;
+                case SET_MONEY:
+                    trivia.getRewards()[place - 1].setMoney(Double.parseDouble(input));
+                    player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This money reward has been modified."));
+                    new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, place).open();
+                    return Prompt.END_OF_CONVERSATION;
+                case SET_WIN_MESSAGE:
+                    trivia.getRewards()[place - 1].setMessage(input);
+                    player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This reward message has been modified."));
+                    new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, place).open();
+                    return Prompt.END_OF_CONVERSATION;
+                case DELETE:
+                    break;
             }
         } catch (NumberFormatException e) {
-            player.sendMessage("Please enter a valid number.");
+            player.spigot().sendMessage(new TextComponent("Please enter a valid number."));
         }
 
-        ParameterMenu menu = new ParameterMenu(playerMenuUtility, trivia, questionHolder);
-        menu.open();
+        if (promptType == PromptType.SET_MONEY) {
+            new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, place).open();
+        } else {
+            new ParameterMenu(playerMenuUtility, trivia, questionHolder).open();
+        }
         return Prompt.END_OF_CONVERSATION;
     }
 

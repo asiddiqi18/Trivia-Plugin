@@ -7,10 +7,15 @@ package me.marcarrots.trivia.menu.subMenus;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Rewards;
 import me.marcarrots.trivia.Trivia;
+import me.marcarrots.trivia.menu.ConversationPrompt;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
+import me.marcarrots.trivia.menu.PromptType;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -30,7 +35,7 @@ public class RewardsSpecificMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return "Specific Rewards";
+        return "Reward for Placing at" + place;
     }
 
     @Override
@@ -42,21 +47,34 @@ public class RewardsSpecificMenu extends Menu {
     public void handleMenuClick(InventoryClickEvent event) {
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
+        ConversationFactory conversationFactory = new ConversationFactory(trivia);
 
+        Conversation conversation;
         switch (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())) {
             case "Rewarded Money":
-                player.sendMessage(trivia.getRewards()[0].toString());
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 1).open();
+                event.setCancelled(true);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY
+                        , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation.begin();
+                player.closeInventory();
                 break;
             case "Reward Message":
-                player.sendMessage(trivia.getRewards()[1].toString());
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 2).open();
+                event.setCancelled(true);
+                player.sendMessage(trivia.getRewards()[0].toString());
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE
+                        , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation.begin();
+                player.closeInventory();
                 break;
         }
 
-        if (type == Material.ARROW) {
+        if (event.getCurrentItem().equals(FILLER_GLASS)) {
+            event.setCancelled(true);
+        } else if (type == Material.ARROW) {
+            event.setCancelled(true);
             new RewardsMainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
+            event.setCancelled(true);
             player.closeInventory();
         }
 
@@ -74,18 +92,22 @@ public class RewardsSpecificMenu extends Menu {
             }
 
             items.add(item);
-            event.getPlayer().sendMessage(item.toString());
         }
-        items.forEach(item -> trivia.getConfig().set("Rewards." + place + ".Items", item));
         trivia.getRewards()[place - 1].setItems(items);
         trivia.saveConfig();
     }
 
     @Override
     public void setMenuItems() {
-        Rewards reward = trivia.getRewards()[place - 1]; // place starts at 1, while index starts at 0.
+        Rewards reward = null; // place starts at 1, while index starts at 0.
+        try {
+            reward = trivia.getRewards()[place - 1];
+        } catch (Exception e) {
+            e.printStackTrace();
+            Bukkit.getLogger().info("Place: " + place);
+        }
 
-        if (reward.getItems() != null) {
+        if (reward != null && reward.getItems() != null) {
             int index = 0;
             for (int i = 10; i < 36; i++) {
                 if (inventory.getItem(i) != null) {
@@ -113,6 +135,7 @@ public class RewardsSpecificMenu extends Menu {
         }
 
         insertItem(Material.EMERALD, "Rewarded Money", "$" + reward.getMoney(), 38, true);
+        insertItem(Material.WRITABLE_BOOK, "Reward Message", reward.getMessage(), 42, true);
         inventory.setItem(36, BACK);
         inventory.setItem(40, CLOSE);
     }
