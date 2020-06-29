@@ -14,18 +14,23 @@ import java.util.List;
 public final class Trivia extends JavaPlugin {
 
     private final QuestionHolder questionHolder = new QuestionHolder();
-    private final ChatEvent chatEvent = new ChatEvent();
-    private final PlayerJoin playerJoin = new PlayerJoin();
+    private final ChatEvent chatEvent = new ChatEvent(this);
+    private final PlayerJoin playerJoin = new PlayerJoin(this);
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
-    private boolean gameActive;
 
-    public boolean isGameActive() {
-        return gameActive;
+    public Game getGame() {
+        return game;
     }
 
-    public void setGameActive(boolean gameActive) {
-        this.gameActive = gameActive;
+    public void setGame(Game game) {
+        this.game = game;
     }
+
+    public void clearGame() {
+        game = null;
+    }
+
+    private Game game;
 
     public PlayerMenuUtility getPlayerMenuUtility(Player player) {
         PlayerMenuUtility playerMenuUtility;
@@ -43,7 +48,7 @@ public final class Trivia extends JavaPlugin {
         loadConfig();
         parseFiles();
         Lang.setFile(getConfig());
-        gameActive = false;
+        game = null;
         MetricsLite metricsLite = new MetricsLite(this, 7912);
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
         getServer().getPluginManager().registerEvents(chatEvent, this);

@@ -15,8 +15,8 @@ public abstract class PaginatedMenu extends Menu {
     protected int maxItemsPerPage = 28;
     protected int index = 0;
 
-    public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
-        super(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin);
+    public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
+        super(playerMenuUtility, trivia, questionHolder);
 
     }
 

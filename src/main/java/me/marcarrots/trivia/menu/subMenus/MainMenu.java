@@ -14,8 +14,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class MainMenu extends Menu {
 
 
-    public MainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
-        super(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin);
+    public MainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
+        super(playerMenuUtility, trivia, questionHolder);
     }
 
     @Override
@@ -38,9 +38,9 @@ public class MainMenu extends Menu {
 
         playerMenuUtility.setPreviousMenu(MenuType.MAIN_MENU);
         if (type == Material.GREEN_TERRACOTTA) {
-            new ParameterMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
+            new ParameterMenu(playerMenuUtility, trivia, questionHolder).open();
         } else if (type == Material.PAPER) {
-            new ListMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
+            new ListMenu(playerMenuUtility, trivia, questionHolder).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }

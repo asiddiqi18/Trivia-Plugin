@@ -49,7 +49,7 @@ public class TriviaCommand implements CommandExecutor {
 
         }
 
-        MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder, chatEvent, playerJoin);
+        MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder);
         menu.open();
 
         return false;

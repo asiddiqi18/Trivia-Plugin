@@ -23,8 +23,6 @@ public abstract class Menu implements InventoryHolder {
 
     protected final Trivia trivia;
     protected final QuestionHolder questionHolder;
-    protected final ChatEvent chatEvent;
-    protected final PlayerJoin playerJoin;
     protected Inventory inventory;
     protected PlayerMenuUtility playerMenuUtility;
     protected ItemStack FILLER_GLASS;
@@ -33,13 +31,11 @@ public abstract class Menu implements InventoryHolder {
 
     protected ItemStack CLOSE;
 
-    public Menu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
+    public Menu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
 
         this.playerMenuUtility = playerMenuUtility;
         this.trivia = trivia;
         this.questionHolder = questionHolder;
-        this.chatEvent = chatEvent;
-        this.playerJoin = playerJoin;
         FILLER_GLASS = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta FILLER_GLASS_META = FILLER_GLASS.getItemMeta();
         FILLER_GLASS_META.setDisplayName(" ");

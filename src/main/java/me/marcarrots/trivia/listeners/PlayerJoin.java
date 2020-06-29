@@ -1,6 +1,7 @@
 package me.marcarrots.trivia.listeners;
 
 import me.marcarrots.trivia.PlayerScoreHolder;
+import me.marcarrots.trivia.Trivia;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,20 +9,20 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoin implements Listener {
 
-    private PlayerScoreHolder playerScoreHolder;
+    private final Trivia trivia;
 
-    public void setPlayerScoreHolder(PlayerScoreHolder playerScoreHolder) {
-        this.playerScoreHolder = playerScoreHolder;
+    public PlayerJoin(Trivia trivia) {
+        this.trivia = trivia;
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        if (playerScoreHolder == null) {
+        if (trivia.getGame() == null) {
             return;
         }
 
-        playerScoreHolder.updatePlayersToGame(event.getPlayer());
+        trivia.getGame().getScores().updatePlayersToGame(event.getPlayer());
 
     }
 

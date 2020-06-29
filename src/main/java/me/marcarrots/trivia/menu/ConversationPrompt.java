@@ -23,27 +23,21 @@ public class ConversationPrompt extends StringPrompt {
     private final PlayerMenuUtility playerMenuUtility;
     private final Trivia trivia;
     private final QuestionHolder questionHolder;
-    private final ChatEvent chatEvent;
-    private final PlayerJoin playerJoin;
     private final Question question;
 
-    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
+    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
         this.promptType = promptType;
         this.playerMenuUtility = playerMenuUtility;
         this.trivia = trivia;
         this.questionHolder = questionHolder;
-        this.chatEvent = chatEvent;
-        this.playerJoin = playerJoin;
         this.question = null;
     }
 
-    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin, Question question) {
+    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, Question question) {
         this.promptType = promptType;
         this.playerMenuUtility = playerMenuUtility;
         this.trivia = trivia;
         this.questionHolder = questionHolder;
-        this.chatEvent = chatEvent;
-        this.playerJoin = playerJoin;
         this.question = question;
     }
 
@@ -98,7 +92,7 @@ public class ConversationPrompt extends StringPrompt {
 
                     if (question.getQuestionString() == null) {
                         question.setQuestion(input);
-                        return new ConversationPrompt(PromptType.NEW_QUESTION, playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin, question);
+                        return new ConversationPrompt(PromptType.NEW_QUESTION, playerMenuUtility, trivia, questionHolder, question);
                     } else if (question.getAnswerString() == null) {
                         question.setAnswer(input);
                         List<String> unparsedQuestions = trivia.getConfig().getStringList("Questions and Answers");
@@ -107,7 +101,7 @@ public class ConversationPrompt extends StringPrompt {
                         trivia.saveConfig();
                         trivia.parseFiles();
                         player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been added to the pool."));
-                        new ListMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
+                        new ListMenu(playerMenuUtility, trivia, questionHolder).open();
                         return Prompt.END_OF_CONVERSATION;
                     }
                 case EDIT_QUESTION:
@@ -115,21 +109,21 @@ public class ConversationPrompt extends StringPrompt {
                     trivia.parseFiles();
                     player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been modified."));
                     playerMenuUtility.setQuestionString(input);
-                    new ViewMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
+                    new ViewMenu(playerMenuUtility, trivia, questionHolder).open();
                     return Prompt.END_OF_CONVERSATION;
                 case EDIT_ANSWER:
                     questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
                     trivia.parseFiles();
                     player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This answer has been been modified."));
                     playerMenuUtility.setAnswerString(input);
-                    new ViewMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
+                    new ViewMenu(playerMenuUtility, trivia, questionHolder).open();
                     return Prompt.END_OF_CONVERSATION;
             }
         } catch (NumberFormatException e) {
             player.sendMessage("Please enter a valid number.");
         }
 
-        ParameterMenu menu = new ParameterMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin);
+        ParameterMenu menu = new ParameterMenu(playerMenuUtility, trivia, questionHolder);
         menu.open();
         return Prompt.END_OF_CONVERSATION;
     }

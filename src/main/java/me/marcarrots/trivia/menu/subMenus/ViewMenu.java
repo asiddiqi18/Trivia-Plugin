@@ -16,8 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ViewMenu extends Menu {
-    public ViewMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
-        super(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin);
+    public ViewMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
+        super(playerMenuUtility, trivia, questionHolder);
     }
 
     @Override
@@ -39,20 +39,20 @@ public class ViewMenu extends Menu {
 
         if (type == Material.GREEN_TERRACOTTA) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_QUESTION
-                    , playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
         } else if (type == Material.YELLOW_TERRACOTTA) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_ANSWER
-                    , playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
         } else if (type == Material.RED_TERRACOTTA) {
             questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), null, PromptType.DELETE);
             trivia.parseFiles();
             player.sendMessage(ChatColor.GREEN + "This trivia question has been been removed.");
-            new ListMenu(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin).open();
+            new ListMenu(playerMenuUtility, trivia, questionHolder).open();
             return;
         } else if (type == Material.ARROW) {
-            new ListMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder, chatEvent, playerJoin).open();
+            new ListMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
             return;
         } else if (event.getCurrentItem().equals(FILLER_GLASS)) {
             return;

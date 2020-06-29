@@ -16,23 +16,25 @@ import static org.bukkit.Bukkit.getServer;
 public class Game {
 
     private final QuestionHolder questionHolder;
-    private final ChatEvent chatEvent;
     private final Trivia trivia;
     private final long timePerQuestion;
     private final int amountOfRounds;
     private final boolean doRepetition;
-    private final PlayerScoreHolder scores;
-    private final PlayerJoin playerJoin;
+
+    public PlayerScoreHolder getScores() {
+        return scores;
+    }
+
+    private PlayerScoreHolder scores;
     private final double similarityScore;
     private final Player player;
     private Question currentQuestion;
     private Timer timer;
     private boolean wasAnswered;
 
-    public Game(Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerMenuUtility playerMenuUtility, PlayerJoin playerJoin) {
+    public Game(Trivia trivia, QuestionHolder questionHolder, PlayerMenuUtility playerMenuUtility) {
         this.trivia = trivia;
         this.questionHolder = new QuestionHolder(questionHolder);
-        this.chatEvent = chatEvent;
         timePerQuestion = playerMenuUtility.getTimePer();
         amountOfRounds = playerMenuUtility.getTotalRounds();
         doRepetition = playerMenuUtility.isRepeatEnabled();
@@ -40,7 +42,6 @@ public class Game {
         similarityScore = trivia.getConfig().getDouble("Similarity score");
         scores = new PlayerScoreHolder(trivia);
         wasAnswered = true;
-        this.playerJoin = playerJoin;
     }
 
     private void setRandomQuestion() {
@@ -69,10 +70,7 @@ public class Game {
             }
         }
 
-        chatEvent.setGame(this);
-        playerJoin.setPlayerScoreHolder(scores);
         scores.addPlayersToGame();
-        trivia.setGameActive(true);
         Bukkit.broadcastMessage(Lang.TRIVIA_START.format());
         playSoundToAll("Game start sound", "Game start pitch");
         timer = new Timer(trivia, amountOfRounds, timePerQuestion,
@@ -83,9 +81,8 @@ public class Game {
                     Bukkit.broadcastMessage(Lang.TRIVIA_OVER_WINNER_LINE.format());
                     playSoundToAll("Game over sound", "Game over pitch");
                     scores.broadcastLargestScores();
-                    chatEvent.setGame(null);
-                    trivia.setGameActive(false);
-                    playerJoin.setPlayerScoreHolder(null);
+                    scores = null;
+                    trivia.clearGame();
                 },
                 (t) -> {
                     if (!wasAnswered) {
@@ -152,10 +149,6 @@ public class Game {
         for (Player player : Bukkit.getOnlinePlayers()) {
             playSound(player, path, pitch);
         }
-    }
-
-    public void stopGame() {
-        timer.stop();
     }
 
 

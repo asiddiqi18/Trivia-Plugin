@@ -16,8 +16,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class ParameterMenu extends Menu {
 
 
-    public ParameterMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
-        super(playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin);
+    public ParameterMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
+        super(playerMenuUtility, trivia, questionHolder);
     }
 
 
@@ -42,25 +42,26 @@ public class ParameterMenu extends Menu {
 
         playerMenuUtility.setPreviousMenu(MenuType.MAIN_MENU);
         if (type == Material.GREEN_TERRACOTTA) {
-            if (trivia.isGameActive()) {
+            if (trivia.getGame() != null) {
                 player.sendMessage(ChatColor.RED + "A trivia game is already in progress.");
                 return;
             }
-            new Game(trivia, questionHolder, chatEvent, playerMenuUtility, playerJoin).start();
+            trivia.setGame(new Game(trivia, questionHolder, playerMenuUtility));
+            trivia.getGame().start();
         } else if (type == Material.OAK_SIGN) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_ROUNDS
-                    , playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
         } else if (type == Material.CLOCK) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_TIME
-                    , playerMenuUtility, trivia, questionHolder, chatEvent, playerJoin)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
         } else if (type == Material.RED_DYE || type == Material.LIME_DYE) {
             playerMenuUtility.setRepeatEnabled();
             setMenuItems();
             return;
         } else if (type == Material.ARROW) {
-            new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder, chatEvent, playerJoin).open();
+            new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
             return;
         } else if (event.getCurrentItem().equals(FILLER_GLASS)) {
             return;

@@ -1,6 +1,7 @@
 package me.marcarrots.trivia.listeners;
 
 import me.marcarrots.trivia.Game;
+import me.marcarrots.trivia.Trivia;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,20 +9,20 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatEvent implements Listener {
 
-    private Game game;
+    private final Trivia trivia;
 
-    public void setGame(Game game) {
-        this.game = game;
+    public ChatEvent(Trivia trivia) {
+        this.trivia = trivia;
     }
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
-        if (game == null) {
+        if (trivia.getGame() == null) {
             return;
         }
 
-        game.playerAnswer(event);
+        trivia.getGame().playerAnswer(event);
 
     }
 
