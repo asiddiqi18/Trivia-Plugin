@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 public class InventoryClick implements Listener {
@@ -12,7 +13,7 @@ public class InventoryClick implements Listener {
     @EventHandler
     public void onMenuClick(InventoryClickEvent event) {
 
-        if (event.getClickedInventory() == null) {
+        if (event.getClickedInventory() == null || event.getCurrentItem() == null) {
             return;
         }
 
@@ -20,14 +21,22 @@ public class InventoryClick implements Listener {
 
         if (holder instanceof Menu) {
 
-            if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.DOUBLE_CLICK || event.getClick() == ClickType.DROP) {
-                event.setCancelled(true);
-            }
+            Menu menu = (Menu) holder;
+            menu.handleMenuClick(event);
 
-            event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler
+    public void onMenuClose(InventoryCloseEvent event) {
+
+        InventoryHolder holder = event.getInventory().getHolder();
+
+        if (holder instanceof Menu) {
 
             Menu menu = (Menu) holder;
-            menu.handleMenu(event);
+            menu.handleMenuClose(event);
 
         }
 

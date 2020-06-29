@@ -8,7 +8,9 @@ import me.marcarrots.trivia.listeners.PlayerJoin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -56,7 +58,9 @@ public abstract class Menu implements InventoryHolder {
 
     public abstract int getSlots();
 
-    public abstract void handleMenu(InventoryClickEvent event);
+    public abstract void handleMenuClick(InventoryClickEvent event);
+
+    public abstract void handleMenuClose(InventoryCloseEvent event);
 
     public abstract void setMenuItems();
 
@@ -90,12 +94,17 @@ public abstract class Menu implements InventoryHolder {
         inventory.setItem(i, amountItem);
     }
 
-    protected void insertItem(Material material, String s, String s2, int i) {
+    protected void insertItem(Material material, String displayName, String lore, int i, boolean changeable) {
         ItemStack amountItem = new ItemStack(material, 1);
         ItemMeta amountMeta = amountItem.getItemMeta();
         if (amountMeta != null) {
-            amountMeta.setDisplayName(ChatColor.GREEN + s);
-            amountMeta.setLore(Arrays.asList(s2, ChatColor.RED + "Click here to change."));
+            amountMeta.setDisplayName(ChatColor.GREEN + displayName);
+            List<String> loreList = new ArrayList<>(3);
+            loreList.add(lore);
+            if (changeable) {
+                loreList.add(ChatColor.RED + "Click here to change.");
+            }
+            amountMeta.setLore(loreList);
         }
         amountItem.setItemMeta(amountMeta);
         inventory.setItem(i, amountItem);
@@ -124,6 +133,14 @@ public abstract class Menu implements InventoryHolder {
         }
         return new ArrayList<>(Arrays.asList(sb.toString().split("\n")));
 
+    }
+
+    protected void cancelEvent(InventoryClickEvent event) {
+        if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.DOUBLE_CLICK || event.getClick() == ClickType.DROP) {
+            event.setCancelled(true);
+        }
+
+        event.setCancelled(true);
     }
 
 }

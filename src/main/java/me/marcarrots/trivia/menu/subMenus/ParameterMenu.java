@@ -12,6 +12,7 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class ParameterMenu extends Menu {
 
@@ -32,10 +33,9 @@ public class ParameterMenu extends Menu {
     }
 
     @Override
-    public void handleMenu(InventoryClickEvent event) {
-        if (event.getCurrentItem() == null) {
-            return;
-        }
+    public void handleMenuClick(InventoryClickEvent event) {
+        cancelEvent(event);
+
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
         ConversationFactory conversationFactory = new ConversationFactory(trivia);
@@ -71,17 +71,22 @@ public class ParameterMenu extends Menu {
     }
 
     @Override
+    public void handleMenuClose(InventoryCloseEvent event) {
+
+    }
+
+    @Override
     public void setMenuItems() {
 
-        insertItem(Material.OAK_SIGN, "Total rounds", ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds() + " rounds.", 10);
+        insertItem(Material.OAK_SIGN, "Total rounds", ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds() + " rounds.", 10, true);
 
-        insertItem(Material.CLOCK, "Time Per Question", ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer() + " seconds.", 12);
+        insertItem(Material.CLOCK, "Time Per Question", ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer() + " seconds.", 12, true);
 
 
         if (playerMenuUtility.isRepeatEnabled()) {
-            insertItem(Material.LIME_DYE, "Allow question repetition", ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_GREEN + "True", 14);
+            insertItem(Material.LIME_DYE, "Allow question repetition", ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_GREEN + "True", 14, true);
         } else {
-            insertItem(Material.RED_DYE, "Allow question repetition", ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_RED + "False", 14);
+            insertItem(Material.RED_DYE, "Allow question repetition", ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_RED + "False", 14, true);
         }
 
         insertItem(Material.GREEN_TERRACOTTA, "Start Trivia", 16);

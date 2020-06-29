@@ -6,6 +6,7 @@ import me.marcarrots.trivia.listeners.ChatEvent;
 import me.marcarrots.trivia.listeners.PlayerJoin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -17,6 +18,11 @@ public abstract class PaginatedMenu extends Menu {
 
     public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
         super(playerMenuUtility, trivia, questionHolder);
+
+    }
+
+    @Override
+    public void handleMenuClose(InventoryCloseEvent event) {
 
     }
 

@@ -14,6 +14,7 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class ViewMenu extends Menu {
     public ViewMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
@@ -31,8 +32,9 @@ public class ViewMenu extends Menu {
     }
 
     @Override
-    public void handleMenu(InventoryClickEvent event) {
+    public void handleMenuClick(InventoryClickEvent event) {
 
+        cancelEvent(event);
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
         ConversationFactory conversationFactory = new ConversationFactory(trivia);
@@ -58,6 +60,11 @@ public class ViewMenu extends Menu {
             return;
         }
         player.closeInventory();
+    }
+
+    @Override
+    public void handleMenuClose(InventoryCloseEvent event) {
+
     }
 
     @Override

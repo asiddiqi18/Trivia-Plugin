@@ -13,6 +13,7 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -39,7 +40,8 @@ public class ListMenu extends PaginatedMenu {
     }
 
     @Override
-    public void handleMenu(InventoryClickEvent event) {
+    public void handleMenuClick(InventoryClickEvent event) {
+        cancelEvent(event);
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
 
@@ -81,6 +83,11 @@ public class ListMenu extends PaginatedMenu {
         } else {
             event.setCancelled(true);
         }
+
+    }
+
+    @Override
+    public void handleMenuClose(InventoryCloseEvent event) {
 
     }
 

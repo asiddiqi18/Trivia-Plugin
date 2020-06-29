@@ -6,8 +6,10 @@ import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +19,12 @@ public final class Trivia extends JavaPlugin {
     private final ChatEvent chatEvent = new ChatEvent(this);
     private final PlayerJoin playerJoin = new PlayerJoin(this);
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
+    private Rewards[] rewards;
+    private Game game;
+
+    public Rewards[] getRewards() {
+        return rewards;
+    }
 
     public Game getGame() {
         return game;
@@ -29,8 +37,6 @@ public final class Trivia extends JavaPlugin {
     public void clearGame() {
         game = null;
     }
-
-    private Game game;
 
     public PlayerMenuUtility getPlayerMenuUtility(Player player) {
         PlayerMenuUtility playerMenuUtility;
@@ -54,6 +60,7 @@ public final class Trivia extends JavaPlugin {
         getServer().getPluginManager().registerEvents(chatEvent, this);
         getServer().getPluginManager().registerEvents(playerJoin, this);
         getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder, chatEvent, playerJoin));
+        generateRewards();
     }
 
     @Override
@@ -85,6 +92,16 @@ public final class Trivia extends JavaPlugin {
             triviaQuestion.setAnswer(item.substring(posAfter).trim());
             questionHolder.add(triviaQuestion);
         }
+
+    }
+
+    private void generateRewards() {
+        int rewardAmt = 3;
+        rewards = new Rewards[rewardAmt];
+        for (int i = 0; i < rewardAmt; i++) {
+            rewards[i] = new Rewards(this, i);
+        }
+
 
     }
 
