@@ -20,10 +20,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,6 +46,9 @@ public class RewardsSpecificMenu extends Menu {
 
     @Override
     public void handleMenuClick(InventoryClickEvent event) {
+        if (event.getCurrentItem() == null) {
+            return;
+        }
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
         ConversationFactory conversationFactory = new ConversationFactory(trivia);

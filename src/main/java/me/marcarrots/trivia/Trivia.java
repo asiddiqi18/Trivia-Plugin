@@ -12,9 +12,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.*;
-
-import static org.bukkit.Bukkit.getServer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class Trivia extends JavaPlugin {
 
@@ -23,25 +24,34 @@ public final class Trivia extends JavaPlugin {
     private final ChatEvent chatEvent = new ChatEvent(this);
     private final PlayerJoin playerJoin = new PlayerJoin(this);
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
+    boolean schedulingEnabled;
+    int automatedTime;
+    int automatedPlayerReq;
+    long lastAutomatedTime;
+    long nextAutomatedTime;
     private int schedulerTask;
     private Rewards[] rewards;
     private Game game;
+
+    public static Economy getEcon() {
+        return econ;
+    }
 
     public boolean isSchedulingEnabled() {
         return schedulingEnabled;
     }
 
-    boolean schedulingEnabled;
-    int automatedTime;
+    public void setSchedulingEnabled(boolean schedulingEnabled) {
+        this.schedulingEnabled = schedulingEnabled;
+    }
 
     public int getAutomatedPlayerReq() {
         return automatedPlayerReq;
     }
 
-    int automatedPlayerReq;
-    long lastAutomatedTime;
-    long nextAutomatedTime;
-
+    public void setAutomatedPlayerReq(int automatedPlayerReq) {
+        this.automatedPlayerReq = automatedPlayerReq;
+    }
 
     public long getLastAutomatedTime() {
         return lastAutomatedTime;
@@ -51,30 +61,22 @@ public final class Trivia extends JavaPlugin {
         return nextAutomatedTime;
     }
 
-    public void setSchedulingEnabled(boolean schedulingEnabled) {
-        this.schedulingEnabled = schedulingEnabled;
-    }
-
     public void setAutomatedTime(int automatedTime) {
         this.automatedTime = automatedTime;
     }
 
-    public void setAutomatedPlayerReq(int automatedPlayerReq) {
-        this.automatedPlayerReq = automatedPlayerReq;
-    }
-
-    public static Economy getEcon() {
-        return econ;
-    }
     public Rewards[] getRewards() {
         return rewards;
     }
+
     public Game getGame() {
         return game;
     }
+
     public void setGame(Game game) {
         this.game = game;
     }
+
     public void clearGame() {
         game = null;
     }
@@ -111,7 +113,7 @@ public final class Trivia extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    private void loadConfig() {
+    public void loadConfig() {
         schedulingEnabled = getConfig().getBoolean("Scheduled games", false);
         automatedTime = getConfig().getInt("Scheduled games interval", 60);
         automatedPlayerReq = getConfig().getInt("Scheduled games minimum players", 6);
@@ -164,7 +166,7 @@ public final class Trivia extends JavaPlugin {
             return false;
         }
         econ = rsp.getProvider();
-        return econ != null;
+        return true;
     }
 
     public boolean vaultEnabled() {
@@ -183,14 +185,14 @@ public final class Trivia extends JavaPlugin {
             return;
         }
 
-        nextAutomatedTime = System.currentTimeMillis() + (automatedTime*60*1000);
+        nextAutomatedTime = System.currentTimeMillis() + (automatedTime * 60 * 1000);
 
         BukkitScheduler scheduler = getServer().getScheduler();
         scheduler.cancelTask(schedulerTask);
         schedulerTask = scheduler.scheduleSyncRepeatingTask(this, () -> {
             ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
             Bukkit.dispatchCommand(console, "trivia start");
-            nextAutomatedTime = System.currentTimeMillis() + (automatedTime*60*1000);
+            nextAutomatedTime = System.currentTimeMillis() + (automatedTime * 60 * 1000);
         }, automatedTime * 20 * 60, automatedTime * 20 * 60);
         Bukkit.getLogger().info("Got over here.");
 
@@ -243,7 +245,6 @@ public final class Trivia extends JavaPlugin {
 
         return String.format("%02d days, %02d hours, %02d minutes, %02d seconds", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
     }
-
 
 
 }

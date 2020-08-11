@@ -4,7 +4,6 @@
 
 package me.marcarrots.trivia;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,11 +14,10 @@ public class Rewards {
     Trivia trivia;
 
     int place;
-
     int experience;
-
     double money;
     String message;
+
     List<ItemStack> items = new ArrayList<>();
 
     public Rewards(Trivia trivia, int place) {
@@ -57,7 +55,6 @@ public class Rewards {
         }
         this.money = money;
         trivia.getConfig().set("Rewards." + place + ".Money", money);
-
     }
 
     public List<ItemStack> getItems() {
@@ -72,10 +69,6 @@ public class Rewards {
     private void getValues() {
         money = trivia.getConfig().getDouble("Rewards." + place + ".Money");
         items = (List<ItemStack>) trivia.getConfig().get("Rewards." + place + ".Items");
-        if (items == null || items.size() == 0) {
-            return;
-        }
-
     }
 
     @Override

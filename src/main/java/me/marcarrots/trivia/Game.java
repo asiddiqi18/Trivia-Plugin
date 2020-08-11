@@ -8,8 +8,9 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import java.util.Objects;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -23,11 +24,11 @@ public class Game {
     private final double similarityScore;
     private final int timeBetween;
     private final CommandSender player;
+    BukkitScheduler scheduler;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
     private Timer timer;
     private boolean wasAnswered;
-    BukkitScheduler scheduler;
     private int task;
 
     // when initiated through menu
@@ -114,12 +115,10 @@ public class Game {
                         wasAnswered = false;
                         setRandomQuestion();
                         Bukkit.broadcastMessage(Lang.QUESTION.format(null, getCurrentQuestion().getQuestionString(), getCurrentQuestion().getAnswerString(), getQuestionNum(), 0));
-                    }, timeBetween*20);
+                    }, timeBetween * 20);
 
                 }
-
         );
-
         timer.scheduleTimer();
 
     }
@@ -129,11 +128,9 @@ public class Game {
         timer.stop();
     }
 
-
     private int getQuestionNum() {
         return Math.subtractExact(timer.getRounds(), timer.getRoundsLeft());
     }
-
 
     public void playerAnswer(AsyncPlayerChatEvent e) {
 
@@ -142,7 +139,6 @@ public class Game {
         }
 
         if (StringSimilarity.similarity(e.getMessage(), currentQuestion.getAnswerString()) >= similarityScore) {
-
             BukkitScheduler scheduler = getServer().getScheduler();
             scheduler.scheduleSyncDelayedTask(trivia, () -> {
                 Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(e.getPlayer().getDisplayName(), getCurrentQuestion().getQuestionString(), getCurrentQuestion().getAnswerString(), getQuestionNum(), 0));
@@ -154,14 +150,13 @@ public class Game {
             }, 2L);
         }
 
-
     }
 
     private void playSound(Player player, String soundPath, String pitchPath) {
         String soundString = trivia.getConfig().getString(soundPath);
 
         try {
-            float pitchVal = Float.parseFloat(trivia.getConfig().getString(pitchPath, "1"));
+            float pitchVal = Float.parseFloat(Objects.requireNonNull(trivia.getConfig().getString(pitchPath, "1")));
             player.playSound(player.getLocation(), Sound.valueOf(soundString), 0.6f, pitchVal);
         } catch (IllegalArgumentException | NullPointerException exception) {
             if (soundString != null && !soundString.equalsIgnoreCase("none")) {

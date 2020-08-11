@@ -5,10 +5,8 @@ import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.MenuType;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -37,6 +35,9 @@ public class MainMenu extends Menu {
     @Override
     public void handleMenuClick(InventoryClickEvent event) {
         cancelEvent(event);
+        if (event.getCurrentItem() == null) {
+            return;
+        }
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
 
@@ -69,9 +70,7 @@ public class MainMenu extends Menu {
         insertItem(Material.PAPER, "List Questions", Collections.singletonList("Create new questions or modify existing questions."), 15, false);
 
         if (trivia.isSchedulingEnabled()) {
-            scheduler.scheduleSyncRepeatingTask(trivia, () -> {
-                insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + trivia.getTimeUntilScheduled(), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedPlayerReq()), 35, false);
-            }, 0, 20);
+            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + trivia.getTimeUntilScheduled(), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedPlayerReq()), 35, false), 0, 20);
         }
 
         fillRest();
@@ -81,5 +80,5 @@ public class MainMenu extends Menu {
 
     }
 
-    
+
 }

@@ -67,31 +67,24 @@ public class PlayerScoreHolder {
                 }
 
                 if (i < 3) {
-
                     if (rewards == null) {
                         return;
                     }
-
                     if (rewards[i].getMessage() != null) {
                         player.sendMessage(rewards[i].getMessage());
                     }
-
-
                     if (trivia.vaultEnabled()) {
                         EconomyResponse r = Trivia.getEcon().depositPlayer(score.getPlayer(), rewards[i].getMoney());
                         if (!r.transactionSuccess()) {
                             player.sendMessage(String.format("An error occurred: %s", r.errorMessage));
                         }
                     }
-
                     if (rewards[i].getExperience() != 0) {
                         player.giveExp(rewards[i].getExperience());
                     }
-
                     if (rewards[i].getItems() == null || rewards[i].getItems().size() == 0) {
                         return;
                     }
-
                     for (ItemStack item : rewards[i].getItems()) {
                         if (player.getInventory().firstEmpty() == -1) {
                             player.getWorld().dropItem(player.getLocation(), item);

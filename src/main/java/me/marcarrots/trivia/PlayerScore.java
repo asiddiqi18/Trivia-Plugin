@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 public class PlayerScore implements Comparable<PlayerScore> {
 
-    private Player player;
+    private final Player player;
 
     private int points;
 

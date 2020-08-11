@@ -1,51 +1,48 @@
-# This is a score between 0 and 1 which will determine how similar an answer must be for it to be recognized recognized right.
-# for 1, this would require the user to have an exact answer.
-# for 0.9, this would require the user to have a mostly identical answer.
-# for 0.8, this would require the user to have only a partially correct answer.
+# Similarity Score is a score between 0 and 1 which will determine how similar an answer must be for it to be recognized recognized right. Value of 1 requires exact answer, value of 0.8 requires close answer.
 Similarity score: 0.85
 
-# This is the default value for the maximum amount of time (in seconds) players will have to answer a question.
+# Default time per round is the default value for the maximum amount of time (in seconds) players will have to answer a question.
 Default time per round: 15
 
-# This is the default value for the total amount of rounds in a game.
+# Default rounds is the default value for the total number of rounds in a game.
 Default rounds: 10
 
-# This is for the time (in seconds) between the rounds themselves.
+# Time between rounds is for the transition time (in seconds) between the rounds themselves.
 Time between rounds: 2
 
-# This many amount of players will be shown as winners after a trivia game.
+# Top winner amount's value will show these many winners displayed in chat after a trivia game.
 Top winner amount: 3
 
-# Scheduled games, if true, will let console host trivia once every x minutes.
+# Scheduled games, if true, will let console automatically host trivia every x minutes.
 Scheduled games: false
 
 # Scheduled games interval is the time between the scheduled games (in minutes) if scheduled games are enabled.
 Scheduled games interval: 60
 
-# Scheduled games minimum players is the least amount of players that must be on for a scheduled trivia event to be hosted.
+# Scheduled games minimum players is the minimum number of players that must be on for scheduled trivia events to be hosted.
 Scheduled games minimum players: 6
 
-# If true, this will summon a random firework at the location of the trivia winners.
+# Summon fireworks, If true, will summon a random firework at the location of the trivia winners.
 Summon fireworks: true
 
-# This sound will be played after a player answers the question correctly. Enter 'none' to play no sound.
+# Answer correct sound will be played after a player answers the question correctly. Enter 'none' to play no sound.
 # Use sound values found at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
 Answer correct sound: BLOCK_NOTE_BLOCK_PLING
 Answer correct pitch: 1.5
 
-# This sound will be played after no one has answered the question correctly in time.
+# Time up sound will be played after no one has answered the question correctly in time.
 Time up sound: ENTITY_VILLAGER_NO
 Time up pitch: 0.9
 
-# This sound will be played when the trivia game starts. By default, there is no sound.
+# Game start sound will be played when the trivia game starts. By default, there is no sound.
 Game start sound: none
 Game start pitch: 1.0
 
-# This sound will be played after the trivia game is over.
+# Game over sound will be played after the trivia game is over.
 Game over sound: ENTITY_PLAYER_LEVELUP
 Game over pitch: 0.9
 
-# These are the questions and answers. The two are separated between a ' /$/ '.
+# Question and Answers are where the trivia questions are stored. The two are separated between a ' /$/ '.
 Questions and Answers:
   - "Who is the original creator of Minecraft? /$/ notch"
   - "What do you need to turn powder to concrete? /$/ water"
@@ -58,7 +55,7 @@ Questions and Answers:
   - "How many minutes does it take to break a block of obsidian by hand? /$/ 4"
   - "Do cats take fall damage? /$/ No"
   - "It's easier to catch fish in what weather? /$/ Rain"
-  - "Creepers were accidently created when Notch was making what mob? /$/ Pig"
+  - "Creepers were accidentally created when Notch was making what mob? /$/ Pig"
   - "Creepers are afraid of what animal? /$/ Ocelots"
   - "One Minecraft block is how many feet? /$/ 3"
   - "How many days did it take to create the original release of Minecraft? /$/ 6"
@@ -66,7 +63,7 @@ Questions and Answers:
   - "What block can you wear on your head to prevent Endermen from turning hostile while looking at them? /$/ Pumpkin"
   - "Which is more rare, pumpkins or diamonds? /$/ Pumpkins"
 
-# These are the messages that will be displayed during a trivia game.
+# The "messages" section are the messages that will be displayed during a trivia game.
 # Feel free to modify them to your liking.
 # Placeholders:
 # %player% - player's display name.

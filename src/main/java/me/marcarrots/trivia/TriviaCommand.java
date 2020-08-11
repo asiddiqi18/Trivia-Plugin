@@ -12,10 +12,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitScheduler;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class TriviaCommand implements CommandExecutor {
 
@@ -40,9 +36,7 @@ public class TriviaCommand implements CommandExecutor {
             if (strings[0].equalsIgnoreCase("reload")) {
                 trivia.reloadConfig();
                 trivia.parseFiles();
-                trivia.setSchedulingEnabled(trivia.getConfig().getBoolean("Scheduled games"));
-                trivia.setAutomatedTime(trivia.getConfig().getInt("Scheduled games interval"));
-                trivia.setAutomatedPlayerReq(trivia.getConfig().getInt("Scheduled games minimum players"));
+                trivia.loadConfig();
                 commandSender.sendMessage(ChatColor.GREEN + "Trivia files have been reloaded.");
             } else if (strings[0].equalsIgnoreCase("stop")) {
                 if (trivia.getGame() == null) {
