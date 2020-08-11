@@ -20,8 +20,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class RewardsSpecificMenu extends Menu {
@@ -35,7 +38,7 @@ public class RewardsSpecificMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return "Reward for Placing at" + place;
+        return "Reward for Placing at " + place;
     }
 
     @Override
@@ -58,9 +61,15 @@ public class RewardsSpecificMenu extends Menu {
                 conversation.begin();
                 player.closeInventory();
                 break;
+            case "Rewarded Experience Points":
+                event.setCancelled(true);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE
+                        , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation.begin();
+                player.closeInventory();
+                break;
             case "Reward Message":
                 event.setCancelled(true);
-                player.sendMessage(trivia.getRewards()[0].toString());
                 conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE
                         , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
@@ -107,7 +116,11 @@ public class RewardsSpecificMenu extends Menu {
             Bukkit.getLogger().info("Place: " + place);
         }
 
-        if (reward != null && reward.getItems() != null) {
+        if (reward == null) {
+            return;
+        }
+
+        if (reward.getItems() != null) {
             int index = 0;
             for (int i = 10; i < 36; i++) {
                 if (inventory.getItem(i) != null) {
@@ -134,8 +147,14 @@ public class RewardsSpecificMenu extends Menu {
             inventory.setItem(i, FILLER_GLASS);
         }
 
-        insertItem(Material.EMERALD, "Rewarded Money", "$" + reward.getMoney(), 38, true);
-        insertItem(Material.WRITABLE_BOOK, "Reward Message", reward.getMessage(), 42, true);
+        if (trivia.vaultEnabled()) {
+            insertItem(Material.EMERALD, "Rewarded Money", Collections.singletonList("$" + reward.getMoney()), 38, true);
+        } else {
+            insertItem(Material.EMERALD, ChatColor.DARK_RED + "Rewarded Money", Collections.singletonList(ChatColor.RED + "This server does not have vault enabled! It must be enabled for this feature to work."), 37, false);
+        }
+        insertItem(Material.EXPERIENCE_BOTTLE, "Rewarded Experience Points", Collections.singletonList(String.valueOf(reward.getExperience())), 42, true);
+
+        insertItem(Material.WRITABLE_BOOK, "Reward Message", Collections.singletonList(reward.getMessage() != null ? reward.getMessage() : "No rewards are set."), 44, true);
         inventory.setItem(36, BACK);
         inventory.setItem(40, CLOSE);
     }

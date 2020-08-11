@@ -3,8 +3,6 @@ package me.marcarrots.trivia.menu.subMenus;
 import me.marcarrots.trivia.Question;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
-import me.marcarrots.trivia.listeners.ChatEvent;
-import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

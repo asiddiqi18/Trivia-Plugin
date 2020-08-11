@@ -5,10 +5,17 @@ import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.MenuType;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.scheduler.BukkitScheduler;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class MainMenu extends Menu {
 
@@ -39,7 +46,7 @@ public class MainMenu extends Menu {
         } else if (type == Material.PAPER) {
             new ListMenu(playerMenuUtility, trivia, questionHolder).open();
         } else if (type == Material.EMERALD) {
-          new RewardsMainMenu(playerMenuUtility, trivia, questionHolder).open();
+            new RewardsMainMenu(playerMenuUtility, trivia, questionHolder).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }
@@ -53,11 +60,19 @@ public class MainMenu extends Menu {
     @Override
     public void setMenuItems() {
 
+        BukkitScheduler scheduler = trivia.getServer().getScheduler();
+
         insertItem(Material.GREEN_TERRACOTTA, "Start Trivia", 11);
 
-        insertItem(Material.EMERALD, "Rewards", "Adjust trivia prizes that are given to winners.", 13, false);
+        insertItem(Material.EMERALD, "Rewards", Collections.singletonList("Adjust trivia prizes that are given to winners."), 13, false);
 
-        insertItem(Material.PAPER, "List Questions", "Create new questions or modify existing questions.", 15, false);
+        insertItem(Material.PAPER, "List Questions", Collections.singletonList("Create new questions or modify existing questions."), 15, false);
+
+        if (trivia.isSchedulingEnabled()) {
+            scheduler.scheduleSyncRepeatingTask(trivia, () -> {
+                insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + trivia.getTimeUntilScheduled(), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedPlayerReq()), 35, false);
+            }, 0, 20);
+        }
 
         fillRest();
 
@@ -65,4 +80,6 @@ public class MainMenu extends Menu {
 
 
     }
+
+    
 }

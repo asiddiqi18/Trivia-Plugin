@@ -12,13 +12,17 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitScheduler;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class TriviaCommand implements CommandExecutor {
 
+    private final PlayerJoin playerJoin;
     Trivia trivia;
     QuestionHolder questionHolder;
     private ChatEvent chatEvent;
-    private final PlayerJoin playerJoin;
 
     public TriviaCommand(Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
         this.trivia = trivia;
@@ -30,27 +34,39 @@ public class TriviaCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
 
-        Player player;
-
-        if (commandSender instanceof Player) {
-            player = (Player) commandSender;
-        } else {
-            return false;
-        }
 
         if (strings.length == 1) {
 
             if (strings[0].equalsIgnoreCase("reload")) {
                 trivia.reloadConfig();
                 trivia.parseFiles();
-                player.sendMessage(ChatColor.GREEN + "Trivia files have been reloaded.");
-                return false;
+                trivia.setSchedulingEnabled(trivia.getConfig().getBoolean("Scheduled games"));
+                trivia.setAutomatedTime(trivia.getConfig().getInt("Scheduled games interval"));
+                trivia.setAutomatedPlayerReq(trivia.getConfig().getInt("Scheduled games minimum players"));
+                commandSender.sendMessage(ChatColor.GREEN + "Trivia files have been reloaded.");
+            } else if (strings[0].equalsIgnoreCase("stop")) {
+                if (trivia.getGame() == null) {
+                    commandSender.sendMessage(ChatColor.RED + "There is no trivia game in progress.");
+                    return false;
+                }
+                trivia.getGame().stop();
+                commandSender.sendMessage(ChatColor.RED + "Trivia has been forcibly halted.");
+            } else if (strings[0].equalsIgnoreCase("start")) {
+                if (trivia.getGame() != null) {
+                    commandSender.sendMessage(ChatColor.RED + "There is already a trivia game in progress.");
+                    return false;
+                }
+                trivia.setGame(new Game(trivia, questionHolder, commandSender));
+                trivia.getGame().start();
             }
+            return false;
 
         }
 
-        MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder);
-        menu.open();
+        if (commandSender instanceof Player) {
+            MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility((Player) commandSender), trivia, questionHolder);
+            menu.open();
+        }
 
         return false;
     }

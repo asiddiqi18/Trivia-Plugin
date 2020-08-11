@@ -1,7 +1,6 @@
 package me.marcarrots.trivia.menu;
 
 import me.marcarrots.trivia.Question;
-import me.marcarrots.trivia.Trivia;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -20,7 +19,8 @@ public class PlayerMenuUtility {
     public PlayerMenuUtility(FileConfiguration config, Player owner) {
         this.owner = owner;
         totalRounds = config.getInt("Default rounds", 10);
-        timePer = config.getLong("Default time per round", 10L);;
+        timePer = config.getLong("Default time per round", 10L);
+        ;
     }
 
     public Question getQuestion() {

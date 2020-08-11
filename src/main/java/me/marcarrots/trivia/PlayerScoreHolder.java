@@ -1,12 +1,12 @@
 package me.marcarrots.trivia;
 
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.*;
@@ -58,10 +58,51 @@ public class PlayerScoreHolder {
         for (int i = 0; i < displayAmount; i++) {
             final PlayerScore score = scores.get(i);
             if (score != null) {
-                Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(score.getPlayer().getDisplayName(), null, null, 0, score.getPoints()));
+                Player player = score.getPlayer();
+                Rewards[] rewards = trivia.getRewards();
+                Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(player.getDisplayName(), null, null, 0, score.getPoints()));
+
                 if (trivia.getConfig().getBoolean("Summon fireworks", true)) {
-                    summonFireWork(score.getPlayer());
+                    summonFireWork(player);
                 }
+
+                if (i < 3) {
+
+                    if (rewards == null) {
+                        return;
+                    }
+
+                    if (rewards[i].getMessage() != null) {
+                        player.sendMessage(rewards[i].getMessage());
+                    }
+
+
+                    if (trivia.vaultEnabled()) {
+                        EconomyResponse r = Trivia.getEcon().depositPlayer(score.getPlayer(), rewards[i].getMoney());
+                        if (!r.transactionSuccess()) {
+                            player.sendMessage(String.format("An error occurred: %s", r.errorMessage));
+                        }
+                    }
+
+                    if (rewards[i].getExperience() != 0) {
+                        player.giveExp(rewards[i].getExperience());
+                    }
+
+                    if (rewards[i].getItems() == null || rewards[i].getItems().size() == 0) {
+                        return;
+                    }
+
+                    for (ItemStack item : rewards[i].getItems()) {
+                        if (player.getInventory().firstEmpty() == -1) {
+                            player.getWorld().dropItem(player.getLocation(), item);
+                        } else {
+                            player.getInventory().addItem(item);
+                            player.updateInventory();
+                        }
+                    }
+
+                }
+
             }
         }
     }

@@ -5,26 +5,41 @@
 package me.marcarrots.trivia;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Rewards {
-
     Trivia trivia;
+
     int place;
+
+    int experience;
+
     double money;
     String message;
     List<ItemStack> items = new ArrayList<>();
 
+    public Rewards(Trivia trivia, int place) {
+        this.trivia = trivia;
+        this.place = place + 1;
+        experience = 0;
+        getValues();
+    }
+
+    public int getExperience() {
+        return experience;
+    }
+
+    public void setExperience(int experience) {
+        this.experience = experience;
+        trivia.getConfig().set("Rewards." + place + ".Experience", experience);
+    }
+
     public String getMessage() {
-        if (message == null) {
-            return "No message is set.";
-        }
-        return message;
+        return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
     }
 
     public void setMessage(String message) {
@@ -37,6 +52,9 @@ public class Rewards {
     }
 
     public void setMoney(double money) {
+        if (money < 0) {
+            money *= -1;
+        }
         this.money = money;
         trivia.getConfig().set("Rewards." + place + ".Money", money);
 
@@ -51,21 +69,13 @@ public class Rewards {
         trivia.getConfig().set("Rewards." + place + ".Items", items);
     }
 
-    public Rewards(Trivia trivia, int place) {
-        this.trivia = trivia;
-        this.place = place + 1;
-        getValues();
-    }
-
     private void getValues() {
         money = trivia.getConfig().getDouble("Rewards." + place + ".Money");
         items = (List<ItemStack>) trivia.getConfig().get("Rewards." + place + ".Items");
         if (items == null || items.size() == 0) {
             return;
         }
-        for (ItemStack item : items) {
-            Bukkit.getLogger().info(item.toString());
-        }
+
     }
 
     @Override

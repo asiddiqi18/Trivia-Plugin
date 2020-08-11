@@ -3,8 +3,6 @@ package me.marcarrots.trivia.menu;
 
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
-import me.marcarrots.trivia.listeners.ChatEvent;
-import me.marcarrots.trivia.listeners.PlayerJoin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -94,17 +92,15 @@ public abstract class Menu implements InventoryHolder {
         inventory.setItem(i, amountItem);
     }
 
-    protected void insertItem(Material material, String displayName, String lore, int i, boolean changeable) {
+    protected void insertItem(Material material, String displayName, List<String> lore, int i, boolean changeable) {
         ItemStack amountItem = new ItemStack(material, 1);
         ItemMeta amountMeta = amountItem.getItemMeta();
         if (amountMeta != null) {
             amountMeta.setDisplayName(ChatColor.GREEN + displayName);
-            List<String> loreList = new ArrayList<>(3);
-            loreList.add(lore);
             if (changeable) {
-                loreList.add(ChatColor.RED + "Click here to change.");
+                lore.add(ChatColor.RED + "Click here to change.");
             }
-            amountMeta.setLore(loreList);
+            amountMeta.setLore(lore);
         }
         amountItem.setItemMeta(amountMeta);
         inventory.setItem(i, amountItem);

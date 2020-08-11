@@ -2,8 +2,6 @@ package me.marcarrots.trivia.menu;
 
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
-import me.marcarrots.trivia.listeners.ChatEvent;
-import me.marcarrots.trivia.listeners.PlayerJoin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryCloseEvent;

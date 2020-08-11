@@ -14,7 +14,6 @@ public class Timer implements Runnable {
     // Seconds
     private final long secondsPer;
     private final Consumer<Timer> everySecond;
-    private final Runnable beforeTimer;
     // Actions to perform while counting down, before and after
     private final Runnable afterTimer;
     // Our scheduled task's assigned id, needed for canceling
@@ -24,7 +23,7 @@ public class Timer implements Runnable {
     // you do not want these "actions"
 
     public Timer(JavaPlugin plugin, int rounds, long secondsPer,
-                 Runnable beforeTimer, Runnable afterTimer,
+                 Runnable afterTimer,
                  Consumer<Timer> everySecond) {
         // Initializing fields
         this.plugin = plugin;
@@ -33,85 +32,54 @@ public class Timer implements Runnable {
         this.roundsLeft = rounds;
         this.secondsPer = secondsPer;
 
-        this.beforeTimer = beforeTimer;
         this.afterTimer = afterTimer;
         this.everySecond = everySecond;
     }
 
-    public void stop() {
-        roundsLeft = rounds;
-        nextQuestion();
-    }
-
     @Override
     public void run() {
-        // Is the timer up?
         if (roundsLeft < 1) {
-            // Do what was supposed to happen after the timer
             afterTimer.run();
 
-            // Cancel timer
             if (assignedTaskId != null) {
                 Bukkit.getScheduler().cancelTask(assignedTaskId);
             }
             return;
         }
 
-        // Are we just starting?
-        if (roundsLeft == rounds) {
-            beforeTimer.run();
-        }
 
-        // Do what's supposed to happen every second
         everySecond.accept(this);
 
-        // Decrement the seconds left
         roundsLeft--;
+    }
+
+    public void stop() {
+        roundsLeft = 0;
+        nextQuestion();
     }
 
     public int getRounds() {
         return rounds;
     }
 
-    /**
-     * Gets the total seconds this timer was set to run for
-     *
-     * @return Total seconds timer should run
-     */
-    public int getTotalSeconds() {
-        return rounds;
-    }
-
-    /**
-     * Gets the seconds left this timer should run
-     *
-     * @return Seconds left timer should run
-     */
     public int getRoundsLeft() {
         return roundsLeft;
     }
 
-    /**
-     * Schedules this instance to "run" every second
-     */
     public void scheduleTimer() {
-        // Initialize our assigned task's id, for later use so we can cancel
-        this.assignedTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, 10, secondsPer * 20);
+        int timeBetween = 0;
+        this.assignedTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, timeBetween, secondsPer * 20);
     }
 
     public void skipTimer() {
-
         if (assignedTaskId != null) {
             Bukkit.getScheduler().cancelTask(assignedTaskId);
         }
-
     }
 
     public void nextQuestion() {
-
         skipTimer();
         scheduleTimer();
-
     }
 
 

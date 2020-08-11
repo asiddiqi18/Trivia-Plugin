@@ -2,8 +2,6 @@ package me.marcarrots.trivia.menu.subMenus;
 
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
-import me.marcarrots.trivia.listeners.ChatEvent;
-import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.ConversationPrompt;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;

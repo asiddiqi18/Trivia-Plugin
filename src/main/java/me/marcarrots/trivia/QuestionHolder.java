@@ -1,7 +1,6 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.menu.PromptType;
-import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;

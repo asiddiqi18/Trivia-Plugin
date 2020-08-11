@@ -6,37 +6,75 @@ import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
+import static org.bukkit.Bukkit.getServer;
 
 public final class Trivia extends JavaPlugin {
 
+    private static Economy econ = null;
     private final QuestionHolder questionHolder = new QuestionHolder();
     private final ChatEvent chatEvent = new ChatEvent(this);
     private final PlayerJoin playerJoin = new PlayerJoin(this);
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
+    private int schedulerTask;
     private Rewards[] rewards;
     private Game game;
-    private static Economy econ = null;
 
+    public boolean isSchedulingEnabled() {
+        return schedulingEnabled;
+    }
+
+    boolean schedulingEnabled;
+    int automatedTime;
+
+    public int getAutomatedPlayerReq() {
+        return automatedPlayerReq;
+    }
+
+    int automatedPlayerReq;
+    long lastAutomatedTime;
+    long nextAutomatedTime;
+
+
+    public long getLastAutomatedTime() {
+        return lastAutomatedTime;
+    }
+
+    public long getNextAutomatedTime() {
+        return nextAutomatedTime;
+    }
+
+    public void setSchedulingEnabled(boolean schedulingEnabled) {
+        this.schedulingEnabled = schedulingEnabled;
+    }
+
+    public void setAutomatedTime(int automatedTime) {
+        this.automatedTime = automatedTime;
+    }
+
+    public void setAutomatedPlayerReq(int automatedPlayerReq) {
+        this.automatedPlayerReq = automatedPlayerReq;
+    }
+
+    public static Economy getEcon() {
+        return econ;
+    }
     public Rewards[] getRewards() {
         return rewards;
     }
-
     public Game getGame() {
         return game;
     }
-
     public void setGame(Game game) {
         this.game = game;
     }
-
     public void clearGame() {
         game = null;
     }
@@ -63,11 +101,9 @@ public final class Trivia extends JavaPlugin {
         getServer().getPluginManager().registerEvents(chatEvent, this);
         getServer().getPluginManager().registerEvents(playerJoin, this);
         getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder, chatEvent, playerJoin));
-        if (!setupEconomy() ) {
-            Bukkit.getLogger().info(String.format("[%s] - No Vault Detected, Disabling Vault Integration...", getDescription().getName()));
-            return;
+        if (!setupEconomy()) {
+            Bukkit.getLogger().info("No vault has been detected, disabling vault features...");
         }
-        generateRewards();
     }
 
     @Override
@@ -76,8 +112,16 @@ public final class Trivia extends JavaPlugin {
     }
 
     private void loadConfig() {
+        schedulingEnabled = getConfig().getBoolean("Scheduled games", false);
+        automatedTime = getConfig().getInt("Scheduled games interval", 60);
+        automatedPlayerReq = getConfig().getInt("Scheduled games minimum players", 6);
+        generateRewards();
+        configUpdater();
+        automatedSchedule();
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+//        Bukkit.getLogger().info(String.format("schedulingEnabled: %1$s, Scheduled games interval: %2$s, Scheduled games minimum players: %3$s",
+//                schedulingEnabled, automatedTime, automatedPlayerReq));
     }
 
     public void parseFiles() {
@@ -126,6 +170,80 @@ public final class Trivia extends JavaPlugin {
     public boolean vaultEnabled() {
         return getServer().getPluginManager().getPlugin("Vault") != null;
     }
+
+    private void automatedSchedule() {
+
+        if (!schedulingEnabled) {
+            Bukkit.getLogger().info("Stopped because disabled");
+            return;
+        }
+
+        if (Bukkit.getOnlinePlayers().size() < automatedPlayerReq) {
+            Bukkit.getLogger().info("Stopped because not enough online");
+            return;
+        }
+
+        nextAutomatedTime = System.currentTimeMillis() + (automatedTime*60*1000);
+
+        BukkitScheduler scheduler = getServer().getScheduler();
+        scheduler.cancelTask(schedulerTask);
+        schedulerTask = scheduler.scheduleSyncRepeatingTask(this, () -> {
+            ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+            Bukkit.dispatchCommand(console, "trivia start");
+            nextAutomatedTime = System.currentTimeMillis() + (automatedTime*60*1000);
+        }, automatedTime * 20 * 60, automatedTime * 20 * 60);
+        Bukkit.getLogger().info("Got over here.");
+
+
+    }
+
+    private void configUpdater() {
+
+        Set<String> currentKeys = getConfig().getKeys(false);
+        HashMap<String, Object> newKeys = new HashMap<>();
+
+        // if they have version 1 of the config...
+        if (getConfig().getInt("Config Version", 1) == 1) {
+            newKeys.put("Scheduled games", schedulingEnabled);
+            newKeys.put("Scheduled games interval", automatedTime);
+            newKeys.put("Scheduled games minimum players", automatedPlayerReq);
+            newKeys.put("Default time per round", 15);
+        }
+
+        // iterate through all the new keys
+        for (Map.Entry<String, Object> entry : newKeys.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            getConfig().set(key, value);
+            saveConfig();
+        }
+
+
+    }
+
+    public String getTimeUntilScheduled() {
+
+        long durationInMillis = nextAutomatedTime - System.currentTimeMillis();
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+
+        long elapsedDays = durationInMillis / daysInMilli;
+        durationInMillis = durationInMillis % daysInMilli;
+
+        long elapsedHours = durationInMillis / hoursInMilli;
+        durationInMillis = durationInMillis % hoursInMilli;
+
+        long elapsedMinutes = durationInMillis / minutesInMilli;
+        durationInMillis = durationInMillis % minutesInMilli;
+
+        long elapsedSeconds = durationInMillis / secondsInMilli;
+
+        return String.format("%02d days, %02d hours, %02d minutes, %02d seconds", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+    }
+
 
 
 }
