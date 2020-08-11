@@ -4,8 +4,6 @@
 
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.listeners.ChatEvent;
-import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.subMenus.MainMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,16 +13,13 @@ import org.bukkit.entity.Player;
 
 public class TriviaCommand implements CommandExecutor {
 
-    private final PlayerJoin playerJoin;
     Trivia trivia;
     QuestionHolder questionHolder;
-    private ChatEvent chatEvent;
 
-    public TriviaCommand(Trivia trivia, QuestionHolder questionHolder, ChatEvent chatEvent, PlayerJoin playerJoin) {
+    public TriviaCommand(Trivia trivia, QuestionHolder questionHolder) {
         this.trivia = trivia;
         this.questionHolder = questionHolder;
-        this.chatEvent = chatEvent;
-        this.playerJoin = playerJoin;
+
     }
 
     @Override

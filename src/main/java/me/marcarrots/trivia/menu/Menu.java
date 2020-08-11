@@ -95,12 +95,13 @@ public abstract class Menu implements InventoryHolder {
     protected void insertItem(Material material, String displayName, List<String> lore, int i, boolean changeable) {
         ItemStack amountItem = new ItemStack(material, 1);
         ItemMeta amountMeta = amountItem.getItemMeta();
+        List<String> itemLore = new ArrayList<>(lore);
         if (amountMeta != null) {
             amountMeta.setDisplayName(ChatColor.GREEN + displayName);
             if (changeable) {
-                lore.add(ChatColor.RED + "Click here to change.");
+                itemLore.add(ChatColor.RED + "Click here to change.");
             }
-            amountMeta.setLore(lore);
+            amountMeta.setLore(itemLore);
         }
         amountItem.setItemMeta(amountMeta);
         inventory.setItem(i, amountItem);
