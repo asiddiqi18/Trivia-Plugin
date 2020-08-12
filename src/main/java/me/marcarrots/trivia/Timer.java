@@ -12,6 +12,11 @@ public class Timer implements Runnable {
     private final long secondsPer;
     private final Consumer<Timer> everySecond;
     private final Runnable afterTimer;
+
+    public Integer getAssignedTaskId() {
+        return assignedTaskId;
+    }
+
     private Integer assignedTaskId;
     private int roundsLeft;
 
@@ -52,8 +57,11 @@ public class Timer implements Runnable {
     }
 
     public void scheduleTimer() {
-        int timeBetween = 0;
-        assignedTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, timeBetween, secondsPer * 20);
+        assignedTaskId = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, secondsPer * 20);
+    }
+
+    public void scheduleTimerInitialize() {
+        assignedTaskId = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, 1);
     }
 
     public void skipTimer() {
@@ -64,7 +72,7 @@ public class Timer implements Runnable {
 
     public void nextQuestion() {
         skipTimer();
-        scheduleTimer();
+        run();
     }
 
 }

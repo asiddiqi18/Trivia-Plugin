@@ -111,15 +111,18 @@ public class Game {
 
                     currentQuestion = null;
 
+                    scheduler.cancelTask(t.getAssignedTaskId());
+
                     task = scheduler.scheduleSyncDelayedTask(trivia, () -> {
                         wasAnswered = false;
                         setRandomQuestion();
+                        t.scheduleTimer();
                         Bukkit.broadcastMessage(Lang.QUESTION.format(null, getCurrentQuestion().getQuestionString(), getCurrentQuestion().getAnswerString(), getQuestionNum(), 0));
                     }, timeBetween * 20);
 
                 }
         );
-        timer.scheduleTimer();
+        timer.scheduleTimerInitialize();
 
     }
 
@@ -144,8 +147,8 @@ public class Game {
                 Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(e.getPlayer().getDisplayName(), getCurrentQuestion().getQuestionString(), getCurrentQuestion().getAnswerString(), getQuestionNum(), 0));
                 playSound(e.getPlayer(), "Answer correct sound", "Answer correct pitch");
                 scores.addScore(e.getPlayer());
-                timer.nextQuestion();
                 wasAnswered = true;
+                timer.nextQuestion();
 
             }, 2L);
         }
