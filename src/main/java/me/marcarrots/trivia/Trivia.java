@@ -6,6 +6,7 @@ import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -74,7 +75,6 @@ public final class Trivia extends JavaPlugin {
     public void onEnable() {
         loadConfig();
         parseFiles();
-        Lang.setFile(getConfig());
         game = null;
         MetricsLite metricsLite = new MetricsLite(this, 7912);
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
@@ -84,11 +84,20 @@ public final class Trivia extends JavaPlugin {
         if (!setupEconomy()) {
             Bukkit.getLogger().info("No vault has been detected, disabling vault features...");
         }
+
+        UpdateChecker.init(this, 80401).requestUpdateCheck().whenComplete((result, e) -> {
+            if (result.requiresUpdate()) {
+                getLogger().info(String.format("[TriviaGUI] There is a new version of TriviaGUI released!(version %s). Download it at: %s",
+                        result.getNewestVersion(),
+                        "https://www.spigotmc.org/resources/triviagui.80401/"));
+            }
+        });
+
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+
     }
 
     public void loadConfig() {
@@ -100,6 +109,8 @@ public final class Trivia extends JavaPlugin {
         automatedSchedule();
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+        Lang.setFile(getConfig());
+
 //        Bukkit.getLogger().info(String.format("schedulingEnabled: %1$s, Scheduled games interval: %2$s, Scheduled games minimum players: %3$s",
 //                schedulingEnabled, automatedTime, automatedPlayerReq));
     }

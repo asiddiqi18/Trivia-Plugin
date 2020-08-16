@@ -34,6 +34,7 @@ public class Rewards {
     public void setExperience(int experience) {
         this.experience = experience;
         trivia.getConfig().set("Rewards." + place + ".Experience", experience);
+        trivia.saveConfig();
     }
 
     public String getMessage() {
@@ -43,6 +44,7 @@ public class Rewards {
     public void setMessage(String message) {
         this.message = message;
         trivia.getConfig().set("Rewards." + place + ".Message", message);
+        trivia.saveConfig();
     }
 
     public double getMoney() {
@@ -55,6 +57,7 @@ public class Rewards {
         }
         this.money = money;
         trivia.getConfig().set("Rewards." + place + ".Money", money);
+        trivia.saveConfig();
     }
 
     public List<ItemStack> getItems() {
@@ -68,6 +71,10 @@ public class Rewards {
 
     private void getValues() {
         money = trivia.getConfig().getDouble("Rewards." + place + ".Money");
+        experience = trivia.getConfig().getInt("Rewards." + place + ".Experience");
+        message = trivia.getConfig().getString("Rewards." + place + ".Message");
+
+
         items = (List<ItemStack>) trivia.getConfig().get("Rewards." + place + ".Items");
     }
 

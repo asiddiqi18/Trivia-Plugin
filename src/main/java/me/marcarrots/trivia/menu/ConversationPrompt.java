@@ -74,7 +74,6 @@ public class ConversationPrompt extends StringPrompt {
             switch (promptType) {
                 case SET_ROUNDS:
                     playerMenuUtility.setTotalRounds(Integer.parseInt(input));
-                    Bukkit.getLogger().info("(A)");
                     break;
 
                 case SET_TIME:
@@ -128,16 +127,12 @@ public class ConversationPrompt extends StringPrompt {
         } catch (NumberFormatException e) {
             player.spigot().sendMessage(new TextComponent("Please enter a valid number."));
         }
-        Bukkit.getLogger().info("(B)");
 
         if (promptType.getSuccess() != null) {
             player.spigot().sendMessage(new TextComponent(promptType.getSuccess()));
-            Bukkit.getLogger().info("(C)");
 
         }
-        Bukkit.getLogger().info("(D)");
         promptType.openNewMenu(playerMenuUtility, trivia, questionHolder, place);
-        Bukkit.getLogger().info("(E)");
 
         return Prompt.END_OF_CONVERSATION;
     }

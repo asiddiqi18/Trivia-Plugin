@@ -8,8 +8,11 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.*;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class PlayerScoreHolder {
 
@@ -68,10 +71,12 @@ public class PlayerScoreHolder {
 
                 if (i < 3) {
                     if (rewards == null) {
-                        return;
+                        continue;
                     }
                     if (rewards[i].getMessage() != null) {
-                        player.sendMessage(rewards[i].getMessage());
+                        BukkitScheduler scheduler = getServer().getScheduler();
+                        int finalI = i;
+                        scheduler.scheduleSyncDelayedTask(trivia, () -> player.sendMessage(rewards[finalI].getMessage()), 3);
                     }
                     if (trivia.vaultEnabled()) {
                         EconomyResponse r = Trivia.getEcon().depositPlayer(score.getPlayer(), rewards[i].getMoney());
@@ -83,7 +88,7 @@ public class PlayerScoreHolder {
                         player.giveExp(rewards[i].getExperience());
                     }
                     if (rewards[i].getItems() == null || rewards[i].getItems().size() == 0) {
-                        return;
+                        continue;
                     }
                     for (ItemStack item : rewards[i].getItems()) {
                         if (player.getInventory().firstEmpty() == -1) {

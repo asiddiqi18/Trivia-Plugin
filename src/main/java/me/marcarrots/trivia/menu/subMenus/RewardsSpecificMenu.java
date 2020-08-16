@@ -114,7 +114,6 @@ public class RewardsSpecificMenu extends Menu {
             reward = trivia.getRewards()[place - 1];
         } catch (Exception e) {
             e.printStackTrace();
-            Bukkit.getLogger().info("Place: " + place);
         }
 
         if (reward == null) {
