@@ -1,3 +1,4 @@
+# Get the full explanation of the config values at: https://pastebin.com/v9PPj4fk
 # Similarity Score is a score between 0 and 1 which will determine how similar an answer must be for it to be recognized recognized right. Value of 1 requires exact answer, value of 0.8 requires close answer.
 Similarity score: 0.85
 
