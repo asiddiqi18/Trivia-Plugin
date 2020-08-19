@@ -28,7 +28,7 @@ public class Game {
     private PlayerScoreHolder scores;
     private Question currentQuestion;
     private Timer timer;
-    private boolean wasAnswered;
+    private RoundResult roundResult;
     private int task;
 
     // when initiated through menu
@@ -42,7 +42,7 @@ public class Game {
         similarityScore = trivia.getConfig().getDouble("Similarity score");
         timeBetween = trivia.getConfig().getInt("Time between rounds", 2);
         scores = new PlayerScoreHolder(trivia);
-        wasAnswered = true;
+        roundResult = RoundResult.ANSWERED;
         scheduler = getServer().getScheduler();
     }
 
@@ -57,7 +57,7 @@ public class Game {
         similarityScore = trivia.getConfig().getDouble("Similarity score");
         timeBetween = trivia.getConfig().getInt("Time between rounds", 2);
         scores = new PlayerScoreHolder(trivia);
-        wasAnswered = true;
+        roundResult = RoundResult.ANSWERED;
         scheduler = getServer().getScheduler();
     }
 
@@ -104,9 +104,11 @@ public class Game {
                     trivia.clearGame();
                 },
                 (t) -> { // after each round
-                    if (!wasAnswered) {
+                    if (roundResult.equals(RoundResult.UNANSWERED)) {
                         Bukkit.broadcastMessage(Lang.TIME_UP.format());
                         playSoundToAll("Time up sound", "Time up pitch");
+                    } else if (roundResult.equals(RoundResult.SKIPPED)) {
+                        Bukkit.broadcastMessage(Lang.SKIP.format());
                     }
 
                     currentQuestion = null;
@@ -114,7 +116,7 @@ public class Game {
                     scheduler.cancelTask(t.getAssignedTaskId());
 
                     task = scheduler.scheduleSyncDelayedTask(trivia, () -> {
-                        wasAnswered = false;
+                        roundResult = RoundResult.UNANSWERED;
                         setRandomQuestion();
                         t.scheduleTimer();
                         Bukkit.broadcastMessage(Lang.QUESTION.format(null, getCurrentQuestion().getQuestionString(), getCurrentQuestion().getAnswerString(), getQuestionNum(), 0));
@@ -147,9 +149,8 @@ public class Game {
                 Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(e.getPlayer().getDisplayName(), getCurrentQuestion().getQuestionString(), getCurrentQuestion().getAnswerString(), getQuestionNum(), 0));
                 playSound(e.getPlayer(), "Answer correct sound", "Answer correct pitch");
                 scores.addScore(e.getPlayer());
-                wasAnswered = true;
+                roundResult = RoundResult.ANSWERED;
                 timer.nextQuestion();
-
             }, 2L);
         }
 
@@ -180,6 +181,16 @@ public class Game {
         for (Player player : Bukkit.getOnlinePlayers()) {
             playSound(player, path, pitch);
         }
+    }
+
+    public boolean forceSkipRound() {
+        if (currentQuestion == null) {
+            return false;
+        }
+
+        roundResult = RoundResult.SKIPPED;
+        timer.nextQuestion();
+        return true;
     }
 
 }

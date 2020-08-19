@@ -79,6 +79,7 @@ Messages:
   Solved Message: "&a%player% has answered the question correctly! The answer was &2%answer%&a."
   Question Time Up: "&cTime is up! Next question..."
   Question Display: "&6(%questionNumber%) &e%question%"
+  Question Skipped: "&cQuestion skipped! On to the next question..."
 
 # This is to keep track of what config version this is. Do not modify!
-Config Version: 2
+Config Version: 3

@@ -12,14 +12,8 @@ public class Timer implements Runnable {
     private final long secondsPer;
     private final Consumer<Timer> everySecond;
     private final Runnable afterTimer;
-
-    public Integer getAssignedTaskId() {
-        return assignedTaskId;
-    }
-
     private Integer assignedTaskId;
     private int roundsLeft;
-
     public Timer(JavaPlugin plugin, int rounds, long secondsPer, Runnable afterTimer, Consumer<Timer> everySecond) {
         this.plugin = plugin;
         this.rounds = rounds;
@@ -27,6 +21,10 @@ public class Timer implements Runnable {
         this.secondsPer = secondsPer;
         this.afterTimer = afterTimer;
         this.everySecond = everySecond;
+    }
+
+    public Integer getAssignedTaskId() {
+        return assignedTaskId;
     }
 
     @Override

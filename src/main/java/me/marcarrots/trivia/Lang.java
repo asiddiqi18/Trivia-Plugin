@@ -14,6 +14,7 @@ public enum Lang {
     SOLVED_MESSAGE("Messages.Solved Message", "&a%player% has answered the question correctly! The answer was &2%answer%&a."),
     TIME_UP("Messages.Question Time Up", "&cTime is up! Next question..."),
     QUESTION("Messages.Question Display", "&6(%questionNumber%) &e%question%"),
+    SKIP("Messages.Question Skipped", "&cQuestion skipped! On to the next question..."),
 
     ;
 
@@ -24,6 +25,14 @@ public enum Lang {
     Lang(String path, String start) {
         this.path = path;
         this.def = start;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getDefault() {
+        return def;
     }
 
     public static void setFile(FileConfiguration config) {

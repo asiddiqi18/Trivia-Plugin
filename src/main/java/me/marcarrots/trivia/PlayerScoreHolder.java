@@ -61,6 +61,9 @@ public class PlayerScoreHolder {
         for (int i = 0; i < displayAmount; i++) {
             final PlayerScore score = scores.get(i);
             if (score != null) {
+                if (score.getPoints() == 0) { // don't show winners if they didn't score at all.
+                    break;
+                }
                 Player player = score.getPlayer();
                 Rewards[] rewards = trivia.getRewards();
                 Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(player.getDisplayName(), null, null, 0, score.getPoints()));

@@ -6,7 +6,6 @@ import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -75,6 +74,7 @@ public final class Trivia extends JavaPlugin {
     public void onEnable() {
         loadConfig();
         parseFiles();
+        configUpdater();
         game = null;
         MetricsLite metricsLite = new MetricsLite(this, 7912);
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
@@ -105,7 +105,6 @@ public final class Trivia extends JavaPlugin {
         automatedTime = getConfig().getInt("Scheduled games interval", 60);
         automatedPlayerReq = getConfig().getInt("Scheduled games minimum players", 6);
         generateRewards();
-        configUpdater();
         automatedSchedule();
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
@@ -187,13 +186,19 @@ public final class Trivia extends JavaPlugin {
     private void configUpdater() {
 
         HashMap<String, Object> newKeys = new HashMap<>();
-
+        int currentConfigVersion = getConfig().getInt("Config Version", 1);
         // if they have version 1 of the config...
-        if (getConfig().getInt("Config Version", 1) == 1) {
+
+        if (currentConfigVersion == 1) {
             newKeys.put("Scheduled games", schedulingEnabled);
             newKeys.put("Scheduled games interval", automatedTime);
             newKeys.put("Scheduled games minimum players", automatedPlayerReq);
             newKeys.put("Time between rounds", 2);
+            currentConfigVersion = 2;
+        }
+
+        if (currentConfigVersion == 2) {
+            newKeys.put(Lang.SKIP.getPath(), Lang.SKIP.getDefault());
         }
 
         // iterate through all the new keys
@@ -204,7 +209,7 @@ public final class Trivia extends JavaPlugin {
             saveConfig();
         }
 
-        getConfig().set("Config Version", 2);
+        getConfig().set("Config Version", 3);
         saveConfig();
 
     }
