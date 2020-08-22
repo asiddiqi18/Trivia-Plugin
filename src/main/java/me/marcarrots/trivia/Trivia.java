@@ -1,5 +1,10 @@
+/*
+ * Trivia by MarCarrot, 2020
+ */
+
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.data.QuestionFileManager;
 import me.marcarrots.trivia.listeners.ChatEvent;
 import me.marcarrots.trivia.listeners.InventoryClick;
 import me.marcarrots.trivia.listeners.PlayerJoin;
@@ -12,9 +17,11 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public final class Trivia extends JavaPlugin {
 
@@ -27,12 +34,19 @@ public final class Trivia extends JavaPlugin {
     int automatedTime;
     int automatedPlayerReq;
     long nextAutomatedTime;
+    private int largestQuestionNum = 0;
     private int schedulerTask;
     private Rewards[] rewards;
     private Game game;
 
+    private QuestionFileManager questionsFile;
+
     public static Economy getEcon() {
         return econ;
+    }
+
+    public QuestionFileManager getQuestionsFile() {
+        return questionsFile;
     }
 
     public boolean isSchedulingEnabled() {
@@ -73,6 +87,16 @@ public final class Trivia extends JavaPlugin {
     @Override
     public void onEnable() {
         loadConfig();
+        this.questionsFile = new QuestionFileManager(this, "questions.yml");
+        for (String questionNum : questionsFile.getData().getKeys(false)) {
+            try {
+                if (Integer.parseInt(questionNum) > largestQuestionNum)
+                    largestQuestionNum = Integer.parseInt(questionNum);
+            } catch (NumberFormatException e) {
+                Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
+            }
+        }
+
         parseFiles();
         configUpdater();
         game = null;
@@ -109,30 +133,45 @@ public final class Trivia extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
         Lang.setFile(getConfig());
+    }
 
-//        Bukkit.getLogger().info(String.format("schedulingEnabled: %1$s, Scheduled games interval: %2$s, Scheduled games minimum players: %3$s",
-//                schedulingEnabled, automatedTime, automatedPlayerReq));
+    public void addQuestion(String question, List<String> answer) {
+        HashMap<String, Object> questionMap = new HashMap<>();
+        questionMap.put("question", question);
+        questionMap.put("answer", answer);
+        questionsFile.getData().createSection(String.valueOf(largestQuestionNum++), questionMap);
+        questionsFile.saveData();
     }
 
     public void parseFiles() {
-        questionHolder.clear();
-        List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
-        if (unparsedQuestions.size() == 0) {
-            Bukkit.getLogger().info("There are no trivia questions loaded.");
-            return;
-        }
-        for (String item : unparsedQuestions) {
-            int posBefore = item.indexOf("/$/");
-            if (posBefore == -1) {
-                continue;
-            }
-            int posAfter = posBefore + 3;
 
-            Question triviaQuestion = new Question();
-            triviaQuestion.setQuestion(item.substring(0, posBefore).trim());
-            triviaQuestion.setAnswer(item.substring(posAfter).trim());
-            questionHolder.add(triviaQuestion);
+        questionHolder.clear();
+        if (getConfig().contains("Questions and Answers")) {
+            Bukkit.getLogger().log(Level.INFO, "Migrating old data to new data...");
+            List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
+            if (unparsedQuestions.size() != 0)
+                for (String item : unparsedQuestions) {
+                    int posBefore = item.indexOf("/$/");
+                    if (posBefore == -1)
+                        continue;
+                    int posAfter = posBefore + 3;
+                    addQuestion(item.substring(0, posBefore).trim(), Collections.singletonList(item.substring(posAfter).trim()));
+                }
+            getConfig().set("Questions and Answers", null);
+            saveConfig();
         }
+        questionsFile.reloadFiles();
+        questionsFile.getData().getKeys(false).forEach(key -> {
+            try {
+                Question triviaQuestion = new Question();
+                triviaQuestion.setId(Integer.parseInt(key));
+                triviaQuestion.setQuestion(questionsFile.getData().getString(key + ".question"));
+                triviaQuestion.setAnswer(questionsFile.getData().getStringList(key + ".answer"));
+                this.questionHolder.add(triviaQuestion);
+            } catch (NumberFormatException | NullPointerException e) {
+                Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));
+            }
+        });
 
     }
 

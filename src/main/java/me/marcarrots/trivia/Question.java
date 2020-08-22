@@ -1,17 +1,28 @@
 package me.marcarrots.trivia;
 
+import java.util.List;
+import java.util.Objects;
+
 public class Question {
 
     private String question;
-
-    private String answer;
+    private int id;
+    private List<String> answer = null;
 
     public Question() {
     }
 
-    public Question(String question, String answer) {
+    public Question(String question, List<String> answer) {
         this.question = question;
         this.answer = answer;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Question getQuestionObj() {
@@ -26,12 +37,12 @@ public class Question {
         this.question = question;
     }
 
-    public String getAnswerString() {
-        return answer;
+    public List<String> getAnswerList() {
+        return this.answer;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAnswer(List<String> answer) {
+        this.answer = Objects.requireNonNull(answer);
     }
 
     public void saveToFile(Trivia trivia) {

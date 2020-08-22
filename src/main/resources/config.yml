@@ -43,27 +43,6 @@ Game start pitch: 1.0
 Game over sound: ENTITY_PLAYER_LEVELUP
 Game over pitch: 0.9
 
-# Question and Answers are where the trivia questions are stored. The two are separated between a ' /$/ '.
-Questions and Answers:
-  - "Who is the original creator of Minecraft? /$/ notch"
-  - "What do you need to turn powder to concrete? /$/ water"
-  - "Is this a trick question? /$/ Yes"
-  - "A splash potion of what will heal a skeleton? /$/ Harming"
-  - "One block in the nether is equal to how many blocks in the overworld? /$/ 8"
-  - "Endermen will become passive after touching what? /$/ Water"
-  - "Is it possible to grow a tree past the height limit? /$/ Yes"
-  - "What block can spiders not climb up? /$/ Ice"
-  - "How many minutes does it take to break a block of obsidian by hand? /$/ 4"
-  - "Do cats take fall damage? /$/ No"
-  - "It's easier to catch fish in what weather? /$/ Rain"
-  - "Creepers were accidentally created when Notch was making what mob? /$/ Pig"
-  - "Creepers are afraid of what animal? /$/ Ocelots"
-  - "One Minecraft block is how many feet? /$/ 3"
-  - "How many days did it take to create the original release of Minecraft? /$/ 6"
-  - "How many main biomes are there in Minecraft? /$/ 17"
-  - "What block can you wear on your head to prevent Endermen from turning hostile while looking at them? /$/ Pumpkin"
-  - "Which is more rare, pumpkins or diamonds? /$/ Pumpkins"
-
 # The "messages" section are the messages that will be displayed during a trivia game.
 # Feel free to modify them to your liking.
 # Placeholders:

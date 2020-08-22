@@ -68,7 +68,7 @@ public class ViewMenu extends Menu {
     @Override
     public void setMenuItems() {
         insertItemWrap(Material.GREEN_TERRACOTTA, "Question", playerMenuUtility.getQuestion().getQuestionString(), 11);
-        insertItemWrap(Material.YELLOW_TERRACOTTA, "Answer", playerMenuUtility.getQuestion().getAnswerString(), 13);
+        insertItemWrap(Material.YELLOW_TERRACOTTA, "Answer", this.playerMenuUtility.getQuestion().getAnswerList().toString(), 13);
         insertItem(Material.RED_TERRACOTTA, "Delete This Question", 15);
         inventory.setItem(27, BACK);
         inventory.setItem(31, CLOSE);

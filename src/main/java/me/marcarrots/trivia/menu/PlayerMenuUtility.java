@@ -4,6 +4,8 @@ import me.marcarrots.trivia.Question;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class PlayerMenuUtility {
 
     private final Player owner;
@@ -20,7 +22,6 @@ public class PlayerMenuUtility {
         this.owner = owner;
         totalRounds = config.getInt("Default rounds", 10);
         timePer = config.getLong("Default time per round", 10L);
-        ;
     }
 
     public Question getQuestion() {
@@ -35,8 +36,8 @@ public class PlayerMenuUtility {
         question.setQuestion(newQuestion);
     }
 
-    public void setAnswerString(String newAnswer) {
-        question.setAnswer(newAnswer);
+    public void setAnswerString(List<String> newAnswer) {
+        this.question.setAnswer(newAnswer);
     }
 
     public int getTotalRounds() {
