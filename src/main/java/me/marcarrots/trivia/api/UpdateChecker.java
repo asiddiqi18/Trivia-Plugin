@@ -1,4 +1,8 @@
-package me.marcarrots.trivia;
+/*
+ * Trivia by MarCarrot, 2020
+ */
+
+package me.marcarrots.trivia.api;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -30,6 +34,7 @@ import java.util.regex.Pattern;
  *
  * @author Parker Hawke - 2008Choco
  */
+
 public final class UpdateChecker {
 
     private static final String USER_AGENT = "CHOCO-update-checker";

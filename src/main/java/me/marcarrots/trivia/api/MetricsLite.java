@@ -2,7 +2,11 @@
  * Trivia by MarCarrot, 2020
  */
 
-package me.marcarrots.trivia;
+/*
+ * Trivia by MarCarrot, 2020
+ */
+
+package me.marcarrots.trivia.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

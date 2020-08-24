@@ -79,19 +79,19 @@ public class ConversationPrompt extends StringPrompt {
                     if (question.getAnswerList() == null) {
                         question.setAnswer(Arrays.asList(input.split("\\s*,\\s*")));
                         trivia.addQuestion(question.getQuestionString(), question.getAnswerList());
-                        trivia.parseFiles();
+                        trivia.setQuestions();
                         player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been added to the pool."));
                         promptType.openNewMenu(playerMenuUtility, trivia, questionHolder, place);
                         return Prompt.END_OF_CONVERSATION;
                     }
                 case EDIT_QUESTION:
                     questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
-                    trivia.parseFiles();
+                    trivia.setQuestions();
                     playerMenuUtility.setQuestionString(input);
                     break;
                 case EDIT_ANSWER:
                     questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
-                    trivia.parseFiles();
+                    trivia.setQuestions();
                     playerMenuUtility.setAnswerString(Arrays.asList(input.split("\\s*,\\s*")));
                     break;
                 case SET_MONEY:

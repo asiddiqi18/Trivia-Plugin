@@ -47,7 +47,7 @@ public class ViewMenu extends Menu {
             conversation.begin();
         } else if (type == Material.RED_TERRACOTTA) {
             questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), null, PromptType.DELETE);
-            trivia.parseFiles();
+            trivia.setQuestions();
             player.sendMessage(ChatColor.GREEN + "This trivia question has been been removed.");
             new ListMenu(playerMenuUtility, trivia, questionHolder).open();
             return;

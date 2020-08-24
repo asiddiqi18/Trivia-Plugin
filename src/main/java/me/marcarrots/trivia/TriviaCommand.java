@@ -9,8 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class TriviaCommand implements CommandExecutor {
@@ -21,7 +19,6 @@ public class TriviaCommand implements CommandExecutor {
     public TriviaCommand(Trivia trivia, QuestionHolder questionHolder) {
         this.trivia = trivia;
         this.questionHolder = questionHolder;
-
     }
 
     private String helpFormat(String commandName, String commandDescription) {
@@ -30,16 +27,20 @@ public class TriviaCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-
-
-        if (strings.length == 1) {
+        if (strings.length == 0) {
+            if (commandSender instanceof Player) {
+                MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility((Player) commandSender), trivia, questionHolder);
+                menu.open();
+            }
+        }
+        else {
             String prompt = strings[0];
 
             switch (prompt) {
                 case "reload":
                     try {
                         trivia.reloadConfig();
-                        trivia.parseFiles();
+                        trivia.setQuestions();
                         trivia.loadConfig();
                         commandSender.sendMessage(ChatColor.GREEN + "Trivia files have been reloaded.");
                     } catch (Exception e) {
@@ -85,12 +86,6 @@ public class TriviaCommand implements CommandExecutor {
                     return false;
             }
 
-
-        }
-
-        if (commandSender instanceof Player) {
-            MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility((Player) commandSender), trivia, questionHolder);
-            menu.open();
         }
 
         return false;

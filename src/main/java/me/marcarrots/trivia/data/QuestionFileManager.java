@@ -32,40 +32,44 @@ public class QuestionFileManager {
 
     public void reloadFiles() {
         createFile();
-        this.fileConfiguration = YamlConfiguration.loadConfiguration(this.dataFile);
-        InputStream defaultStream = this.trivia.getResource(this.fileName);
+        fileConfiguration = YamlConfiguration.loadConfiguration(dataFile);
+        InputStream defaultStream = trivia.getResource(fileName);
         if (defaultStream != null) {
             YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultStream));
-            this.fileConfiguration.setDefaults(defaultConfig);
+            fileConfiguration.setDefaults(defaultConfig);
         }
     }
 
     public FileConfiguration getData() {
-        if (this.fileConfiguration == null)
+        if (fileConfiguration == null) {
             reloadFiles();
-        return this.fileConfiguration;
+        }
+        return fileConfiguration;
     }
 
     public void saveData() {
-        if (this.fileConfiguration == null || this.dataFile == null)
+        if (fileConfiguration == null || dataFile == null) {
             return;
+        }
         try {
-            getData().save(this.dataFile);
+            getData().save(dataFile);
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not save messages.yml!");
+            Bukkit.getLogger().log(Level.SEVERE, "Could not save " + fileName);
             e.printStackTrace();
         }
     }
 
     public void saveDefaultConfig() {
         createFile();
-        if (!this.dataFile.exists())
-            this.trivia.saveResource(this.fileName, false);
+        if (!dataFile.exists()) {
+            trivia.saveResource(fileName, false);
+        }
     }
 
     private void createFile() {
-        if (this.dataFile == null)
-            this.dataFile = new File(this.trivia.getDataFolder(), this.fileName);
+        if (dataFile == null) {
+            dataFile = new File(trivia.getDataFolder(), fileName);
+        }
     }
 
 }

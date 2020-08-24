@@ -4,6 +4,8 @@
 
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.api.MetricsLite;
+import me.marcarrots.trivia.api.UpdateChecker;
 import me.marcarrots.trivia.data.QuestionFileManager;
 import me.marcarrots.trivia.listeners.ChatEvent;
 import me.marcarrots.trivia.listeners.InventoryClick;
@@ -17,10 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public final class Trivia extends JavaPlugin {
@@ -38,7 +37,6 @@ public final class Trivia extends JavaPlugin {
     private int schedulerTask;
     private Rewards[] rewards;
     private Game game;
-
     private QuestionFileManager questionsFile;
 
     public static Economy getEcon() {
@@ -97,14 +95,14 @@ public final class Trivia extends JavaPlugin {
             }
         }
 
-        parseFiles();
+        setQuestions();
         configUpdater();
         game = null;
-        MetricsLite metricsLite = new MetricsLite(this, 7912);
+        new MetricsLite(this, 7912);
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
         getServer().getPluginManager().registerEvents(chatEvent, this);
         getServer().getPluginManager().registerEvents(playerJoin, this);
-        getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder));
+        Objects.requireNonNull(getCommand("trivia")).setExecutor(new TriviaCommand(this, questionHolder));
         if (!setupEconomy()) {
             Bukkit.getLogger().info("No vault has been detected, disabling vault features...");
         }
@@ -128,6 +126,7 @@ public final class Trivia extends JavaPlugin {
         schedulingEnabled = getConfig().getBoolean("Scheduled games", false);
         automatedTime = getConfig().getInt("Scheduled games interval", 60);
         automatedPlayerReq = getConfig().getInt("Scheduled games minimum players", 6);
+
         generateRewards();
         automatedSchedule();
         getConfig().options().copyDefaults(true);
@@ -143,9 +142,9 @@ public final class Trivia extends JavaPlugin {
         questionsFile.saveData();
     }
 
-    public void parseFiles() {
-
+    public void setQuestions() {
         questionHolder.clear();
+
         if (getConfig().contains("Questions and Answers")) {
             Bukkit.getLogger().log(Level.INFO, "Migrating old data to new data...");
             List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
@@ -160,6 +159,7 @@ public final class Trivia extends JavaPlugin {
             getConfig().set("Questions and Answers", null);
             saveConfig();
         }
+
         questionsFile.reloadFiles();
         questionsFile.getData().getKeys(false).forEach(key -> {
             try {
@@ -172,7 +172,6 @@ public final class Trivia extends JavaPlugin {
                 Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));
             }
         });
-
     }
 
     private void generateRewards() {
@@ -181,7 +180,6 @@ public final class Trivia extends JavaPlugin {
         for (int i = 0; i < rewardAmt; i++) {
             rewards[i] = new Rewards(this, i);
         }
-
     }
 
     private boolean setupEconomy() {
@@ -201,29 +199,28 @@ public final class Trivia extends JavaPlugin {
     }
 
     private void automatedSchedule() {
-
         if (!schedulingEnabled) {
             return;
         }
-
-        nextAutomatedTime = System.currentTimeMillis() + (automatedTime * 60 * 1000);
-
+        setNextAutomatedTime();
         BukkitScheduler scheduler = getServer().getScheduler();
         scheduler.cancelTask(schedulerTask);
         schedulerTask = scheduler.scheduleSyncRepeatingTask(this, () -> {
             if (Bukkit.getOnlinePlayers().size() < automatedPlayerReq) {
                 return;
             }
-            ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
             Bukkit.getLogger().info("Automated Trivia Beginning...");
-            Bukkit.dispatchCommand(console, "trivia start");
-            nextAutomatedTime = System.currentTimeMillis() + (automatedTime * 60 * 1000);
+            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "trivia start");
+            setNextAutomatedTime();
         }, automatedTime * 20 * 60, automatedTime * 20 * 60);
 
     }
 
-    private void configUpdater() {
+    private void setNextAutomatedTime() {
+        nextAutomatedTime = System.currentTimeMillis() + (automatedTime * 60 * 1000);
+    }
 
+    private void configUpdater() {
         HashMap<String, Object> newKeys = new HashMap<>();
         int currentConfigVersion = getConfig().getInt("Config Version", 1);
         // if they have version 1 of the config...
@@ -250,7 +247,6 @@ public final class Trivia extends JavaPlugin {
 
         getConfig().set("Config Version", 3);
         saveConfig();
-
     }
 
     public String getTimeUntilScheduled() {
