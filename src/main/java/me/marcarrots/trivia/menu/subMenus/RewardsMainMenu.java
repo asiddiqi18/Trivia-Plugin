@@ -31,7 +31,7 @@ public class RewardsMainMenu extends Menu {
 
     @Override
     public void handleMenuClick(InventoryClickEvent event) {
-        cancelEvent(event);
+        event.setCancelled(true);
 
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();

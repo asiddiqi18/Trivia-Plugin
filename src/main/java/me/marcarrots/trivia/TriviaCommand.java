@@ -40,7 +40,7 @@ public class TriviaCommand implements CommandExecutor {
                 case "reload":
                     try {
                         trivia.reloadConfig();
-                        trivia.setQuestions();
+                        trivia.readQuestions();
                         trivia.loadConfig();
                         commandSender.sendMessage(ChatColor.GREEN + "Trivia files have been reloaded.");
                     } catch (Exception e) {

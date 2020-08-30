@@ -3,6 +3,7 @@ package me.marcarrots.trivia.listeners;
 import me.marcarrots.trivia.menu.Menu;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.InventoryHolder;
@@ -14,6 +15,10 @@ public class InventoryClick implements Listener {
 
         if (event.getClickedInventory() == null || event.getCurrentItem() == null) {
             return;
+        }
+
+        if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.DOUBLE_CLICK || event.getClick() == ClickType.DROP) {
+            event.setCancelled(true);
         }
 
         InventoryHolder holder = event.getClickedInventory().getHolder();

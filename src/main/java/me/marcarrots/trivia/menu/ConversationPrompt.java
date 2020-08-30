@@ -39,7 +39,7 @@ public class ConversationPrompt extends StringPrompt {
     }
 
     public ConversationPrompt setPlace(int place) {
-        place = place;
+        this.place = place;
         return this;
     }
 
@@ -78,20 +78,20 @@ public class ConversationPrompt extends StringPrompt {
                     }
                     if (question.getAnswerList() == null) {
                         question.setAnswer(Arrays.asList(input.split("\\s*,\\s*")));
-                        trivia.addQuestion(question.getQuestionString(), question.getAnswerList());
-                        trivia.setQuestions();
+                        trivia.writeQuestions(question.getQuestionString(), question.getAnswerList());
+                        trivia.readQuestions();
                         player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been added to the pool."));
                         promptType.openNewMenu(playerMenuUtility, trivia, questionHolder, place);
                         return Prompt.END_OF_CONVERSATION;
                     }
                 case EDIT_QUESTION:
                     questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
-                    trivia.setQuestions();
+                    trivia.readQuestions();
                     playerMenuUtility.setQuestionString(input);
                     break;
                 case EDIT_ANSWER:
                     questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
-                    trivia.setQuestions();
+                    trivia.readQuestions();
                     playerMenuUtility.setAnswerString(Arrays.asList(input.split("\\s*,\\s*")));
                     break;
                 case SET_MONEY:
@@ -107,8 +107,9 @@ public class ConversationPrompt extends StringPrompt {
         } catch (NumberFormatException e) {
             player.spigot().sendMessage(new TextComponent("Please enter a valid number."));
         }
-        if (promptType.getSuccess() != null)
+        if (promptType.getSuccess() != null) {
             player.spigot().sendMessage(new TextComponent(promptType.getSuccess()));
+        }
         promptType.openNewMenu(playerMenuUtility, trivia, questionHolder, place);
         return Prompt.END_OF_CONVERSATION;
     }

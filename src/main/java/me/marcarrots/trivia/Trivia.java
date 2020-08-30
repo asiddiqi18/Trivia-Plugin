@@ -13,7 +13,6 @@ import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -95,7 +94,7 @@ public final class Trivia extends JavaPlugin {
             }
         }
 
-        setQuestions();
+        readQuestions();
         configUpdater();
         game = null;
         new MetricsLite(this, 7912);
@@ -134,15 +133,15 @@ public final class Trivia extends JavaPlugin {
         Lang.setFile(getConfig());
     }
 
-    public void addQuestion(String question, List<String> answer) {
+    public void writeQuestions(String question, List<String> answer) {
         HashMap<String, Object> questionMap = new HashMap<>();
         questionMap.put("question", question);
         questionMap.put("answer", answer);
-        questionsFile.getData().createSection(String.valueOf(largestQuestionNum++), questionMap);
+        questionsFile.getData().createSection(String.valueOf(++largestQuestionNum), questionMap);
         questionsFile.saveData();
     }
 
-    public void setQuestions() {
+    public void readQuestions() {
         questionHolder.clear();
 
         if (getConfig().contains("Questions and Answers")) {
@@ -154,7 +153,7 @@ public final class Trivia extends JavaPlugin {
                     if (posBefore == -1)
                         continue;
                     int posAfter = posBefore + 3;
-                    addQuestion(item.substring(0, posBefore).trim(), Collections.singletonList(item.substring(posAfter).trim()));
+                    writeQuestions(item.substring(0, posBefore).trim(), Collections.singletonList(item.substring(posAfter).trim()));
                 }
             getConfig().set("Questions and Answers", null);
             saveConfig();

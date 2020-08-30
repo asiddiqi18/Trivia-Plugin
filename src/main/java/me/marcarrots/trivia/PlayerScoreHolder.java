@@ -66,7 +66,7 @@ public class PlayerScoreHolder {
                 }
                 Player player = score.getPlayer();
                 Rewards[] rewards = trivia.getRewards();
-                Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(player.getDisplayName(), null, null, 0, score.getPoints()));
+                Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(player, null, null, 0, score.getPoints()));
 
                 if (trivia.getConfig().getBoolean("Summon fireworks", true)) {
                     summonFireWork(player);

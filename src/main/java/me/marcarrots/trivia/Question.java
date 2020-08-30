@@ -45,10 +45,6 @@ public class Question {
         this.answer = Objects.requireNonNull(answer);
     }
 
-    public void saveToFile(Trivia trivia) {
-        trivia.getConfig().set("", "");
-    }
-
     @Override
     public String toString() {
         return "Question: " + question + ", Answer: " + answer;

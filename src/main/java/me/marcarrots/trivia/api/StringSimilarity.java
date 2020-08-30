@@ -1,4 +1,4 @@
-package me.marcarrots.trivia.utils;
+package me.marcarrots.trivia.api;
 
 public class StringSimilarity {
 

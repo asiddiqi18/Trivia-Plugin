@@ -32,7 +32,7 @@ public class ViewMenu extends Menu {
     @Override
     public void handleMenuClick(InventoryClickEvent event) {
 
-        cancelEvent(event);
+        event.setCancelled(true);
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
         ConversationFactory conversationFactory = new ConversationFactory(trivia);
@@ -41,23 +41,23 @@ public class ViewMenu extends Menu {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_QUESTION
                     , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
+            player.closeInventory();
         } else if (type == Material.YELLOW_TERRACOTTA) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_ANSWER
                     , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
+            player.closeInventory();
         } else if (type == Material.RED_TERRACOTTA) {
             questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), null, PromptType.DELETE);
-            trivia.setQuestions();
+            trivia.readQuestions();
             player.sendMessage(ChatColor.GREEN + "This trivia question has been been removed.");
             new ListMenu(playerMenuUtility, trivia, questionHolder).open();
-            return;
         } else if (type == Material.ARROW) {
             new ListMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
-            return;
-        } else if (event.getCurrentItem().equals(FILLER_GLASS)) {
-            return;
+        } else if (event.getCurrentItem().equals(CLOSE)) {
+            player.closeInventory();
         }
-        player.closeInventory();
+
     }
 
     @Override

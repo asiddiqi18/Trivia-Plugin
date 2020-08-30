@@ -45,13 +45,10 @@ public class RewardsSpecificMenu extends Menu {
 
     @Override
     public void handleMenuClick(InventoryClickEvent event) {
-        if (event.getCurrentItem() == null) {
-            return;
-        }
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
-        ConversationFactory conversationFactory = new ConversationFactory(trivia);
 
+        ConversationFactory conversationFactory = new ConversationFactory(trivia);
         Conversation conversation;
         switch (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())) {
             case "Rewarded Money":

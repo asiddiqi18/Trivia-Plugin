@@ -1,47 +1,32 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
-import me.marcarrots.trivia.utils.StringSimilarity;
+import me.marcarrots.trivia.api.StringSimilarity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Objects;
 
 public class Game {
     private final QuestionHolder questionHolder;
-
     private final Trivia trivia;
-
     private final long timePerQuestion;
-
     private final int amountOfRounds;
-
     private final boolean doRepetition;
-
     private final double similarityScore;
-
     private final int timeBetween;
-
     private final CommandSender player;
-
-    BukkitScheduler scheduler;
-
+    private final BukkitScheduler scheduler;
     private PlayerScoreHolder scores;
-
     private Question currentQuestion;
-
     private Timer timer;
-
     private RoundResult roundResult;
-
     private String correctAnswer;
-
     private int task;
 
     public Game(Trivia trivia, QuestionHolder questionHolder, PlayerMenuUtility playerMenuUtility) {
@@ -111,10 +96,10 @@ public class Game {
                 },
                 (t) -> { // after each round
                     if (roundResult.equals(RoundResult.UNANSWERED)) {
-                        Bukkit.broadcastMessage(Lang.TIME_UP.format());
+                        Bukkit.broadcastMessage(Lang.TIME_UP.format(null, getCurrentQuestion().getQuestionString(), String.valueOf(getCurrentQuestion().getAnswerList()), getQuestionNum(), 0));
                         playSoundToAll("Time up sound", "Time up pitch");
                     } else if (roundResult.equals(RoundResult.SKIPPED)) {
-                        Bukkit.broadcastMessage(Lang.SKIP.format());
+                        Bukkit.broadcastMessage(Lang.SKIP.format(null, getCurrentQuestion().getQuestionString(), String.valueOf(getCurrentQuestion().getAnswerList()), getQuestionNum(), 0));
                     }
                     currentQuestion = null;
                     scheduler.cancelTask(t.getAssignedTaskId());
@@ -146,7 +131,7 @@ public class Game {
                 correctAnswer = answer;
                 BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
                 scheduler.scheduleSyncDelayedTask(trivia, () -> {
-                    Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(e.getPlayer().getDisplayName(), getCurrentQuestion().getQuestionString(), correctAnswer, getQuestionNum(), 0));
+                    Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(e.getPlayer(), getCurrentQuestion().getQuestionString(), correctAnswer, getQuestionNum(), 0));
                     playSound(e.getPlayer(), "Answer correct sound", "Answer correct pitch");
                     scores.addScore(e.getPlayer());
                     roundResult = RoundResult.ANSWERED;
@@ -162,7 +147,7 @@ public class Game {
             float pitchVal = Float.parseFloat(Objects.requireNonNull(trivia.getConfig().getString(pitchPath, "1")));
             player.playSound(player.getLocation(), Sound.valueOf(soundString), 0.6F, pitchVal);
         } catch (IllegalArgumentException | NullPointerException exception) {
-            if (soundString != null && !soundString.equalsIgnoreCase("none"))
+            if (soundString != null && !soundString.equalsIgnoreCase("none")) {
                 switch (soundPath) {
                     case "Answer correct sound":
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.6F, 1.5F);
@@ -171,17 +156,20 @@ public class Game {
                         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6F, 0.9F);
                         break;
                 }
+            }
         }
     }
 
     private void playSoundToAll(String path, String pitch) {
-        for (Player player : Bukkit.getOnlinePlayers())
+        for (Player player : Bukkit.getOnlinePlayers()) {
             playSound(player, path, pitch);
+        }
     }
 
     public boolean forceSkipRound() {
-        if (currentQuestion == null)
+        if (currentQuestion == null) {
             return false;
+        }
         roundResult = RoundResult.SKIPPED;
         timer.nextQuestion();
         return true;

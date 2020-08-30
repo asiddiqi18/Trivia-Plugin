@@ -11,20 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Rewards {
-    Trivia trivia;
 
+    Trivia trivia;
     int place;
     int experience;
     double money;
     String message;
-
-    List<ItemStack> items = new ArrayList<>();
+    List<ItemStack> items;
 
     public Rewards(Trivia trivia, int place) {
+        items = new ArrayList<>();
         this.trivia = trivia;
         this.place = place + 1;
         experience = 0;
-        getValues();
+        getValuesFromConfig();
     }
 
     public int getExperience() {
@@ -69,18 +69,11 @@ public class Rewards {
         trivia.getConfig().set("Rewards." + place + ".Items", items);
     }
 
-    private void getValues() {
+    private void getValuesFromConfig() {
         money = trivia.getConfig().getDouble("Rewards." + place + ".Money");
         experience = trivia.getConfig().getInt("Rewards." + place + ".Experience");
         message = trivia.getConfig().getString("Rewards." + place + ".Message");
-
-
         items = (List<ItemStack>) trivia.getConfig().get("Rewards." + place + ".Items");
-    }
-
-    @Override
-    public String toString() {
-        return items == null ? "Money: " + money : "Money: " + money + ", Items: " + items;
     }
 
 }

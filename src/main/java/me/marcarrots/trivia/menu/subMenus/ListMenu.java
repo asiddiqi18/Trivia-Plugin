@@ -18,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class ListMenu extends PaginatedMenu {
     public ListMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
@@ -33,9 +34,11 @@ public class ListMenu extends PaginatedMenu {
     }
 
     public void handleMenuClick(InventoryClickEvent event) {
-        cancelEvent(event);
-        Material type = event.getCurrentItem().getType();
+        event.setCancelled(true);
+
+        Material type = Objects.requireNonNull(event.getCurrentItem()).getType();
         Player player = (Player) event.getWhoClicked();
+
         List<Question> questionList = questionHolder.getTriviaQuestionList();
         ConversationFactory conversationFactory = new ConversationFactory(trivia);
         if (type == Material.EMERALD) {
@@ -68,8 +71,6 @@ public class ListMenu extends PaginatedMenu {
         } else if (type == Material.ARROW) {
             playerMenuUtility.setPreviousMenu(MenuType.LIST_MENU);
             (new MainMenu(playerMenuUtility, trivia, questionHolder)).open();
-        } else {
-            event.setCancelled(true);
         }
     }
 

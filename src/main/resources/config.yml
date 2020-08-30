@@ -47,9 +47,10 @@ Game over pitch: 0.9
 # Feel free to modify them to your liking.
 # Placeholders:
 # %player% - player's display name.
+# %username% - player's actual name.
 # %points% - the amount of trivia questions a player has solved.
 # %question% and %answer% - question and answer respectively.
-# %questionNum% - the question number.
+# %questionNumber% - the question number.
 Messages:
   Trivia Start: "&eTrivia is commencing. Get ready!"
   Trivia Over: "&eTrivia is over!"

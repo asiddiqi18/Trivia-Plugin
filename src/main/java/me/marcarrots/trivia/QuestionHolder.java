@@ -8,18 +8,18 @@ import java.util.List;
 import java.util.Random;
 
 public class QuestionHolder {
+
     private final List<Question> triviaQuestionList;
-
     private boolean uniqueQuestions;
-
-    public QuestionHolder() {
-        this.triviaQuestionList = new ArrayList<>();
-    }
 
     public QuestionHolder(QuestionHolder questionHolder) {
         this.triviaQuestionList = new ArrayList<>();
         this.triviaQuestionList.addAll(questionHolder.getTriviaQuestionList());
         this.uniqueQuestions = questionHolder.isUniqueQuestions();
+    }
+
+    public QuestionHolder() {
+        this.triviaQuestionList = new ArrayList<>();
     }
 
     public void add(Question triviaQuestion) {
@@ -43,8 +43,9 @@ public class QuestionHolder {
         Random random = new Random();
         int randomIndex = random.nextInt(getSize());
         Question question = getQuestionAtIndex(randomIndex);
-        if (uniqueQuestions)
+        if (uniqueQuestions) {
             triviaQuestionList.remove(randomIndex);
+        }
         return question;
     }
 

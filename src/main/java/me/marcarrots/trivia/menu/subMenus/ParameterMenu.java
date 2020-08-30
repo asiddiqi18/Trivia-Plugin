@@ -34,12 +34,12 @@ public class ParameterMenu extends Menu {
 
     @Override
     public void handleMenuClick(InventoryClickEvent event) {
-        cancelEvent(event);
+        event.setCancelled(true);
 
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
-        ConversationFactory conversationFactory = new ConversationFactory(trivia);
 
+        ConversationFactory conversationFactory = new ConversationFactory(trivia);
         playerMenuUtility.setPreviousMenu(MenuType.MAIN_MENU);
         if (type == Material.GREEN_TERRACOTTA) {
             if (trivia.getGame() != null) {
@@ -48,25 +48,26 @@ public class ParameterMenu extends Menu {
             }
             trivia.setGame(new Game(trivia, questionHolder, playerMenuUtility));
             trivia.getGame().start();
+            player.closeInventory();
         } else if (type == Material.OAK_SIGN) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_ROUNDS
                     , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
+            player.closeInventory();
         } else if (type == Material.CLOCK) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_TIME
                     , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
+            player.closeInventory();
         } else if (type == Material.RED_DYE || type == Material.LIME_DYE) {
             playerMenuUtility.setRepeatEnabled();
             setMenuItems();
-            return;
         } else if (type == Material.ARROW) {
             new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
-            return;
-        } else if (event.getCurrentItem().equals(FILLER_GLASS)) {
-            return;
+        } else if (event.getCurrentItem().equals(CLOSE)) {
+            player.closeInventory();
         }
-        player.closeInventory();
+
 
     }
 

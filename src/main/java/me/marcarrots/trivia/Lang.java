@@ -2,6 +2,7 @@ package me.marcarrots.trivia;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
@@ -48,13 +49,15 @@ public enum Lang {
     }
 
 
-    public String format(String playerName, String question, String answer, int questionNum, int points) {
+    public String format(Player player, String question, String answer, int questionNum, int points) {
         if (LANG == null) {
             return "";
         }
         String message = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(LANG.getString(this.path, def)));
-        if (playerName != null) {
-            message = message.replace("%player%", playerName);
+        if (player != null) {
+            message = message.replace("%player%", player.getDisplayName());
+            message = message.replace("%username%", player.getName());
+
         }
         if (question != null) {
             message = message.replace("%question%", question);
