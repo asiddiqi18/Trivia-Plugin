@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -89,8 +90,14 @@ public class ListMenu extends PaginatedMenu {
                     Question question = questionList.get(index);
                     ItemStack questionItem = new ItemStack(Material.PAPER, 1);
                     ItemMeta questionMeta = questionItem.getItemMeta();
-                    questionMeta.setDisplayName(ChatColor.DARK_AQUA + String.valueOf(question.getQuestionString()));
-                    questionMeta.setLore(WordWrapLore(ChatColor.GREEN + String.valueOf(question.getAnswerList())));
+                    questionMeta.setDisplayName(ChatColor.AQUA + "Question #" + question.getId());
+
+                    List<String> questionWrap = WordWrapLore("Question: " + ChatColor.YELLOW + question.getQuestionString(), ChatColor.YELLOW);
+                    List<String> answerWrap = WordWrapLore("Answer: " + ChatColor.GREEN + String.valueOf(question.getAnswerList()), ChatColor.GREEN);
+                    List<String> loreList = new ArrayList<>(questionWrap);
+                    loreList.addAll(answerWrap);
+                    questionMeta.setLore(loreList);
+
                     questionMeta.getPersistentDataContainer().set(new NamespacedKey(trivia, "trivia_question_id"), PersistentDataType.INTEGER,
                             Integer.valueOf(question.getId()));
                     questionItem.setItemMeta(questionMeta);

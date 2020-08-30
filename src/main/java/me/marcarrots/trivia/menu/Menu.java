@@ -113,7 +113,7 @@ public abstract class Menu implements InventoryHolder {
         if (amountMeta != null) {
             amountMeta.setDisplayName(ChatColor.GREEN + s);
             List<String> loreList;
-            loreList = WordWrapLore(ChatColor.LIGHT_PURPLE + s2);
+            loreList = WordWrapLore(ChatColor.LIGHT_PURPLE + s2, ChatColor.LIGHT_PURPLE);
             loreList.add(ChatColor.RED + "Click here to change.");
             amountMeta.setLore(loreList);
         }
@@ -121,12 +121,12 @@ public abstract class Menu implements InventoryHolder {
         inventory.setItem(i, amountItem);
     }
 
-    protected List<String> WordWrapLore(String string) {
+    protected List<String> WordWrapLore(String string, ChatColor color) {
         StringBuilder sb = new StringBuilder(string);
         int wordWrapLength = 50;
         int i = 0;
         while (i + wordWrapLength < sb.length() && (i = sb.lastIndexOf(" ", i + wordWrapLength)) != -1) {
-            sb.replace(i, i + 1, "\n§d");
+            sb.replace(i, i + 1, "\n"+color);
         }
         return new ArrayList<>(Arrays.asList(sb.toString().split("\n")));
 
