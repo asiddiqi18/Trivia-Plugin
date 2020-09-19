@@ -1,85 +1,86 @@
 1:
   question: "Who is the original creator of Minecraft?"
   answer:
-    - notch
-    - markus persson
+    - 'notch'
+    - 'markus persson'
 
 2:
   question: "What do you need to turn powder to concrete?"
   answer:
-    - water
+    - 'water'
 3:
   question: A splash potion of what will heal a skeleton?
   answer:
-    - Harming
+    - 'Harming'
 4:
   question: Notch almost called Minecraft what name?
   answer:
-    - Cavegame
+    - 'Cavegame'
 5:
   question: One block in the nether is equal to how many blocks in the overworld?
   answer:
-    - 8
-    - Eight
+    - '8'
+    - 'Eight'
 6:
   question: Endermen will become passive after touching what?
   answer:
-    - Water
+    - 'Water'
 7:
   question: Is it possible to grow a tree past the height limit?
   answer:
-    - Yes
+    - 'Yes'
 8:
   question: What block can spiders not climb up?
   answer:
-    - Ice
+    - 'Ice'
 9:
   question: Which does more damage, a diamond sword or a fully charged bow?
   answer:
-    - Bow
-    - Fully charged bow
+    - 'Bow'
+    - 'Fully charged bow'
 10:
   question: How many minutes does it take to break a block of obsidian by hand?
   answer:
-    - 4
-    - Four
+    - '4'
+    - 'Four'
 11:
   question: Do cats take fall damage?
   answer:
-    - No
+    - 'No'
+    - 'False'
 12:
   question: It's easier to catch fish in what weather?
   answer:
-    - Rain
+    - 'Rain'
 13:
   question: Creepers were accidently created when Notch was making what mob?
   answer:
-    - Pig
+    - 'Pig'
 14:
   question: Creepers are afraid of what animal?
   answer:
-    - Ocelots
-    - Cats
+    - 'Ocelots'
+    - 'Cats'
 15:
   question: One Minecraft block is how many feet?
   answer:
-    - 3
-    - Three
+    - '3'
+    - 'Three'
 16:
   question: How many days did it take to create the original release of Minecraft?
   answer:
-    - 6
-    - Six
+    - '6'
+    - 'Six'
 17:
   question: How many main biomes are there in Minecraft?
   answer:
-    - 17
+    - '17'
 18:
   question: What block can you wear on your head to prevent Endermen from turning
     hostile while looking at them?
   answer:
-    - Pumpkin
+    - 'Pumpkin'
 19:
   question: Which is more rare, pumpkins or diamonds?
   answer:
-    - Pumpkins
+    - 'Pumpkins'

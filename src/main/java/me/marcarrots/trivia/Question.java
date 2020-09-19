@@ -8,6 +8,7 @@ public class Question {
     private String question;
     private int id;
     private List<String> answer = null;
+    private String author;
 
     public Question() {
     }
@@ -19,6 +20,10 @@ public class Question {
 
     public int getId() {
         return id;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public void setId(int id) {
@@ -43,6 +48,10 @@ public class Question {
 
     public void setAnswer(List<String> answer) {
         this.answer = Objects.requireNonNull(answer);
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     @Override

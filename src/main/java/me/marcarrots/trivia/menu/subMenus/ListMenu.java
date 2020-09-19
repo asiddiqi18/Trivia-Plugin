@@ -27,8 +27,9 @@ public class ListMenu extends PaginatedMenu {
     }
 
     public String getMenuName() {
-        return "List of Trivia Questions";
+        return String.format("Trivia Questions (page %d)", page + 1);
     }
+
 
     public int getSlots() {
         return 54;
@@ -93,11 +94,13 @@ public class ListMenu extends PaginatedMenu {
                     questionMeta.setDisplayName(ChatColor.AQUA + "Question #" + question.getId());
 
                     List<String> questionWrap = WordWrapLore("Question: " + ChatColor.YELLOW + question.getQuestionString(), ChatColor.YELLOW);
-                    List<String> answerWrap = WordWrapLore("Answer: " + ChatColor.GREEN + String.valueOf(question.getAnswerList()), ChatColor.GREEN);
+                    List<String> answerWrap = WordWrapLore("Answer: " + ChatColor.GREEN + question.getAnswerList(), ChatColor.GREEN);
                     List<String> loreList = new ArrayList<>(questionWrap);
                     loreList.addAll(answerWrap);
+                    if (question.getAuthor() != null) {
+                        loreList.add("Submitted by: " + ChatColor.RED + question.getAuthor());
+                    }
                     questionMeta.setLore(loreList);
-
                     questionMeta.getPersistentDataContainer().set(new NamespacedKey(trivia, "trivia_question_id"), PersistentDataType.INTEGER,
                             Integer.valueOf(question.getId()));
                     questionItem.setItemMeta(questionMeta);

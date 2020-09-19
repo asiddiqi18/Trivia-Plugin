@@ -18,7 +18,7 @@ public class InventoryClick implements Listener {
         }
 
         if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.DOUBLE_CLICK || event.getClick() == ClickType.DROP) {
-            event.setCancelled(true);
+            return;
         }
 
         InventoryHolder holder = event.getClickedInventory().getHolder();

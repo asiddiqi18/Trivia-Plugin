@@ -1,5 +1,5 @@
 name: Trivia
-version: "1.5"
+version: "1.5.1"
 main: me.marcarrots.trivia.Trivia
 api-version: 1.13
 authors: [MarCarrot]

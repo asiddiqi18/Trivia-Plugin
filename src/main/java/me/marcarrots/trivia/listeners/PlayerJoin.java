@@ -16,6 +16,12 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
+        if (event.getPlayer().hasPermission("trivia.admin")) {
+            if (trivia.getUpdateNotice() != null) {
+                event.getPlayer().sendMessage(trivia.getUpdateNotice());
+            }
+        }
+
         if (trivia.getGame() == null) {
             return;
         }

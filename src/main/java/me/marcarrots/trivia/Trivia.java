@@ -13,6 +13,7 @@ import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,6 +38,8 @@ public final class Trivia extends JavaPlugin {
     private Rewards[] rewards;
     private Game game;
     private QuestionFileManager questionsFile;
+
+    private String updateNotice = null;
 
     public static Economy getEcon() {
         return econ;
@@ -68,6 +71,10 @@ public final class Trivia extends JavaPlugin {
 
     public void clearGame() {
         game = null;
+    }
+
+    public String getUpdateNotice() {
+        return updateNotice;
     }
 
     public PlayerMenuUtility getPlayerMenuUtility(Player player) {
@@ -106,11 +113,15 @@ public final class Trivia extends JavaPlugin {
             Bukkit.getLogger().info("No vault has been detected, disabling vault features...");
         }
 
-        UpdateChecker.init(this, 80401).requestUpdateCheck().whenComplete((result, e) -> {
-            if (result.requiresUpdate()) {
-                getLogger().info(String.format("[TriviaGUI] There is a new version of TriviaGUI released!(version %s). Download it at: %s",
-                        result.getNewestVersion(),
-                        "https://www.spigotmc.org/resources/triviagui.80401/"));
+        new UpdateChecker(this, 80401).getVersion(version -> {
+//            Bukkit.getLogger().info("Version available: " + version + ", Current version: " + getDescription().getVersion());
+            if (!getDescription().getVersion().equalsIgnoreCase(version)) {
+                updateNotice = String.format("%s - There is a new version available for Trivia (new version: %s, current version: %s)! Get it at: %s.",
+                        ChatColor.AQUA + "[Trivia!]" + ChatColor.YELLOW,
+                        ChatColor.GREEN + version + ChatColor.YELLOW,
+                        ChatColor.GREEN + getDescription().getVersion() + ChatColor.YELLOW,
+                        ChatColor.WHITE + "https://www.spigotmc.org/resources/trivia-easy-to-setup-game-%C2%BB-custom-rewards-%C2%BB-in-game-gui-menus-more.80401/" + ChatColor.YELLOW);
+                Bukkit.getLogger().info(updateNotice);
             }
         });
 
@@ -133,10 +144,13 @@ public final class Trivia extends JavaPlugin {
         Lang.setFile(getConfig());
     }
 
-    public void writeQuestions(String question, List<String> answer) {
+    public void writeQuestions(String question, List<String> answer, String author) {
         HashMap<String, Object> questionMap = new HashMap<>();
         questionMap.put("question", question);
         questionMap.put("answer", answer);
+        if (author != null) {
+            questionMap.put("author", author);
+        }
         questionsFile.getData().createSection(String.valueOf(++largestQuestionNum), questionMap);
         questionsFile.saveData();
     }
@@ -153,7 +167,7 @@ public final class Trivia extends JavaPlugin {
                     if (posBefore == -1)
                         continue;
                     int posAfter = posBefore + 3;
-                    writeQuestions(item.substring(0, posBefore).trim(), Collections.singletonList(item.substring(posAfter).trim()));
+                    writeQuestions(item.substring(0, posBefore).trim(), Collections.singletonList(item.substring(posAfter).trim()), null);
                 }
             getConfig().set("Questions and Answers", null);
             saveConfig();
@@ -166,6 +180,7 @@ public final class Trivia extends JavaPlugin {
                 triviaQuestion.setId(Integer.parseInt(key));
                 triviaQuestion.setQuestion(questionsFile.getData().getString(key + ".question"));
                 triviaQuestion.setAnswer(questionsFile.getData().getStringList(key + ".answer"));
+                triviaQuestion.setAuthor(questionsFile.getData().getString(key + ".author"));
                 this.questionHolder.add(triviaQuestion);
             } catch (NumberFormatException | NullPointerException e) {
                 Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));
@@ -270,6 +285,4 @@ public final class Trivia extends JavaPlugin {
 
         return String.format("%02d days, %02d hours, %02d minutes, %02d seconds", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
     }
-
-
 }

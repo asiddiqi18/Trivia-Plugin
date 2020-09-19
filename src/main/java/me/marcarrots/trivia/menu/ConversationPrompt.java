@@ -78,7 +78,7 @@ public class ConversationPrompt extends StringPrompt {
                     }
                     if (question.getAnswerList() == null) {
                         question.setAnswer(Arrays.asList(input.split("\\s*,\\s*")));
-                        trivia.writeQuestions(question.getQuestionString(), question.getAnswerList());
+                        trivia.writeQuestions(question.getQuestionString(), question.getAnswerList(), player.getName());
                         trivia.readQuestions();
                         player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been added to the pool."));
                         promptType.openNewMenu(playerMenuUtility, trivia, questionHolder, place);
