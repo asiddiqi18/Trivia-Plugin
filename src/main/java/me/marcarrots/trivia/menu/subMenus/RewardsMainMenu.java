@@ -4,6 +4,7 @@
 
 package me.marcarrots.trivia.menu.subMenus;
 
+import me.marcarrots.trivia.Lang;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.Menu;
@@ -21,7 +22,7 @@ public class RewardsMainMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return "Rewards Menu";
+        return Lang.REWARDS_GENERAL_MENU_TITLE.format(null);
     }
 
     @Override
@@ -36,14 +37,14 @@ public class RewardsMainMenu extends Menu {
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
 
-        switch (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())) {
-            case "First Place":
+        switch (event.getSlot()) {
+            case 11:
                 new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 1).open();
                 break;
-            case "Second Place":
+            case 13:
                 new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 2).open();
                 break;
-            case "Third Place":
+            case 15:
                 new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 3).open();
                 break;
         }
@@ -63,11 +64,12 @@ public class RewardsMainMenu extends Menu {
 
     @Override
     public void setMenuItems() {
-        insertItem(Material.CHEST, "First Place", 11);
 
-        insertItem(Material.CHEST, "Second Place", 13);
+        insertItem(Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format(null), 11);
 
-        insertItem(Material.CHEST, "Third Place", 15);
+        insertItem(Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format(null), 13);
+
+        insertItem(Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format(null), 15);
 
         fillRest();
 

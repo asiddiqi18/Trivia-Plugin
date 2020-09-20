@@ -1,5 +1,6 @@
 package me.marcarrots.trivia.menu.subMenus;
 
+import me.marcarrots.trivia.Lang;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.Menu;
@@ -25,7 +26,7 @@ public class MainMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return "Main Menu";
+        return Lang.MAIN_MENU_TITLE.format(null);
     }
 
     @Override
@@ -62,14 +63,15 @@ public class MainMenu extends Menu {
 
         BukkitScheduler scheduler = trivia.getServer().getScheduler();
 
-        insertItem(Material.GREEN_TERRACOTTA, "Start Trivia", 11);
+        insertItem(Material.GREEN_TERRACOTTA, Lang.MAIN_MENU_START.format(null), WordWrapLore(Lang.MAIN_MENU_START_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 11, false);
 
-        insertItem(Material.EMERALD, "Rewards", Collections.singletonList("Adjust trivia prizes that are given to winners."), 13, false);
+        insertItem(Material.EMERALD, Lang.MAIN_MENU_REWARDS.format(null), WordWrapLore(Lang.MAIN_MENU_REWARDS_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 13, false);
 
-        insertItem(Material.PAPER, "List Questions", Collections.singletonList("Create new questions or modify existing questions."), 15, false);
+        insertItem(Material.PAPER, Lang.MAIN_MENU_LIST.format(null), WordWrapLore(Lang.MAIN_MENU_LIST_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 15, false);
+
 
         if (trivia.isSchedulingEnabled()) {
-            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + trivia.getTimeUntilScheduled(), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedPlayerReq()), 35, false), 0, 20);
+            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + Trivia.getElapsedTime(trivia.getNextAutomatedTime()), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedPlayerReq()), 35, false), 0, 20);
         }
 
         fillRest();

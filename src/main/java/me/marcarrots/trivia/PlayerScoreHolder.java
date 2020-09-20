@@ -55,7 +55,7 @@ public class PlayerScoreHolder {
         int displayAmount = Math.min(scores.size(), trivia.getConfig().getInt("Top winner amount", 3));
         Collections.sort(scores);
         if (scores.size() == 0 || scores.get(0).getPoints() == 0) {
-            Bukkit.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format());
+            Bukkit.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format(null));
             return;
         }
         for (int i = 0; i < displayAmount; i++) {
@@ -66,7 +66,10 @@ public class PlayerScoreHolder {
                 }
                 Player player = score.getPlayer();
                 Rewards[] rewards = trivia.getRewards();
-                Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(player, null, null, 0, score.getPoints()));
+                Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(new LangBuilder()
+                        .setPlayer(player)
+                        .setPoints(score.getPoints())
+                ));
 
                 if (trivia.getConfig().getBoolean("Summon fireworks", true)) {
                     summonFireWork(player);

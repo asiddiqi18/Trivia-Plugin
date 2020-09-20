@@ -6,7 +6,7 @@ package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.api.MetricsLite;
 import me.marcarrots.trivia.api.UpdateChecker;
-import me.marcarrots.trivia.data.QuestionFileManager;
+import me.marcarrots.trivia.data.FileManager;
 import me.marcarrots.trivia.listeners.ChatEvent;
 import me.marcarrots.trivia.listeners.InventoryClick;
 import me.marcarrots.trivia.listeners.PlayerJoin;
@@ -32,12 +32,14 @@ public final class Trivia extends JavaPlugin {
     boolean schedulingEnabled;
     int automatedTime;
     int automatedPlayerReq;
-    long nextAutomatedTime;
+    private long nextAutomatedTime;
     private int largestQuestionNum = 0;
     private int schedulerTask;
     private Rewards[] rewards;
     private Game game;
-    private QuestionFileManager questionsFile;
+    private FileManager questionsFile;
+    private FileManager messagesFile;
+    private FileManager rewardsFile;
 
     private String updateNotice = null;
 
@@ -45,8 +47,12 @@ public final class Trivia extends JavaPlugin {
         return econ;
     }
 
-    public QuestionFileManager getQuestionsFile() {
+    public FileManager getQuestionsFile() {
         return questionsFile;
+    }
+
+    public FileManager getRewardsFile() {
+        return rewardsFile;
     }
 
     public boolean isSchedulingEnabled() {
@@ -73,6 +79,10 @@ public final class Trivia extends JavaPlugin {
         game = null;
     }
 
+    public long getNextAutomatedTime() {
+        return nextAutomatedTime;
+    }
+
     public String getUpdateNotice() {
         return updateNotice;
     }
@@ -91,7 +101,11 @@ public final class Trivia extends JavaPlugin {
     @Override
     public void onEnable() {
         loadConfig();
-        this.questionsFile = new QuestionFileManager(this, "questions.yml");
+        this.questionsFile = new FileManager(this, "questions.yml");
+        this.messagesFile = new FileManager(this, "messages.yml");
+        this.rewardsFile = new FileManager(this, "rewards.yml");
+        loadMessages();
+        generateRewards();
         for (String questionNum : questionsFile.getData().getKeys(false)) {
             try {
                 if (Integer.parseInt(questionNum) > largestQuestionNum)
@@ -132,16 +146,40 @@ public final class Trivia extends JavaPlugin {
 
     }
 
+    public void loadMessages() {
+        if (getConfig().contains("Messages")) {
+            Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old message data to new data...");
+            List<String> messageKeys = Arrays.asList(
+                    "Trivia Start",
+                    "Trivia Over",
+                    "Winner Line",
+                    "Winner List",
+                    "No Winners",
+                    "Solved Message",
+                    "Question Time Up",
+                    "Question Display",
+                    "Question Skipped"
+            );
+
+            for (String key : messageKeys) {
+                messagesFile.getData().set(key, getConfig().getString("Messages." + key, ""));
+                messagesFile.saveData();
+            }
+            getConfig().set("Messages", null);
+            saveConfig();
+        }
+        messagesFile.reloadFiles();
+        Lang.setFile(messagesFile.getData());
+    }
+
     public void loadConfig() {
         schedulingEnabled = getConfig().getBoolean("Scheduled games", false);
         automatedTime = getConfig().getInt("Scheduled games interval", 60);
         automatedPlayerReq = getConfig().getInt("Scheduled games minimum players", 6);
 
-        generateRewards();
         automatedSchedule();
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
-        Lang.setFile(getConfig());
     }
 
     public void writeQuestions(String question, List<String> answer, String author) {
@@ -159,7 +197,7 @@ public final class Trivia extends JavaPlugin {
         questionHolder.clear();
 
         if (getConfig().contains("Questions and Answers")) {
-            Bukkit.getLogger().log(Level.INFO, "Migrating old data to new data...");
+            Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old question data to new data...");
             List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
             if (unparsedQuestions.size() != 0)
                 for (String item : unparsedQuestions) {
@@ -189,11 +227,30 @@ public final class Trivia extends JavaPlugin {
     }
 
     private void generateRewards() {
+        loadRewards();
         int rewardAmt = 3;
         rewards = new Rewards[rewardAmt];
         for (int i = 0; i < rewardAmt; i++) {
             rewards[i] = new Rewards(this, i);
         }
+    }
+
+    private void loadRewards() {
+        if (getConfig().contains("Rewards")) {
+            for (int i = 0; i < 3; i++) {
+                if (getConfig().contains("Rewards." + i)) {
+                    Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old rewards data to new data...");
+                    rewardsFile.getData().set(i + ".Money", getConfig().getDouble("Rewards." + i + ".Money"));
+                    rewardsFile.getData().set(i + ".Experience", getConfig().getDouble("Rewards." + i + ".Experience"));
+                    rewardsFile.getData().set(i + ".Message", getConfig().getString("Rewards." + i + ".Message"));
+                    rewardsFile.getData().set(i + ".Items", getConfig().getList("Rewards." + i + ".Items"));
+                    rewardsFile.saveData();
+                }
+            }
+            getConfig().set("Rewards", null);
+            saveConfig();
+        }
+        messagesFile.reloadFiles();
     }
 
     private boolean setupEconomy() {
@@ -251,6 +308,10 @@ public final class Trivia extends JavaPlugin {
             newKeys.put(Lang.SKIP.getPath(), Lang.SKIP.getDefault());
         }
 
+        if (newKeys.size() == 0) {
+            return;
+        }
+
         // iterate through all the new keys
         for (Map.Entry<String, Object> entry : newKeys.entrySet()) {
             String key = entry.getKey();
@@ -263,9 +324,13 @@ public final class Trivia extends JavaPlugin {
         saveConfig();
     }
 
-    public String getTimeUntilScheduled() {
+    public static String getElapsedTime(long time) {
 
-        long durationInMillis = nextAutomatedTime - System.currentTimeMillis();
+        long durationInMillis = time - System.currentTimeMillis();
+
+        if (durationInMillis < 0) {
+            durationInMillis *= -1;
+        }
 
         long secondsInMilli = 1000;
         long minutesInMilli = secondsInMilli * 60;
@@ -283,6 +348,19 @@ public final class Trivia extends JavaPlugin {
 
         long elapsedSeconds = durationInMillis / secondsInMilli;
 
-        return String.format("%02d days, %02d hours, %02d minutes, %02d seconds", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if (elapsedDays > 0) {
+            stringBuilder.append(String.format("%02d days, ", elapsedDays));
+        }
+        if (elapsedHours > 0) {
+            stringBuilder.append(String.format("%02d hours, ", elapsedHours));
+        }
+        if (elapsedMinutes > 0) {
+            stringBuilder.append(String.format("%02d minutes, ", elapsedMinutes));
+        }
+        stringBuilder.append(String.format("%d seconds", elapsedSeconds));
+        return stringBuilder.toString();
+
     }
 }

@@ -4,6 +4,7 @@
 
 package me.marcarrots.trivia.menu.subMenus;
 
+import me.marcarrots.trivia.Lang;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Rewards;
 import me.marcarrots.trivia.Trivia;
@@ -50,22 +51,22 @@ public class RewardsSpecificMenu extends Menu {
 
         ConversationFactory conversationFactory = new ConversationFactory(trivia);
         Conversation conversation;
-        switch (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())) {
-            case "Rewarded Money":
+        switch (event.getSlot()) {
+            case 38:
                 event.setCancelled(true);
                 conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY
                         , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
-            case "Rewarded Experience Points":
+            case 42:
                 event.setCancelled(true);
                 conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE
                         , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
-            case "Reward Message":
+            case 44:
                 event.setCancelled(true);
                 conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE
                         , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
@@ -100,7 +101,7 @@ public class RewardsSpecificMenu extends Menu {
             items.add(item);
         }
         trivia.getRewards()[place - 1].setItems(items);
-        trivia.saveConfig();
+        trivia.getRewardsFile().saveData();
     }
 
     @Override
@@ -144,13 +145,13 @@ public class RewardsSpecificMenu extends Menu {
         }
 
         if (trivia.vaultEnabled()) {
-            insertItem(Material.EMERALD, "Rewarded Money", Collections.singletonList("$" + reward.getMoney()), 38, true);
+            insertItem(Material.EMERALD, Lang.REWARDS_SPECIFIC_MONEY.format(null), Collections.singletonList("$" + reward.getMoney()), 38, true);
         } else {
-            insertItem(Material.EMERALD, ChatColor.DARK_RED + "Rewarded Money", Collections.singletonList(ChatColor.RED + "This server does not have vault enabled! It must be enabled for this feature to work."), 37, false);
+            insertItem(Material.EMERALD, ChatColor.DARK_RED + "Rewarded Money", Collections.singletonList(ChatColor.RED + "Vault required to give money rewards!"), 38, false);
         }
-        insertItem(Material.EXPERIENCE_BOTTLE, "Rewarded Experience Points", Collections.singletonList(String.valueOf(reward.getExperience())), 42, true);
+        insertItem(Material.EXPERIENCE_BOTTLE, Lang.REWARDS_SPECIFIC_EXP.format(null), Collections.singletonList(String.valueOf(reward.getExperience())), 42, true);
 
-        insertItem(Material.WRITABLE_BOOK, "Reward Message", Collections.singletonList(reward.getMessage() != null ? reward.getMessage() : "No rewards are set."), 44, true);
+        insertItem(Material.WRITABLE_BOOK, Lang.REWARDS_SPECIFIC_MESSAGE.format(null), Collections.singletonList(reward.getMessage() != null ? reward.getMessage() : "No rewards are set."), 44, true);
         inventory.setItem(36, BACK);
         inventory.setItem(40, CLOSE);
     }

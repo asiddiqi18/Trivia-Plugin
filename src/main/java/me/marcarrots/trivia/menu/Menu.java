@@ -1,6 +1,7 @@
 package me.marcarrots.trivia.menu;
 
 
+import me.marcarrots.trivia.Lang;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.junit.experimental.theories.ParametersSuppliedBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,12 +45,12 @@ public abstract class Menu implements InventoryHolder {
 
         CLOSE = new ItemStack(Material.BARRIER, 1);
         ItemMeta close_meta = CLOSE.getItemMeta();
-        close_meta.setDisplayName(ChatColor.RED + "Close");
+        close_meta.setDisplayName(Lang.MENU_CLOSE.format(null));
         CLOSE.setItemMeta(close_meta);
 
         BACK = new ItemStack(Material.ARROW, 1);
         ItemMeta back_meta = BACK.getItemMeta();
-        back_meta.setDisplayName(ChatColor.GREEN + "Go back");
+        back_meta.setDisplayName(Lang.MENU_BACK.format(null));
         BACK.setItemMeta(back_meta);
     }
 
@@ -99,7 +101,7 @@ public abstract class Menu implements InventoryHolder {
         if (amountMeta != null) {
             amountMeta.setDisplayName(ChatColor.GREEN + displayName);
             if (changeable) {
-                itemLore.add(ChatColor.RED + "Click here to change.");
+                itemLore.add(Lang.MENU_CHANGE.format(null));
             }
             amountMeta.setLore(itemLore);
         }
@@ -113,31 +115,22 @@ public abstract class Menu implements InventoryHolder {
         if (amountMeta != null) {
             amountMeta.setDisplayName(ChatColor.GREEN + s);
             List<String> loreList;
-            loreList = WordWrapLore(ChatColor.LIGHT_PURPLE + s2, ChatColor.LIGHT_PURPLE);
-            loreList.add(ChatColor.RED + "Click here to change.");
+            loreList = WordWrapLore(ChatColor.LIGHT_PURPLE + s2, ChatColor.LIGHT_PURPLE, 50);
+            loreList.add(Lang.MENU_CHANGE.format(null));
             amountMeta.setLore(loreList);
         }
         amountItem.setItemMeta(amountMeta);
         inventory.setItem(i, amountItem);
     }
 
-    protected List<String> WordWrapLore(String string, ChatColor color) {
+    protected List<String> WordWrapLore(String string, ChatColor color, int wrapLength) {
         StringBuilder sb = new StringBuilder(string);
-        int wordWrapLength = 50;
         int i = 0;
-        while (i + wordWrapLength < sb.length() && (i = sb.lastIndexOf(" ", i + wordWrapLength)) != -1) {
+        while (i + wrapLength < sb.length() && (i = sb.lastIndexOf(" ", i + wrapLength)) != -1) {
             sb.replace(i, i + 1, "\n"+color);
         }
         return new ArrayList<>(Arrays.asList(sb.toString().split("\n")));
 
-    }
-
-    protected void cancelEvent(InventoryClickEvent event) {
-        if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.DOUBLE_CLICK || event.getClick() == ClickType.DROP) {
-            event.setCancelled(true);
-        }
-
-        event.setCancelled(true);
     }
 
 }

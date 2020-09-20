@@ -1,6 +1,7 @@
 package me.marcarrots.trivia.menu.subMenus;
 
 import me.marcarrots.trivia.Game;
+import me.marcarrots.trivia.Lang;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.*;
@@ -24,7 +25,7 @@ public class ParameterMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return "Game parameters";
+        return Lang.PARAMS_MENU_TITLE.format(null);
     }
 
     @Override
@@ -79,18 +80,18 @@ public class ParameterMenu extends Menu {
     @Override
     public void setMenuItems() {
 
-        insertItem(Material.OAK_SIGN, "Total rounds", Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds() + " rounds."), 10, true);
+        insertItem(Material.OAK_SIGN, Lang.PARAMS_MENU_TOTAL.format(null), Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds() + " rounds."), 10, true);
 
-        insertItem(Material.CLOCK, "Time Per Question", Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer() + " seconds."), 12, true);
+        insertItem(Material.CLOCK, Lang.PARAMS_MENU_TIME.format(null), Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer() + " seconds."), 12, true);
 
 
         if (playerMenuUtility.isRepeatEnabled()) {
-            insertItem(Material.LIME_DYE, "Allow question repetition", Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_GREEN + "True"), 14, true);
+            insertItem(Material.LIME_DYE, Lang.PARAMS_MENU_REPEAT.format(null), Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_GREEN + "True"), 14, true);
         } else {
-            insertItem(Material.RED_DYE, "Allow question repetition", Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_RED + "False"), 14, true);
+            insertItem(Material.RED_DYE, Lang.PARAMS_MENU_REPEAT.format(null), Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_RED + "False"), 14, true);
         }
 
-        insertItem(Material.GREEN_TERRACOTTA, "Start Trivia", 16);
+        insertItem(Material.GREEN_TERRACOTTA, Lang.PARAMS_MENU_START.format(null), 16);
         inventory.setItem(27, BACK);
         inventory.setItem(31, CLOSE);
 

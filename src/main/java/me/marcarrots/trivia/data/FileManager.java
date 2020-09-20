@@ -15,14 +15,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 
-public class QuestionFileManager {
+public class FileManager {
 
     private final Trivia trivia;
     private final String fileName;
     private FileConfiguration fileConfiguration;
     private File dataFile;
 
-    public QuestionFileManager(Trivia trivia, String fileName) {
+    public FileManager(Trivia trivia, String fileName) {
         this.trivia = trivia;
         this.fileConfiguration = null;
         this.dataFile = null;

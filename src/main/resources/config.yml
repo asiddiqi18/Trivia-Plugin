@@ -43,24 +43,5 @@ Game start pitch: 1.0
 Game over sound: ENTITY_PLAYER_LEVELUP
 Game over pitch: 0.9
 
-# The "messages" section are the messages that will be displayed during a trivia game.
-# Feel free to modify them to your liking.
-# Placeholders:
-# %player% - player's display name.
-# %username% - player's actual name.
-# %points% - the amount of trivia questions a player has solved.
-# %question% and %answer% - question and answer respectively.
-# %questionNumber% - the question number.
-Messages:
-  Trivia Start: "&eTrivia is commencing. Get ready!"
-  Trivia Over: "&eTrivia is over!"
-  Winner Line: "&6Winners:"
-  Winner List: "&0➤ &3%player%: &b%points%"
-  No Winners: "&6There are no winners of this trivia event!"
-  Solved Message: "&a%player% has answered the question correctly! The answer was &2%answer%&a."
-  Question Time Up: "&cTime is up! Next question..."
-  Question Display: "&6(%questionNumber%) &e%question%"
-  Question Skipped: "&cQuestion skipped! On to the next question..."
-
 # This is to keep track of what config version this is. Do not modify!
-Config Version: 3
+Config Version: 4

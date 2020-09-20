@@ -4,11 +4,13 @@
 
 package me.marcarrots.trivia;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Rewards {
 
@@ -24,7 +26,7 @@ public class Rewards {
         this.trivia = trivia;
         this.place = place + 1;
         experience = 0;
-        getValuesFromConfig();
+        getValuesFromRewardsFile();
     }
 
     public int getExperience() {
@@ -33,8 +35,8 @@ public class Rewards {
 
     public void setExperience(int experience) {
         this.experience = experience;
-        trivia.getConfig().set("Rewards." + place + ".Experience", experience);
-        trivia.saveConfig();
+        trivia.getRewardsFile().getData().set(place + ".Experience", experience);
+        trivia.getRewardsFile().saveData();
     }
 
     public String getMessage() {
@@ -43,8 +45,8 @@ public class Rewards {
 
     public void setMessage(String message) {
         this.message = message;
-        trivia.getConfig().set("Rewards." + place + ".Message", message);
-        trivia.saveConfig();
+        trivia.getRewardsFile().getData().set(place + ".Message", message);
+        trivia.getRewardsFile().saveData();
     }
 
     public double getMoney() {
@@ -56,8 +58,8 @@ public class Rewards {
             money *= -1;
         }
         this.money = money;
-        trivia.getConfig().set("Rewards." + place + ".Money", money);
-        trivia.saveConfig();
+        trivia.getRewardsFile().getData().set(place + ".Money", money);
+        trivia.getRewardsFile().saveData();
     }
 
     public List<ItemStack> getItems() {
@@ -66,14 +68,14 @@ public class Rewards {
 
     public void setItems(List<ItemStack> items) {
         this.items = items;
-        trivia.getConfig().set("Rewards." + place + ".Items", items);
+        trivia.getRewardsFile().getData().set(place + ".Items", items);
     }
 
-    private void getValuesFromConfig() {
-        money = trivia.getConfig().getDouble("Rewards." + place + ".Money");
-        experience = trivia.getConfig().getInt("Rewards." + place + ".Experience");
-        message = trivia.getConfig().getString("Rewards." + place + ".Message");
-        items = (List<ItemStack>) trivia.getConfig().get("Rewards." + place + ".Items");
+    private void getValuesFromRewardsFile() {
+        money = trivia.getRewardsFile().getData().getDouble(place + ".Money");
+        experience = trivia.getRewardsFile().getData().getInt(place + ".Experience");
+        message = trivia.getRewardsFile().getData().getString(place + ".Message");
+        items = (List<ItemStack>) trivia.getRewardsFile().getData().get(place + ".Items");
     }
 
 }

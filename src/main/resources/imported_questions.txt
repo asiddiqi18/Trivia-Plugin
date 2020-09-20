@@ -30,7 +30,7 @@
 30/Who is the Endermens leader?/EnderDragon/daf4ever
 31/What ore can you build complicated machines with?/redstone/daf4ever
 32/Which golden vegetable do you need to make a potion of night vision?/goldencarrot/daf4ever
-33/What is the only mob that can brake obsidian?/wither/daf4ever
+33/What is the only mob that can break obsidian?/wither/daf4ever
 34/What is the most useless mob in minecraft? (Hint its not Gregory3104)/bat/daf4ever
 35/what mob drops the most xp (bosses not included)/Wither/daf4ever
 36/What is the default player skin called?/Steve/daf4ever

@@ -1,8 +1,6 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.Question;
-import me.marcarrots.trivia.QuestionHolder;
-import me.marcarrots.trivia.Trivia;
+import me.marcarrots.trivia.*;
 import me.marcarrots.trivia.menu.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,7 +25,7 @@ public class ListMenu extends PaginatedMenu {
     }
 
     public String getMenuName() {
-        return String.format("Trivia Questions (page %d)", page + 1);
+        return Lang.LIST_MENU_TITLE.format(new LangBuilder().setVal(String.valueOf(page+1)));
     }
 
 
@@ -91,14 +89,15 @@ public class ListMenu extends PaginatedMenu {
                     Question question = questionList.get(index);
                     ItemStack questionItem = new ItemStack(Material.PAPER, 1);
                     ItemMeta questionMeta = questionItem.getItemMeta();
-                    questionMeta.setDisplayName(ChatColor.AQUA + "Question #" + question.getId());
+                    questionMeta.setDisplayName(Lang.LIST_MENU_QUESTION.format(new LangBuilder().setVal(String.valueOf(question.getId()))));
 
-                    List<String> questionWrap = WordWrapLore("Question: " + ChatColor.YELLOW + question.getQuestionString(), ChatColor.YELLOW);
-                    List<String> answerWrap = WordWrapLore("Answer: " + ChatColor.GREEN + question.getAnswerList(), ChatColor.GREEN);
+                    List<String> questionWrap = WordWrapLore(Lang.LIST_MENU_QUESTION_LORE.format(new LangBuilder().setVal(ChatColor.YELLOW + question.getQuestionString())), ChatColor.YELLOW, 50);
+                    List<String> answerWrap = WordWrapLore(Lang.LIST_MENU_ANSWER_LORE.format(new LangBuilder().setVal(ChatColor.YELLOW + question.getAnswerList().toString())), ChatColor.YELLOW, 50);
+
                     List<String> loreList = new ArrayList<>(questionWrap);
                     loreList.addAll(answerWrap);
                     if (question.getAuthor() != null) {
-                        loreList.add("Submitted by: " + ChatColor.RED + question.getAuthor());
+                        loreList.add(Lang.LIST_MENU_AUTHOR_LORE.format(new LangBuilder().setVal(question.getAuthor())));
                     }
                     questionMeta.setLore(loreList);
                     questionMeta.getPersistentDataContainer().set(new NamespacedKey(trivia, "trivia_question_id"), PersistentDataType.INTEGER,
@@ -107,7 +106,7 @@ public class ListMenu extends PaginatedMenu {
                     inventory.addItem(questionItem);
                 }
             }
-        insertItem(Material.EMERALD, "(+) Add new Trivia Question", 53);
+        insertItem(Material.EMERALD, Lang.LIST_MENU_NEW_QUESTION.format(null), 53);
         if (playerMenuUtility.getPreviousMenu() != null) {
             ItemStack previousMenuItem = BACK;
             ItemMeta previousMenuMeta = previousMenuItem.getItemMeta();

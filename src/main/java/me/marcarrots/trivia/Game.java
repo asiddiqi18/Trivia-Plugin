@@ -22,6 +22,7 @@ public class Game {
     private final int timeBetween;
     private final CommandSender player;
     private final BukkitScheduler scheduler;
+    private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
     private Timer timer;
@@ -55,6 +56,7 @@ public class Game {
         this.scores = new PlayerScoreHolder(trivia);
         this.roundResult = RoundResult.ANSWERED;
         this.scheduler = Bukkit.getServer().getScheduler();
+        this.roundTimeStart = 0;
     }
 
     public PlayerScoreHolder getScores() {
@@ -83,23 +85,33 @@ public class Game {
             questionHolder.setUniqueQuestions(true);
         }
         scores.addPlayersToGame();
-        Bukkit.broadcastMessage(Lang.TRIVIA_START.format());
+        Bukkit.broadcastMessage(Lang.TRIVIA_START.format(null));
         playSoundToAll("Game start sound", "Game start pitch");
         timer = new Timer(trivia, amountOfRounds, timePerQuestion,
                 () -> { // after game
-                    Bukkit.broadcastMessage(Lang.TRIVIA_OVER.format());
-                    Bukkit.broadcastMessage(Lang.TRIVIA_OVER_WINNER_LINE.format());
+                    Bukkit.broadcastMessage(Lang.TRIVIA_OVER.format(null));
+                    Bukkit.broadcastMessage(Lang.TRIVIA_OVER_WINNER_LINE.format(null));
                     playSoundToAll("Game over sound", "Game over pitch");
                     scores.broadcastLargestScores();
                     scores = null;
                     trivia.clearGame();
                 },
                 (t) -> { // after each round
+                    roundTimeStart = System.currentTimeMillis();
                     if (roundResult.equals(RoundResult.UNANSWERED)) {
-                        Bukkit.broadcastMessage(Lang.TIME_UP.format(null, getCurrentQuestion().getQuestionString(), String.valueOf(getCurrentQuestion().getAnswerList()), getQuestionNum(), 0));
+                        Bukkit.broadcastMessage(Lang.TIME_UP.format(new LangBuilder()
+                                .setQuestion(getCurrentQuestion().getQuestionString())
+                                .setAnswer(String.valueOf(getCurrentQuestion().getAnswerList()))
+                                .setQuestionNum(getQuestionNum())
+                        ));
+
                         playSoundToAll("Time up sound", "Time up pitch");
                     } else if (roundResult.equals(RoundResult.SKIPPED)) {
-                        Bukkit.broadcastMessage(Lang.SKIP.format(null, getCurrentQuestion().getQuestionString(), String.valueOf(getCurrentQuestion().getAnswerList()), getQuestionNum(), 0));
+                        Bukkit.broadcastMessage(Lang.SKIP.format(new LangBuilder()
+                                .setQuestion(getCurrentQuestion().getQuestionString())
+                                .setAnswer(String.valueOf(getCurrentQuestion().getAnswerList()))
+                                .setQuestionNum(getQuestionNum())
+                        ));
                     }
                     currentQuestion = null;
                     scheduler.cancelTask(t.getAssignedTaskId());
@@ -107,7 +119,11 @@ public class Game {
                         roundResult = RoundResult.UNANSWERED;
                         setRandomQuestion();
                         t.scheduleTimer();
-                        Bukkit.broadcastMessage(Lang.QUESTION.format(null, getCurrentQuestion().getQuestionString(), correctAnswer, getQuestionNum(), 0));
+                        Bukkit.broadcastMessage(Lang.QUESTION.format(new LangBuilder()
+                                .setQuestion(getCurrentQuestion().getQuestionString())
+                                .setAnswer(correctAnswer)
+                                .setQuestionNum(getQuestionNum())
+                        ));
                     }, timeBetween * 20);
                 }
         );
@@ -131,7 +147,14 @@ public class Game {
                 correctAnswer = answer;
                 BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
                 scheduler.scheduleSyncDelayedTask(trivia, () -> {
-                    Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(e.getPlayer(), getCurrentQuestion().getQuestionString(), correctAnswer, getQuestionNum(), 0));
+                    String timeToAnswer = Trivia.getElapsedTime(roundTimeStart);
+                    Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(new LangBuilder()
+                            .setPlayer(e.getPlayer())
+                            .setQuestion(getCurrentQuestion().getQuestionString())
+                            .setAnswer(correctAnswer)
+                            .setQuestionNum(getQuestionNum())
+                            .setElapsedTime(timeToAnswer)
+                    ));
                     playSound(e.getPlayer(), "Answer correct sound", "Answer correct pitch");
                     scores.addScore(e.getPlayer());
                     roundResult = RoundResult.ANSWERED;

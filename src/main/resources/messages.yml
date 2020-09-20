@@ -1,0 +1,52 @@
+# The "messages" section are the messages that will be displayed during a trivia game.
+# Feel free to modify them to your liking.
+# Placeholders:
+# %prefix% - a custom prefix that you can define in the 'Plugin Prefix' section.
+# %player% - player's display name.
+# %username% - player's actual name.
+# %points% - the amount of trivia questions a player has solved.
+# %question% and %answer% - question and answer respectively.
+# %questionNumber% - the question number.
+
+Plugin Prefix: "&6[Trivia]&r"
+Trivia Start: "%prefix% &eTrivia is commencing. Get ready!"
+Trivia Over: "&eTrivia is over!"
+Winner Line: "&6Winners:"
+Winner List: "&0➤ &3%player%: &b%points%"
+No Winners: "%prefix% &6There are no winners of this trivia event!"
+Solved Message: "&a%player% has answered the question correctly! The answer was &2%answer%&a."
+Question Time Up: "&cTime is up! Next question..."
+Question Display: "&6(%questionNumber%) &e%question%"
+Question Skipped: "&cQuestion skipped! On to the next question..."
+Menu Change: "&cClick here to change"
+Menu Back: "&aGo back"
+Menu Close: "&cClose"
+Main Menu Title: "Main Menu"
+Main Menu Start: "Start Trivia"
+Main Menu Start Description: "Modify options and get started!"
+Main Menu Rewards: "Rewards"
+Main Menu Rewards Description: "Adjust trivia prizes that are given to winners."
+Main Menu List: "List Questions"
+Main Menu List Description: "Create new questions or modify existing questions."
+Params Menu Title: "Game parameters"
+Params Menu Total: "Total rounds"
+Params Menu Time: "Time per question"
+Params Menu Repeat: "Allow question repetition"
+Params Menu Start: "Start trivia"
+List Menu Title: "Trivia Questions (page %val%)"
+List Menu Question: "&bQuestion #%val%"
+List Menu Question Lore: "Question: %val%"
+List Menu Answer Lore: "Answer: %val%"
+List Menu Author Lore: "Submitted by: &e%val%"
+List Menu New Question: "(+) Add new Trivia Question"
+View Menu Title: "Trivia Question #%val%"
+View Menu Question: "Question"
+View Menu Answer: "Answer"
+View Menu Delete: "Delete this question"
+Rewards General Menu Title: "Rewards Menu"
+Rewards General First: "First Place"
+Rewards General Second: "Second Place"
+Rewards General Third: "Third Place"
+Rewards Specific Money: "Rewarded Money"
+Rewards Specific Exp: "Rewarded Experience Points"
+Rewards Specific Message: "Reward Message"

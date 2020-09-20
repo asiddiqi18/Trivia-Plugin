@@ -1,5 +1,7 @@
 package me.marcarrots.trivia.menu.subMenus;
 
+import me.marcarrots.trivia.Lang;
+import me.marcarrots.trivia.LangBuilder;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.ConversationPrompt;
@@ -20,8 +22,10 @@ public class ViewMenu extends Menu {
     }
 
     @Override
-    public String getMenuName() {
-        return "Trivia Question";
+
+    public String getMenuName()
+    {
+        return Lang.VIEW_MENU_TITLE.format(new LangBuilder().setVal(String.valueOf(playerMenuUtility.getQuestion().getId())));
     }
 
     @Override
@@ -67,9 +71,11 @@ public class ViewMenu extends Menu {
 
     @Override
     public void setMenuItems() {
-        insertItemWrap(Material.GREEN_TERRACOTTA, "Question", playerMenuUtility.getQuestion().getQuestionString(), 11);
-        insertItemWrap(Material.YELLOW_TERRACOTTA, "Answer", this.playerMenuUtility.getQuestion().getAnswerList().toString(), 13);
-        insertItem(Material.RED_TERRACOTTA, "Delete This Question", 15);
+
+        insertItemWrap(Material.GREEN_TERRACOTTA, Lang.VIEW_MENU_QUESTION.format(null), playerMenuUtility.getQuestion().getQuestionString(), 11);
+        insertItemWrap(Material.YELLOW_TERRACOTTA, Lang.VIEW_MENU_ANSWER.format(null), playerMenuUtility.getQuestion().getAnswerList().toString(), 13);
+        insertItem(Material.RED_TERRACOTTA, Lang.VIEW_MENU_DELETE.format(null),15);
+
         inventory.setItem(27, BACK);
         inventory.setItem(31, CLOSE);
         fillRest();

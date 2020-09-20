@@ -46,6 +46,7 @@ public class TriviaCommand implements CommandExecutor {
                         trivia.reloadConfig();
                         trivia.readQuestions();
                         trivia.loadConfig();
+                        trivia.loadMessages();
                         commandSender.sendMessage(ChatColor.GREEN + "Trivia files have been reloaded.");
                     } catch (Exception e) {
                         commandSender.sendMessage(ChatColor.RED + "Failed to reload files");
