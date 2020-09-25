@@ -52,12 +52,12 @@ public class ImportQuestions {
         return lineData.size();
     }
 
-    public void readFile(int val) throws IOException, NumberFormatException {
+    public Question readFile(int val) throws IOException, NumberFormatException {
         if (lineData == null) {
             getLineByLine();
         }
         questionID = val - 1;
-        if (questionID > lineData.size()) {
+        if (questionID > lineData.size() || questionID <= 0) {
             throw new NumberFormatException();
         }
 
@@ -67,8 +67,7 @@ public class ImportQuestions {
         }
         trivia.writeQuestions(question.getQuestionString(), question.getAnswerList(), question.getAuthor());
         trivia.readQuestions();
-
-
+        return question;
     }
 
 }

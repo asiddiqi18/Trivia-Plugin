@@ -14,7 +14,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Objects;
 
 public class MainMenu extends Menu {

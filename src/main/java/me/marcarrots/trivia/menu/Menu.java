@@ -7,14 +7,12 @@ import me.marcarrots.trivia.Trivia;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.junit.experimental.theories.ParametersSuppliedBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,7 +125,7 @@ public abstract class Menu implements InventoryHolder {
         StringBuilder sb = new StringBuilder(string);
         int i = 0;
         while (i + wrapLength < sb.length() && (i = sb.lastIndexOf(" ", i + wrapLength)) != -1) {
-            sb.replace(i, i + 1, "\n"+color);
+            sb.replace(i, i + 1, "\n" + color);
         }
         return new ArrayList<>(Arrays.asList(sb.toString().split("\n")));
 

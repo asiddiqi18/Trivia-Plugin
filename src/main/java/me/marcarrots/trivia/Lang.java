@@ -2,7 +2,6 @@ package me.marcarrots.trivia;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
@@ -11,16 +10,17 @@ public enum Lang {
     TRIVIA_START("Trivia Start", "&eTrivia is commencing. Get ready!"),
     TRIVIA_OVER("Trivia Over", "&eTrivia is over!"),
     TRIVIA_OVER_WINNER_LINE("Winner Line", "&6Winners:"),
-    TRIVIA_ANNOUNCE_WINNER_LIST("Winner List", "&0➤ &3%player%: &b%points%"),
+    TRIVIA_ANNOUNCE_WINNER_LIST("Winner List", "&0- &3%player%: &b%points%"),
     TRIVIA_NO_WINNERS("No Winners", "&6There are no winners of this trivia event!"),
     SOLVED_MESSAGE("Solved Message", "&a%player% has answered the question correctly! The answer was &2%answer%&a."),
     TIME_UP("Question Time Up", "&cTime is up! Next question..."),
     QUESTION("Question Display", "&6(%questionNumber%) &e%question%"),
     SKIP("Question Skipped", "&cQuestion skipped! On to the next question..."),
+    GAME_HALTED("Game Halted", "&cTrivia has been forcibly halted!"),
+    RELOAD("Reload Success", "&aAll trivia files have been reloaded."),
     MENU_CHANGE("Menu Change", "&aGo back"),
     MENU_BACK("Menu Back", "&cClick here to change"),
     MENU_CLOSE("Menu Close", "&cClose"),
-
     MAIN_MENU_TITLE("Main Menu Title", "Main Menu"),
     MAIN_MENU_START("Main Menu Start", "Start Trivia"),
     MAIN_MENU_START_DESCRIPTION("Main Menu Start Description", "Modify options and get the game started!"),

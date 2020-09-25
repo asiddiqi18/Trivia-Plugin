@@ -1,7 +1,7 @@
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import me.marcarrots.trivia.api.StringSimilarity;
+import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;

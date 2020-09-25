@@ -23,8 +23,7 @@ public class ViewMenu extends Menu {
 
     @Override
 
-    public String getMenuName()
-    {
+    public String getMenuName() {
         return Lang.VIEW_MENU_TITLE.format(new LangBuilder().setVal(String.valueOf(playerMenuUtility.getQuestion().getId())));
     }
 
@@ -74,7 +73,7 @@ public class ViewMenu extends Menu {
 
         insertItemWrap(Material.GREEN_TERRACOTTA, Lang.VIEW_MENU_QUESTION.format(null), playerMenuUtility.getQuestion().getQuestionString(), 11);
         insertItemWrap(Material.YELLOW_TERRACOTTA, Lang.VIEW_MENU_ANSWER.format(null), playerMenuUtility.getQuestion().getAnswerList().toString(), 13);
-        insertItem(Material.RED_TERRACOTTA, Lang.VIEW_MENU_DELETE.format(null),15);
+        insertItem(Material.RED_TERRACOTTA, Lang.VIEW_MENU_DELETE.format(null), 15);
 
         inventory.setItem(27, BACK);
         inventory.setItem(31, CLOSE);

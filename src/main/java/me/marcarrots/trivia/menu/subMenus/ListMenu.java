@@ -25,7 +25,7 @@ public class ListMenu extends PaginatedMenu {
     }
 
     public String getMenuName() {
-        return Lang.LIST_MENU_TITLE.format(new LangBuilder().setVal(String.valueOf(page+1)));
+        return Lang.LIST_MENU_TITLE.format(new LangBuilder().setVal(String.valueOf(page + 1)));
     }
 
 

@@ -9,7 +9,6 @@ import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

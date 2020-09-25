@@ -29,9 +29,9 @@ public final class Trivia extends JavaPlugin {
     private final ChatEvent chatEvent = new ChatEvent(this);
     private final PlayerJoin playerJoin = new PlayerJoin(this);
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
-    boolean schedulingEnabled;
-    int automatedTime;
-    int automatedPlayerReq;
+    private boolean schedulingEnabled;
+    private int automatedTime;
+    private int automatedPlayerReq;
     private long nextAutomatedTime;
     private int largestQuestionNum = 0;
     private int schedulerTask;
@@ -116,7 +116,6 @@ public final class Trivia extends JavaPlugin {
         }
 
         readQuestions();
-        configUpdater();
         game = null;
         new MetricsLite(this, 7912);
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
@@ -138,6 +137,8 @@ public final class Trivia extends JavaPlugin {
                 Bukkit.getLogger().info(updateNotice);
             }
         });
+
+        configUpdater();
 
     }
 
@@ -173,13 +174,13 @@ public final class Trivia extends JavaPlugin {
     }
 
     public void loadConfig() {
+        getConfig().options().copyDefaults(true);
+        saveDefaultConfig();
+
         schedulingEnabled = getConfig().getBoolean("Scheduled games", false);
         automatedTime = getConfig().getInt("Scheduled games interval", 60);
         automatedPlayerReq = getConfig().getInt("Scheduled games minimum players", 6);
-
         automatedSchedule();
-        getConfig().options().copyDefaults(true);
-        saveDefaultConfig();
     }
 
     public void writeQuestions(String question, List<String> answer, String author) {
@@ -293,10 +294,10 @@ public final class Trivia extends JavaPlugin {
 
     private void configUpdater() {
         HashMap<String, Object> newKeys = new HashMap<>();
-        int currentConfigVersion = getConfig().getInt("Config Version", 1);
+        int currentConfigVersion = getConfig().getInt("Config Version");
         // if they have version 1 of the config...
-
-        if (currentConfigVersion == 1) {
+        Bukkit.getLogger().info("Current config version: " + currentConfigVersion);
+        if (currentConfigVersion <= 1) {
             newKeys.put("Scheduled games", schedulingEnabled);
             newKeys.put("Scheduled games interval", automatedTime);
             newKeys.put("Scheduled games minimum players", automatedPlayerReq);
@@ -308,7 +309,7 @@ public final class Trivia extends JavaPlugin {
             newKeys.put(Lang.SKIP.getPath(), Lang.SKIP.getDefault());
         }
 
-        if (newKeys.size() == 0) {
+        if (newKeys.isEmpty()) {
             return;
         }
 
@@ -320,7 +321,7 @@ public final class Trivia extends JavaPlugin {
             saveConfig();
         }
 
-        getConfig().set("Config Version", 3);
+        getConfig().set("Config Version", 4);
         saveConfig();
     }
 

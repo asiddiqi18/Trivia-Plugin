@@ -4,13 +4,11 @@
 
 package me.marcarrots.trivia;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class Rewards {
 

@@ -36,10 +36,9 @@ public class TriviaCommand implements CommandExecutor {
                 MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility((Player) commandSender), trivia, questionHolder);
                 menu.open();
             }
-        }
-        else {
+        } else {
             String prompt = strings[0];
-
+            final String border = ChatColor.translateAlternateColorCodes('&', "&e&m------------------------------");
             switch (prompt) {
                 case "reload":
                     try {
@@ -47,7 +46,7 @@ public class TriviaCommand implements CommandExecutor {
                         trivia.readQuestions();
                         trivia.loadConfig();
                         trivia.loadMessages();
-                        commandSender.sendMessage(ChatColor.GREEN + "Trivia files have been reloaded.");
+                        commandSender.sendMessage(Lang.RELOAD.format(null));
                     } catch (Exception e) {
                         commandSender.sendMessage(ChatColor.RED + "Failed to reload files");
                         e.printStackTrace();
@@ -59,7 +58,7 @@ public class TriviaCommand implements CommandExecutor {
                         return false;
                     }
                     trivia.getGame().stop();
-                    commandSender.sendMessage(ChatColor.RED + "Trivia has been forcibly halted.");
+                    commandSender.sendMessage(Lang.GAME_HALTED.format(null));
                     return false;
                 case "start":
                     if (trivia.getGame() != null) {
@@ -82,34 +81,40 @@ public class TriviaCommand implements CommandExecutor {
                     commandSender.sendMessage("Trivia version: " + trivia.getDescription().getVersion());
                     return false;
                 case "import":
+                    Question q;
                     try {
                         if (strings.length != 2) {
                             commandSender.sendMessage(String.format("%sUsage: %s/trivia import %s<question number>%s,", ChatColor.DARK_AQUA, ChatColor.GOLD, ChatColor.AQUA, ChatColor.DARK_AQUA));
                             commandSender.sendMessage(String.format("%swhere %s<question number> %sis the id of the question to import.", ChatColor.DARK_AQUA, ChatColor.AQUA, ChatColor.DARK_AQUA));
-                            commandSender.sendMessage(String.format("%sGet a list of available questions with their ids at: %s%s", ChatColor.DARK_AQUA, ChatColor.AQUA, "<link>"));
+                            commandSender.sendMessage(String.format("%sGet a list of available questions with their ids at: %s%s", ChatColor.DARK_AQUA, ChatColor.AQUA, "pastebin.com/7cTQznMZ"));
                             return false;
                         } else {
-                            importQuestions.readFile(Integer.parseInt(strings[1]));
+                            q = importQuestions.readFile(Integer.parseInt(strings[1]));
                         }
                     } catch (IOException e) {
                         commandSender.sendMessage("An unexpected IO error has occurred.");
                         e.printStackTrace();
                         return false;
                     } catch (NumberFormatException e) {
-                        commandSender.sendMessage(String.format("The ID '%s' is invalid and could not be imported.", strings[1]));
+                        commandSender.sendMessage(String.format("%sThe ID '%s' is invalid and could not be imported. Find valid ones at: %s%s", ChatColor.RED,  strings[1], ChatColor.DARK_RED, "pastebin.com/7cTQznMZ"));
                         return false;
                     }
-                    commandSender.sendMessage("Successfully imported question!");
+                    commandSender.sendMessage(border);
+                    commandSender.sendMessage(String.format(ChatColor.GREEN + "Successfully imported question #%s!", strings[1]));
+                    commandSender.sendMessage(String.format("  %sQuestion:    %s%s", ChatColor.GREEN, ChatColor.DARK_AQUA, q.getQuestionString()));
+                    commandSender.sendMessage(String.format("  %sAnswer(s):   %s%s",ChatColor.GREEN, ChatColor.DARK_AQUA, q.getAnswerList().toString()));
+                    commandSender.sendMessage(border);
                     return false;
                 default:
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&m------------&e[ &6Trivia &e]&m------------"));
-                    commandSender.sendMessage(helpFormat("", "Opens up the in-game menu to start trivia or change settings."));
+                    commandSender.sendMessage(helpFormat("", "(Main command) Opens up the in-game menu to start trivia or change settings."));
                     commandSender.sendMessage(helpFormat("start", "Quickly starts up a trivia game."));
                     commandSender.sendMessage(helpFormat("stop", "Stops the current trivia game in progress."));
                     commandSender.sendMessage(helpFormat("skip", "Skips a trivia question during a game."));
-                    commandSender.sendMessage(helpFormat("reload", "Reloads the trivia config files."));
+                    commandSender.sendMessage(helpFormat("import", "Imports a pre-made question/answer from a given ID to your server."));
+                    commandSender.sendMessage(helpFormat("reload", "Reloads all the trivia files."));
                     commandSender.sendMessage(helpFormat("help", "Displays this trivia help menu."));
-                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&m------------------------------"));
+                    commandSender.sendMessage(border);
                     return false;
             }
 
