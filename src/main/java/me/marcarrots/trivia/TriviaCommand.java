@@ -65,7 +65,8 @@ public class TriviaCommand implements CommandExecutor {
                         commandSender.sendMessage(ChatColor.RED + "There is already a trivia game in progress.");
                         return false;
                     }
-                    trivia.setGame(new Game(trivia, questionHolder, commandSender));
+                    trivia.setGame(new Game(trivia, questionHolder));
+                    trivia.getGame().setParameters(commandSender);
                     trivia.getGame().start();
                     return false;
                 case "skip":

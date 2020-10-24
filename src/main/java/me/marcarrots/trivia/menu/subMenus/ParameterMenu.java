@@ -47,7 +47,8 @@ public class ParameterMenu extends Menu {
                 player.sendMessage(ChatColor.RED + "A trivia game is already in progress.");
                 return;
             }
-            trivia.setGame(new Game(trivia, questionHolder, playerMenuUtility));
+            trivia.setGame(new Game(trivia, questionHolder));
+            trivia.getGame().setParameters(playerMenuUtility);
             trivia.getGame().start();
             player.closeInventory();
         } else if (type == Material.OAK_SIGN) {

@@ -144,7 +144,10 @@ public final class Trivia extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        if (game != null) {
+            game.stop();
+            game = null;
+        }
     }
 
     public void loadMessages() {
