@@ -5,11 +5,13 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.menu.subMenus.MainMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
 
@@ -105,6 +107,10 @@ public class TriviaCommand implements CommandExecutor {
                     commandSender.sendMessage(String.format("  %sQuestion:    %s%s", ChatColor.GREEN, ChatColor.DARK_AQUA, q.getQuestionString()));
                     commandSender.sendMessage(String.format("  %sAnswer(s):   %s%s",ChatColor.GREEN, ChatColor.DARK_AQUA, q.getAnswerList().toString()));
                     commandSender.sendMessage(border);
+                    return false;
+                case "debug":
+                    commandSender.sendMessage(String.format("Active workers:  %s, \nPending tasks: %s", Bukkit.getScheduler().getActiveWorkers(), Bukkit.getScheduler().getPendingTasks()));
+                    //new NewTimer(trivia).startTimer();
                     return false;
                 default:
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&m------------&e[ &6Trivia &e]&m------------"));

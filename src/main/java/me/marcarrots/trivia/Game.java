@@ -12,6 +12,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class Game {
     private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
-    private Timer timer;
+    private NewTimer timer;
     private RoundResult roundResult;
     private String correctAnswer;
     private int task;
@@ -89,8 +90,8 @@ public class Game {
         Bukkit.broadcastMessage(Lang.TRIVIA_START.format(null));
         Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
         startBossBar();
-        timer = new Timer(trivia, amountOfRounds, timePerQuestion,
-                () -> { // after game
+        timer = new NewTimer(trivia, amountOfRounds, timePerQuestion, bossBar,
+                ()-> { // after game
                     Bukkit.broadcastMessage(Lang.TRIVIA_OVER.format(null));
                     Bukkit.broadcastMessage(Lang.TRIVIA_OVER_WINNER_LINE.format(null));
                     Effects.playSoundToAll("Game over sound", trivia.getConfig(), "Game over pitch");
@@ -117,15 +118,15 @@ public class Game {
                         ));
                     }
                     currentQuestion = null;
-                    scheduler.cancelTask(t.getAssignedTaskId());
+                    // scheduler.cancelTask(t.getAssignedTaskId());
                     task = scheduler.scheduleSyncDelayedTask(trivia, () -> {
                         roundResult = RoundResult.UNANSWERED;
                         setRandomQuestion();
-                        t.scheduleTimer();
+                        t.startTimer();
 
                         bossBar.setTitle(String.format("Trivia Match (%d/%d)", getQuestionNum(), amountOfRounds));
                         bossBar.setColor(BarColor.RED);
-                        bossBar.setProgress((float)getQuestionNum()/amountOfRounds);
+                        bossBar.setProgress(((float)getQuestionNum()-1)/amountOfRounds);
                         Bukkit.broadcastMessage(Lang.QUESTION.format(new LangBuilder()
                                 .setQuestion(getCurrentQuestion().getQuestionString())
                                 .setAnswer(correctAnswer)
@@ -134,13 +135,13 @@ public class Game {
                     }, timeBetween * 20);
                 }
         );
-        timer.scheduleTimerInitialize();
+        timer.startTimerInitial();
     }
 
     public void stop() {
         hideBossBar();
         scheduler.cancelTask(task);
-        timer.stop();
+        timer.endTimer();
     }
 
     private int getQuestionNum() {
@@ -157,6 +158,24 @@ public class Game {
                 scheduler.scheduleSyncDelayedTask(trivia, () -> {
                     String timeToAnswer = Trivia.getElapsedTime(roundTimeStart);
                     bossBar.setColor(BarColor.GREEN);
+
+                    double goal = ((float)getQuestionNum())/amountOfRounds;
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            double currentProgress = bossBar.getProgress();
+                            if (currentProgress < goal) {
+                                System.out.println("True!");
+                                currentProgress = currentProgress + 0.005;
+                                bossBar.setProgress(currentProgress);
+                            } else {
+                                System.out.printf("False! (%f < %f)\n", currentProgress, goal);
+                                this.cancel();
+                            }
+                        }
+                    }.runTaskTimer(trivia, 0, timeBetween/2);
+
+
                     Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(new LangBuilder()
                             .setPlayer(e.getPlayer())
                             .setQuestion(getCurrentQuestion().getQuestionString())
