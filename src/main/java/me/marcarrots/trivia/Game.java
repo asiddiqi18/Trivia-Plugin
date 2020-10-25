@@ -4,19 +4,13 @@ import me.marcarrots.trivia.api.StringSimilarity;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
-
-import java.util.List;
-import java.util.Objects;
 
 public class Game {
     private final QuestionHolder questionHolder;
@@ -31,7 +25,7 @@ public class Game {
     private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
-    private NewTimer timer;
+    private Timer timer;
     private RoundResult roundResult;
     private String correctAnswer;
     private int task;
@@ -90,15 +84,18 @@ public class Game {
         Bukkit.broadcastMessage(Lang.TRIVIA_START.format(null));
         Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
         startBossBar();
-        timer = new NewTimer(trivia, amountOfRounds, timePerQuestion, bossBar,
+        timer = new Timer(trivia, amountOfRounds, timePerQuestion, bossBar,
                 ()-> { // after game
+                    Bukkit.broadcastMessage(Trivia.border);
                     Bukkit.broadcastMessage(Lang.TRIVIA_OVER.format(null));
                     Bukkit.broadcastMessage(Lang.TRIVIA_OVER_WINNER_LINE.format(null));
+                    Bukkit.broadcastMessage(Trivia.border);
                     Effects.playSoundToAll("Game over sound", trivia.getConfig(), "Game over pitch");
                     scores.broadcastLargestScores();
+                    Bukkit.broadcastMessage(Trivia.border);
                     scores = null;
                     trivia.clearGame();
-                    hideBossBar();
+                    gameOverBossBar();
                 },
                 (t) -> { // after each round
                     roundTimeStart = System.currentTimeMillis();
@@ -118,12 +115,10 @@ public class Game {
                         ));
                     }
                     currentQuestion = null;
-                    // scheduler.cancelTask(t.getAssignedTaskId());
                     task = scheduler.scheduleSyncDelayedTask(trivia, () -> {
                         roundResult = RoundResult.UNANSWERED;
                         setRandomQuestion();
                         t.startTimer();
-
                         bossBar.setTitle(String.format("Trivia Match (%d/%d)", getQuestionNum(), amountOfRounds));
                         bossBar.setColor(BarColor.RED);
                         bossBar.setProgress(((float)getQuestionNum()-1)/amountOfRounds);
@@ -158,23 +153,28 @@ public class Game {
                 scheduler.scheduleSyncDelayedTask(trivia, () -> {
                     String timeToAnswer = Trivia.getElapsedTime(roundTimeStart);
                     bossBar.setColor(BarColor.GREEN);
-
+                    double incrementAmt = 1/((double)amountOfRounds*20);
                     double goal = ((float)getQuestionNum())/amountOfRounds;
                     new BukkitRunnable() {
                         @Override
                         public void run() {
                             double currentProgress = bossBar.getProgress();
+                            double amtToSet = currentProgress + incrementAmt;
                             if (currentProgress < goal) {
-                                System.out.println("True!");
-                                currentProgress = currentProgress + 0.005;
-                                bossBar.setProgress(currentProgress);
+                                if (amtToSet >= 1) {
+                                    bossBar.setProgress(1);
+                                    this.cancel();
+                                } else if (amtToSet >= goal) {
+                                    bossBar.setProgress(goal);
+                                } else {
+                                    currentProgress = amtToSet;
+                                    bossBar.setProgress(currentProgress);
+                                }
                             } else {
-                                System.out.printf("False! (%f < %f)\n", currentProgress, goal);
                                 this.cancel();
                             }
                         }
-                    }.runTaskTimer(trivia, 0, timeBetween/2);
-
+                    }.runTaskTimer(trivia, 0, 1);
 
                     Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(new LangBuilder()
                             .setPlayer(e.getPlayer())
@@ -224,6 +224,23 @@ public class Game {
     public void hideBossBar() {
         bossBar.setVisible(true);
         bossBar.removeAll();
+    }
+
+    public void gameOverBossBar() {
+        bossBar.setTitle("Trivia is over!");
+        bossBar.setColor(BarColor.GREEN);
+        new BukkitRunnable() {
+            boolean turn = false;
+            @Override
+            public void run() {
+                if (turn) {
+                    hideBossBar();
+                    this.cancel();
+                }
+                bossBar.setTitle("Thanks for playing!");
+                turn = true;
+            }
+        }.runTaskTimer(trivia,100, 100);
     }
 
 }

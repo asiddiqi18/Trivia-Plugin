@@ -1,50 +1,71 @@
+/*
+ * Trivia by MarCarrot, 2020
+ */
+
 package me.marcarrots.trivia;
 
+
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.boss.BossBar;
 
 import java.util.function.Consumer;
 
 public class Timer implements Runnable {
 
-    private final JavaPlugin plugin;
+    private int counter;
+    private Trivia trivia;
+    private int taskID;
+
     private final int rounds;
     private final long secondsPer;
     private final Consumer<Timer> everyRound;
     private final Runnable afterTimer;
-    private Integer assignedTaskId;
     private int roundsLeft;
+    private int activeTimers;
+    private BossBar bossBar;
 
-    public Timer(JavaPlugin plugin, int rounds, long secondsPer, Runnable afterTimer, Consumer<Timer> everyRound) {
-        this.plugin = plugin;
+
+    public Timer(Trivia trivia, int rounds, long secondsPer, BossBar bossBar, Runnable afterTimer, Consumer<Timer> everyRound) {
+        this.trivia = trivia;
         this.rounds = rounds;
         this.roundsLeft = rounds;
         this.secondsPer = secondsPer;
         this.afterTimer = afterTimer;
         this.everyRound = everyRound;
-    }
-
-    public Integer getAssignedTaskId() {
-        return assignedTaskId;
+        this.bossBar = bossBar;
     }
 
     @Override
     public void run() {
-        if (roundsLeft < 1) {
-            afterTimer.run();
-            if (assignedTaskId != null) {
-                Bukkit.getScheduler().cancelTask(assignedTaskId);
-            }
-            return;
+        counter += 1; // 100 ms
+        if (counter % 5 == 0) {
+            bossBar.setProgress(((rounds - roundsLeft - 1) + ((float)counter / (secondsPer*10))) / rounds);
         }
-
-        everyRound.accept(this);
-        roundsLeft--;
+        if (counter >= secondsPer*10) {
+            handleNextRound();
+        }
     }
 
-    public void stop() {
-        roundsLeft = 0;
-        nextQuestion();
+    public void handleNextRound() {
+        skipTimer();
+        if (roundsLeft < 1) {
+            afterTimer.run();
+            System.out.println(activeTimers);
+            return;
+        }
+        counter = 0;
+        roundsLeft -= 1;
+        everyRound.accept(this);
+    }
+
+    public void startTimer() {
+        counter = 0;
+        activeTimers += 1;
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(trivia, this, 10, 2);
+    }
+
+    public void startTimerInitial() {
+        handleNextRound();
     }
 
     public int getRounds() {
@@ -55,23 +76,19 @@ public class Timer implements Runnable {
         return roundsLeft;
     }
 
-    public void scheduleTimer() {
-        assignedTaskId = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, secondsPer * 20);
-    }
-
-    public void scheduleTimerInitialize() {
-        assignedTaskId = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, 1);
-    }
-
     public void skipTimer() {
-        if (assignedTaskId != null) {
-            Bukkit.getScheduler().cancelTask(assignedTaskId);
-        }
+            activeTimers -= 1;
+            Bukkit.getScheduler().cancelTask(taskID);
     }
 
     public void nextQuestion() {
         skipTimer();
-        run();
+        startTimerInitial();
+    }
+
+    public void endTimer() {
+        roundsLeft = 0;
+        nextQuestion();
     }
 
 }

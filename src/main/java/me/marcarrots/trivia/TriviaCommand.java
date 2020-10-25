@@ -40,7 +40,6 @@ public class TriviaCommand implements CommandExecutor {
             }
         } else {
             String prompt = strings[0];
-            final String border = ChatColor.translateAlternateColorCodes('&', "&e&m------------------------------");
             switch (prompt) {
                 case "reload":
                     try {
@@ -102,15 +101,11 @@ public class TriviaCommand implements CommandExecutor {
                         commandSender.sendMessage(String.format("%sThe ID '%s' is invalid and could not be imported. Find valid ones at: %s%s", ChatColor.RED,  strings[1], ChatColor.DARK_RED, "pastebin.com/7cTQznMZ"));
                         return false;
                     }
-                    commandSender.sendMessage(border);
+                    commandSender.sendMessage(Trivia.border);
                     commandSender.sendMessage(String.format(ChatColor.GREEN + "Successfully imported question #%s!", strings[1]));
                     commandSender.sendMessage(String.format("  %sQuestion:    %s%s", ChatColor.GREEN, ChatColor.DARK_AQUA, q.getQuestionString()));
                     commandSender.sendMessage(String.format("  %sAnswer(s):   %s%s",ChatColor.GREEN, ChatColor.DARK_AQUA, q.getAnswerList().toString()));
-                    commandSender.sendMessage(border);
-                    return false;
-                case "debug":
-                    commandSender.sendMessage(String.format("Active workers:  %s, \nPending tasks: %s", Bukkit.getScheduler().getActiveWorkers(), Bukkit.getScheduler().getPendingTasks()));
-                    //new NewTimer(trivia).startTimer();
+                    commandSender.sendMessage(Trivia.border);
                     return false;
                 default:
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&m------------&e[ &6Trivia &e]&m------------"));
@@ -121,7 +116,7 @@ public class TriviaCommand implements CommandExecutor {
                     commandSender.sendMessage(helpFormat("import", "Imports a pre-made question/answer from a given ID to your server."));
                     commandSender.sendMessage(helpFormat("reload", "Reloads all the trivia files."));
                     commandSender.sendMessage(helpFormat("help", "Displays this trivia help menu."));
-                    commandSender.sendMessage(border);
+                    commandSender.sendMessage(Trivia.border);
                     return false;
             }
 

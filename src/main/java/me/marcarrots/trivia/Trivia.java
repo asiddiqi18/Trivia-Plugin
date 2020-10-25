@@ -40,6 +40,8 @@ public final class Trivia extends JavaPlugin {
     private FileManager questionsFile;
     private FileManager messagesFile;
     private FileManager rewardsFile;
+    final static String border = ChatColor.translateAlternateColorCodes('&', "&e&m------------------------------");
+
 
     private String updateNotice = null;
 
