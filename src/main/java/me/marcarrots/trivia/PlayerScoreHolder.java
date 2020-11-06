@@ -35,16 +35,18 @@ public class PlayerScoreHolder {
 
     public void updatePlayersToGame(Player player) {
         for (PlayerScore score : scores) {
-            if (score.getPlayer().equals(player)) {
+            if (score.getPlayer().getName().equals(player.getName())) {
+                score.setPlayer(player);
                 return;
             }
         }
+        System.out.println("Adding " + player.getName());
         scores.add(new PlayerScore(player));
     }
 
     public void addScore(Player player) {
         for (PlayerScore score : scores) {
-            if (score.getPlayer() == player) {
+            if (score.getPlayer().getName().equals(player.getName())) {
                 score.addScore();
             }
 

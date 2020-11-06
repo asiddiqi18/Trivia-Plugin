@@ -11,7 +11,7 @@ Default rounds: 10
 # Time between rounds is for the transition time (in seconds) between the rounds themselves.
 Time between rounds: 2
 
-# Top winner amount's value will show these many winners displayed in chat after a trivia game.
+# Top winner amount's value will show up to these many winners displayed in chat after a trivia game.
 Top winner amount: 3
 
 # Scheduled games, if true, will let console automatically host trivia every x minutes.
@@ -22,6 +22,9 @@ Scheduled games interval: 60
 
 # Scheduled games minimum players is the minimum number of players that must be on for scheduled trivia events to be hosted.
 Scheduled games minimum players: 6
+
+# Enabling boss bar will display a progress bar on the top of the screen as the game goes on.
+Enable boss bar: true
 
 # Summon fireworks, If true, will summon a random firework at the location of the trivia winners.
 Summon fireworks: true
@@ -44,4 +47,4 @@ Game over sound: ENTITY_PLAYER_LEVELUP
 Game over pitch: 0.9
 
 # This is to keep track of what config version this is. Do not modify!
-Config Version: 4
+Config Version: 5

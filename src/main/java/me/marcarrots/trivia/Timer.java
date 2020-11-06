@@ -38,7 +38,7 @@ public class Timer implements Runnable {
     @Override
     public void run() {
         counter += 1; // 100 ms
-        if (counter % 5 == 0) {
+        if (counter % 5 == 0 && bossBar != null) {
             bossBar.setProgress(((rounds - roundsLeft - 1) + ((float)counter / (secondsPer*10))) / rounds);
         }
         if (counter >= secondsPer*10) {

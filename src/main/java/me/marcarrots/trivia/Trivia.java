@@ -298,36 +298,52 @@ public final class Trivia extends JavaPlugin {
     }
 
     private void configUpdater() {
-        HashMap<String, Object> newKeys = new HashMap<>();
+        HashMap<String, Object> newConfigKeys = new HashMap<>();
+        HashMap<String, Object> newLangKeys = new HashMap<>();
         int currentConfigVersion = getConfig().getInt("Config Version");
         // if they have version 1 of the config...
         Bukkit.getLogger().info("Current config version: " + currentConfigVersion);
         if (currentConfigVersion <= 1) {
-            newKeys.put("Scheduled games", schedulingEnabled);
-            newKeys.put("Scheduled games interval", automatedTime);
-            newKeys.put("Scheduled games minimum players", automatedPlayerReq);
-            newKeys.put("Time between rounds", 2);
+            newConfigKeys.put("Scheduled games", schedulingEnabled);
+            newConfigKeys.put("Scheduled games interval", automatedTime);
+            newConfigKeys.put("Scheduled games minimum players", automatedPlayerReq);
+            newConfigKeys.put("Time between rounds", 2);
             currentConfigVersion = 2;
         }
 
         if (currentConfigVersion == 2) {
-            newKeys.put(Lang.SKIP.getPath(), Lang.SKIP.getDefault());
+            newConfigKeys.put(Lang.SKIP.getPath(), Lang.SKIP.getDefault());
         }
 
-        if (newKeys.isEmpty()) {
-            return;
+        if (currentConfigVersion == 3) {
+            newConfigKeys.put("Enable boss bar", true);
+            newLangKeys.put("Boss Bar Game Info", "Trivia Match (%questionNumber%/%totalQuestions%)");
+            newLangKeys.put("Boss Bar Game Over", "Trivia is over!");
+            newLangKeys.put("Boss Bar Thanks", "Thanks for playing!");
+
         }
 
-        // iterate through all the new keys
-        for (Map.Entry<String, Object> entry : newKeys.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            getConfig().set(key, value);
-            saveConfig();
-        }
-
-        getConfig().set("Config Version", 4);
+        getConfig().set("Config Version", 5);
         saveConfig();
+
+        if (!newConfigKeys.isEmpty()) {
+            // iterate through all the new keys
+            for (Map.Entry<String, Object> entry : newConfigKeys.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                getConfig().set(key, value);
+                saveConfig();
+            }
+        }
+
+        if (!newLangKeys.isEmpty()) {
+            for (Map.Entry<String, Object> entry : newLangKeys.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                messagesFile.getData().set(key, value);
+                messagesFile.saveData();
+            }
+        }
     }
 
     public static String getElapsedTime(long time) {

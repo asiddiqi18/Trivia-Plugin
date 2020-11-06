@@ -11,6 +11,8 @@ public class LangBuilder {
     private String questionString;
     private String answerString;
     private int questionNum;
+
+    private int totalQuestionNum;
     private int points;
     private String elapsedTime;
     private String val;
@@ -35,6 +37,11 @@ public class LangBuilder {
         return this;
     }
 
+    public LangBuilder setTotalQuestionNum(int totalQuestionNum) {
+        this.totalQuestionNum = totalQuestionNum;
+        return this;
+    }
+
     public LangBuilder setPoints(int points) {
         this.points = points;
         return this;
@@ -56,6 +63,10 @@ public class LangBuilder {
 
     public int getQuestionNum() {
         return questionNum;
+    }
+
+    public int getTotalQuestionNum() {
+        return totalQuestionNum;
     }
 
     public int getPoints() {

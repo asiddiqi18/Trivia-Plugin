@@ -16,6 +16,9 @@ public enum Lang {
     TIME_UP("Question Time Up", "&cTime is up! Next question..."),
     QUESTION("Question Display", "&6(%questionNumber%) &e%question%"),
     SKIP("Question Skipped", "&cQuestion skipped! On to the next question..."),
+    BOSS_BAR_INFO("Boss Bar Game Info", "Trivia Match (%questionNumber%/%totalQuestions%)"),
+    BOSS_BAR_GAME_OVER("Boss Bar Game Over", "Trivia is over!"),
+    BOSS_BAR_THANKS("Boss Bar Thanks", "Thanks for playing!"),
     GAME_HALTED("Game Halted", "&cTrivia has been forcibly halted!"),
     RELOAD("Reload Success", "&aAll trivia files have been reloaded."),
     MENU_CHANGE("Menu Change", "&aGo back"),
@@ -102,6 +105,7 @@ public enum Lang {
                 message = message.replace("%val%", builder.getVal());
             }
             message = message.replace("%questionNumber%", String.valueOf(builder.getQuestionNum()));
+            message = message.replace("%totalQuestions%", String.valueOf(builder.getTotalQuestionNum()));
             message = message.replace("%points%", String.valueOf(builder.getPoints()));
         }
 

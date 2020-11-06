@@ -8,6 +8,7 @@
 # %points% - the amount of trivia questions a player has solved.
 # %question% and %answer% - question and answer respectively.
 # %questionNumber% - the question number.
+# %totalQuestions% - total amount of questions in the hosted game.
 # %val% - placeholder for any arbitrary value, used for the GUI.
 
 Plugin Prefix: "&6[Trivia]&r"
@@ -20,6 +21,9 @@ Solved Message: "&a%player% has answered the question correctly! The answer was 
 Question Time Up: "&cTime is up! Next question..."
 Question Display: "&6(%questionNumber%) &e%question%"
 Question Skipped: "&cQuestion skipped! On to the next question..."
+Boss Bar Game Info: "Trivia Match (%questionNumber%/%totalQuestions%)"
+Boss Bar Game Over: "Trivia is over!"
+Boss Bar Thanks: "Thanks for playing!"
 Reload Success: "&aAll trivia files have been reloaded."
 Game Halted: "&cTrivia has been forcibly halted!"
 Menu Change: "&cClick here to change"
