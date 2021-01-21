@@ -2,17 +2,16 @@ package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.menu.PromptType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class QuestionHolder {
 
     private final List<Question> triviaQuestionList;
     private boolean uniqueQuestions;
+    private Trivia trivia;
 
-    public QuestionHolder(QuestionHolder questionHolder) {
+    public QuestionHolder(Trivia trivia, QuestionHolder questionHolder) {
+        this.trivia = trivia;
         this.triviaQuestionList = new ArrayList<>();
         this.triviaQuestionList.addAll(questionHolder.getTriviaQuestionList());
         this.uniqueQuestions = questionHolder.isUniqueQuestions();
@@ -87,4 +86,5 @@ public class QuestionHolder {
         }
         trivia.getQuestionsFile().saveData();
     }
+
 }

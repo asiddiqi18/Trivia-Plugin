@@ -25,6 +25,43 @@ public class Timer implements Runnable {
     private BossBar bossBar;
 
 
+    public static String getElapsedTime(long time) {
+
+        long durationInMillis = time - System.currentTimeMillis();
+
+        if (durationInMillis < 0) {
+            durationInMillis *= -1;
+        }
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+
+        long elapsedDays = durationInMillis / daysInMilli;
+        durationInMillis = durationInMillis % daysInMilli;
+        long elapsedHours = durationInMillis / hoursInMilli;
+        durationInMillis = durationInMillis % hoursInMilli;
+        long elapsedMinutes = durationInMillis / minutesInMilli;
+        durationInMillis = durationInMillis % minutesInMilli;
+        long elapsedSeconds = durationInMillis / secondsInMilli;
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if (elapsedDays > 0) {
+            stringBuilder.append(String.format("%02d days, ", elapsedDays));
+        }
+        if (elapsedHours > 0) {
+            stringBuilder.append(String.format("%02d hours, ", elapsedHours));
+        }
+        if (elapsedMinutes > 0) {
+            stringBuilder.append(String.format("%02d minutes, ", elapsedMinutes));
+        }
+        stringBuilder.append(String.format("%d seconds", elapsedSeconds));
+        return stringBuilder.toString();
+
+    }
+
     public Timer(Trivia trivia, int rounds, long secondsPer, BossBar bossBar, Runnable afterTimer, Consumer<Timer> everyRound) {
         this.trivia = trivia;
         this.rounds = rounds;
@@ -50,7 +87,6 @@ public class Timer implements Runnable {
         skipTimer();
         if (roundsLeft < 1) {
             afterTimer.run();
-            System.out.println(activeTimers);
             return;
         }
         counter = 0;

@@ -40,7 +40,6 @@ public class PlayerScoreHolder {
                 return;
             }
         }
-        System.out.println("Adding " + player.getName());
         scores.add(new PlayerScore(player));
     }
 

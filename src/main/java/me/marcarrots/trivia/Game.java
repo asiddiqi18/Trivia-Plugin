@@ -35,7 +35,7 @@ public class Game {
 
     public Game(Trivia trivia, QuestionHolder questionHolder) {
         this.trivia = trivia;
-        this.questionHolder = new QuestionHolder(questionHolder);
+        this.questionHolder = new QuestionHolder(trivia, questionHolder);
         this.scores = new PlayerScoreHolder(trivia);
         this.roundResult = RoundResult.ANSWERED;
         this.scheduler = Bukkit.getServer().getScheduler();
@@ -153,7 +153,7 @@ public class Game {
                 correctAnswer = answer;
                 BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
                 scheduler.scheduleSyncDelayedTask(trivia, () -> {
-                    String timeToAnswer = Trivia.getElapsedTime(roundTimeStart);
+                    String timeToAnswer = Timer.getElapsedTime(roundTimeStart);
                     afterAnswerFillBossBar();
                     Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(new LangBuilder()
                             .setPlayer(e.getPlayer())

@@ -1,8 +1,6 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.Lang;
-import me.marcarrots.trivia.QuestionHolder;
-import me.marcarrots.trivia.Trivia;
+import me.marcarrots.trivia.*;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.MenuType;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
@@ -69,8 +67,8 @@ public class MainMenu extends Menu {
         insertItem(Material.PAPER, Lang.MAIN_MENU_LIST.format(null), WordWrapLore(Lang.MAIN_MENU_LIST_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 15, false);
 
 
-        if (trivia.isSchedulingEnabled()) {
-            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + Trivia.getElapsedTime(trivia.getNextAutomatedTime()), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedPlayerReq()), 35, false), 0, 20);
+        if (trivia.getAutomatedGameManager().isSchedulingEnabled()) {
+            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + Timer.getElapsedTime(trivia.getAutomatedGameManager().getNextAutomatedTime()), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedGameManager().getAutomatedPlayerReq()), 35, false), 0, 20);
         }
 
         fillRest();

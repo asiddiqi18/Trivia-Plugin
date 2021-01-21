@@ -29,12 +29,7 @@ public final class Trivia extends JavaPlugin {
     private final ChatEvent chatEvent = new ChatEvent(this);
     private final PlayerJoin playerJoin = new PlayerJoin(this);
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
-    private boolean schedulingEnabled;
-    private int automatedTime;
-    private int automatedPlayerReq;
-    private long nextAutomatedTime;
     private int largestQuestionNum = 0;
-    private int schedulerTask;
     private Rewards[] rewards;
     private Game game;
     private FileManager questionsFile;
@@ -44,6 +39,7 @@ public final class Trivia extends JavaPlugin {
 
 
     private String updateNotice = null;
+    private AutomatedGameManager automatedGameManager;
 
     public static Economy getEcon() {
         return econ;
@@ -55,14 +51,6 @@ public final class Trivia extends JavaPlugin {
 
     public FileManager getRewardsFile() {
         return rewardsFile;
-    }
-
-    public boolean isSchedulingEnabled() {
-        return schedulingEnabled;
-    }
-
-    public int getAutomatedPlayerReq() {
-        return automatedPlayerReq;
     }
 
     public Rewards[] getRewards() {
@@ -81,8 +69,8 @@ public final class Trivia extends JavaPlugin {
         game = null;
     }
 
-    public long getNextAutomatedTime() {
-        return nextAutomatedTime;
+    public AutomatedGameManager getAutomatedGameManager() {
+        return automatedGameManager;
     }
 
     public String getUpdateNotice() {
@@ -102,22 +90,12 @@ public final class Trivia extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        loadConfig();
-        this.questionsFile = new FileManager(this, "questions.yml");
-        this.messagesFile = new FileManager(this, "messages.yml");
-        this.rewardsFile = new FileManager(this, "rewards.yml");
-        loadMessages();
-        generateRewards();
-        for (String questionNum : questionsFile.getData().getKeys(false)) {
-            try {
-                if (Integer.parseInt(questionNum) > largestQuestionNum)
-                    largestQuestionNum = Integer.parseInt(questionNum);
-            } catch (NumberFormatException e) {
-                Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
-            }
-        }
 
-        readQuestions();
+        loadConfig();
+        loadQuestions();
+        loadMessages();
+        loadRewards();
+
         game = null;
         new MetricsLite(this, 7912);
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
@@ -128,20 +106,21 @@ public final class Trivia extends JavaPlugin {
             Bukkit.getLogger().info("No vault has been detected, disabling vault features...");
         }
 
+        automatedGameManager = new AutomatedGameManager(this);
+        automatedGameManager.automatedSchedule();
+
         new UpdateChecker(this, 80401).getVersion(version -> {
-//            Bukkit.getLogger().info("Version available: " + version + ", Current version: " + getDescription().getVersion());
             if (!getDescription().getVersion().equalsIgnoreCase(version)) {
                 updateNotice = String.format("%s - There is a new version available for Trivia (new version: %s, current version: %s)! Get it at: %s.",
                         ChatColor.AQUA + "[Trivia!]" + ChatColor.YELLOW,
                         ChatColor.GREEN + version + ChatColor.YELLOW,
                         ChatColor.GREEN + getDescription().getVersion() + ChatColor.YELLOW,
                         ChatColor.WHITE + "https://www.spigotmc.org/resources/trivia-easy-to-setup-game-%C2%BB-custom-rewards-%C2%BB-in-game-gui-menus-more.80401/" + ChatColor.YELLOW);
-                Bukkit.getLogger().info(updateNotice);
+                Bukkit.getLogger().info(ChatColor.stripColor(updateNotice));
             }
         });
 
         configUpdater();
-
     }
 
     @Override
@@ -152,7 +131,30 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
+    public void loadConfig() {
+        getConfig().options().copyDefaults(true);
+        saveDefaultConfig();
+    }
+
+    public void loadQuestions() {
+        questionsFile = new FileManager(this, "questions.yml");
+
+        for (String questionNum : questionsFile.getData().getKeys(false)) {
+            try {
+                if (Integer.parseInt(questionNum) > largestQuestionNum)
+                    largestQuestionNum = Integer.parseInt(questionNum);
+            } catch (NumberFormatException e) {
+                Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
+            }
+        }
+
+        readQuestions();
+    }
+
     public void loadMessages() {
+        if (messagesFile == null) {
+            messagesFile = new FileManager(this, "messages.yml");
+        }
         if (getConfig().contains("Messages")) {
             Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old message data to new data...");
             List<String> messageKeys = Arrays.asList(
@@ -178,25 +180,27 @@ public final class Trivia extends JavaPlugin {
         Lang.setFile(messagesFile.getData());
     }
 
-    public void loadConfig() {
-        getConfig().options().copyDefaults(true);
-        saveDefaultConfig();
-
-        schedulingEnabled = getConfig().getBoolean("Scheduled games", false);
-        automatedTime = getConfig().getInt("Scheduled games interval", 60);
-        automatedPlayerReq = getConfig().getInt("Scheduled games minimum players", 6);
-        automatedSchedule();
-    }
-
-    public void writeQuestions(String question, List<String> answer, String author) {
-        HashMap<String, Object> questionMap = new HashMap<>();
-        questionMap.put("question", question);
-        questionMap.put("answer", answer);
-        if (author != null) {
-            questionMap.put("author", author);
+    private void loadRewards() {
+        rewardsFile = new FileManager(this, "rewards.yml");
+        if (getConfig().contains("Rewards")) {
+            for (int i = 0; i < 3; i++) {
+                if (getConfig().contains("Rewards." + i)) {
+                    Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old rewards data to new data...");
+                    rewardsFile.getData().set(i + ".Money", getConfig().getDouble("Rewards." + i + ".Money"));
+                    rewardsFile.getData().set(i + ".Experience", getConfig().getDouble("Rewards." + i + ".Experience"));
+                    rewardsFile.getData().set(i + ".Message", getConfig().getString("Rewards." + i + ".Message"));
+                    rewardsFile.getData().set(i + ".Items", getConfig().getList("Rewards." + i + ".Items"));
+                    rewardsFile.saveData();
+                }
+            }
+            getConfig().set("Rewards", null);
+            saveConfig();
         }
-        questionsFile.getData().createSection(String.valueOf(++largestQuestionNum), questionMap);
-        questionsFile.saveData();
+        int rewardAmt = 3;
+        rewards = new Rewards[rewardAmt];
+        for (int i = 0; i < rewardAmt; i++) {
+            rewards[i] = new Rewards(this, i);
+        }
     }
 
     public void readQuestions() {
@@ -232,32 +236,17 @@ public final class Trivia extends JavaPlugin {
         });
     }
 
-    private void generateRewards() {
-        loadRewards();
-        int rewardAmt = 3;
-        rewards = new Rewards[rewardAmt];
-        for (int i = 0; i < rewardAmt; i++) {
-            rewards[i] = new Rewards(this, i);
+    public void writeQuestions(String question, List<String> answer, String author) {
+        HashMap<String, Object> questionMap = new HashMap<>();
+        questionMap.put("question", question);
+        questionMap.put("answer", answer);
+        if (author != null) {
+            questionMap.put("author", author);
         }
+        questionsFile.getData().createSection(String.valueOf(++largestQuestionNum), questionMap);
+        questionsFile.saveData();
     }
 
-    private void loadRewards() {
-        if (getConfig().contains("Rewards")) {
-            for (int i = 0; i < 3; i++) {
-                if (getConfig().contains("Rewards." + i)) {
-                    Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old rewards data to new data...");
-                    rewardsFile.getData().set(i + ".Money", getConfig().getDouble("Rewards." + i + ".Money"));
-                    rewardsFile.getData().set(i + ".Experience", getConfig().getDouble("Rewards." + i + ".Experience"));
-                    rewardsFile.getData().set(i + ".Message", getConfig().getString("Rewards." + i + ".Message"));
-                    rewardsFile.getData().set(i + ".Items", getConfig().getList("Rewards." + i + ".Items"));
-                    rewardsFile.saveData();
-                }
-            }
-            getConfig().set("Rewards", null);
-            saveConfig();
-        }
-        messagesFile.reloadFiles();
-    }
 
     private boolean setupEconomy() {
         if (!vaultEnabled()) {
@@ -275,28 +264,6 @@ public final class Trivia extends JavaPlugin {
         return getServer().getPluginManager().getPlugin("Vault") != null;
     }
 
-    private void automatedSchedule() {
-        if (!schedulingEnabled) {
-            return;
-        }
-        setNextAutomatedTime();
-        BukkitScheduler scheduler = getServer().getScheduler();
-        scheduler.cancelTask(schedulerTask);
-        schedulerTask = scheduler.scheduleSyncRepeatingTask(this, () -> {
-            if (Bukkit.getOnlinePlayers().size() < automatedPlayerReq) {
-                return;
-            }
-            Bukkit.getLogger().info("Automated Trivia Beginning...");
-            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "trivia start");
-            setNextAutomatedTime();
-        }, automatedTime * 20 * 60, automatedTime * 20 * 60);
-
-    }
-
-    private void setNextAutomatedTime() {
-        nextAutomatedTime = System.currentTimeMillis() + (automatedTime * 60 * 1000);
-    }
-
     private void configUpdater() {
         HashMap<String, Object> newConfigKeys = new HashMap<>();
         HashMap<String, Object> newLangKeys = new HashMap<>();
@@ -304,9 +271,9 @@ public final class Trivia extends JavaPlugin {
         // if they have version 1 of the config...
         Bukkit.getLogger().info("Current config version: " + currentConfigVersion);
         if (currentConfigVersion <= 1) {
-            newConfigKeys.put("Scheduled games", schedulingEnabled);
-            newConfigKeys.put("Scheduled games interval", automatedTime);
-            newConfigKeys.put("Scheduled games minimum players", automatedPlayerReq);
+            newConfigKeys.put("Scheduled games", false);
+            newConfigKeys.put("Scheduled games interval", 60);
+            newConfigKeys.put("Scheduled games minimum players", 6);
             newConfigKeys.put("Time between rounds", 2);
             currentConfigVersion = 2;
         }
@@ -346,43 +313,4 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
-    public static String getElapsedTime(long time) {
-
-        long durationInMillis = time - System.currentTimeMillis();
-
-        if (durationInMillis < 0) {
-            durationInMillis *= -1;
-        }
-
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-        long hoursInMilli = minutesInMilli * 60;
-        long daysInMilli = hoursInMilli * 24;
-
-        long elapsedDays = durationInMillis / daysInMilli;
-        durationInMillis = durationInMillis % daysInMilli;
-
-        long elapsedHours = durationInMillis / hoursInMilli;
-        durationInMillis = durationInMillis % hoursInMilli;
-
-        long elapsedMinutes = durationInMillis / minutesInMilli;
-        durationInMillis = durationInMillis % minutesInMilli;
-
-        long elapsedSeconds = durationInMillis / secondsInMilli;
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        if (elapsedDays > 0) {
-            stringBuilder.append(String.format("%02d days, ", elapsedDays));
-        }
-        if (elapsedHours > 0) {
-            stringBuilder.append(String.format("%02d hours, ", elapsedHours));
-        }
-        if (elapsedMinutes > 0) {
-            stringBuilder.append(String.format("%02d minutes, ", elapsedMinutes));
-        }
-        stringBuilder.append(String.format("%d seconds", elapsedSeconds));
-        return stringBuilder.toString();
-
-    }
 }
