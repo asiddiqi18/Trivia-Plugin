@@ -36,7 +36,7 @@ public class RewardsSpecificMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return "Reward for Placing at " + place;
+        return place != 0 ? "Reward for Placing at " + place : "Reward for Answering First Per Round";
     }
 
     @Override

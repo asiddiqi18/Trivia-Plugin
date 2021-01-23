@@ -106,9 +106,6 @@ public final class Trivia extends JavaPlugin {
             Bukkit.getLogger().info("No vault has been detected, disabling vault features...");
         }
 
-        automatedGameManager = new AutomatedGameManager(this);
-        automatedGameManager.automatedSchedule();
-
         new UpdateChecker(this, 80401).getVersion(version -> {
             if (!getDescription().getVersion().equalsIgnoreCase(version)) {
                 updateNotice = String.format("%s - There is a new version available for Trivia (new version: %s, current version: %s)! Get it at: %s.",
@@ -134,6 +131,9 @@ public final class Trivia extends JavaPlugin {
     public void loadConfig() {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+
+        automatedGameManager = new AutomatedGameManager(this);
+        automatedGameManager.automatedSchedule();
     }
 
     public void loadQuestions() {

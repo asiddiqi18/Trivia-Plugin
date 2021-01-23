@@ -18,6 +18,7 @@ public class AutomatedGameManager {
 
     public AutomatedGameManager(Trivia trivia) {
         this.trivia = trivia;
+        trivia.getServer().getScheduler().cancelTask(schedulerTask);
         schedulingEnabled = trivia.getConfig().getBoolean("Scheduled games", false);
         automatedTime = trivia.getConfig().getInt("Scheduled games interval", 60);
         automatedPlayerReq = trivia.getConfig().getInt("Scheduled games minimum players", 6);

@@ -24,7 +24,7 @@ public enum Lang {
     MENU_CHANGE("Menu Change", "&aGo back"),
     MENU_BACK("Menu Back", "&cClick here to change"),
     MENU_CLOSE("Menu Close", "&cClose"),
-    MAIN_MENU_TITLE("Main Menu Title", "Main Menu"),
+    MAIN_MENU_TITLE("Main Menu Title", "Trivia Main Menu"),
     MAIN_MENU_START("Main Menu Start", "Start Trivia"),
     MAIN_MENU_START_DESCRIPTION("Main Menu Start Description", "Modify options and get the game started!"),
     MAIN_MENU_REWARDS("Main Menu Rewards", "Rewards"),

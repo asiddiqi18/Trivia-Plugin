@@ -14,6 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 public class RewardsMainMenu extends Menu {
     public RewardsMainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
         super(playerMenuUtility, trivia, questionHolder);
@@ -46,6 +49,9 @@ public class RewardsMainMenu extends Menu {
             case 15:
                 new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 3).open();
                 break;
+            case 35:
+                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 0).open();
+                break;
         }
 
         if (type == Material.ARROW) {
@@ -64,11 +70,16 @@ public class RewardsMainMenu extends Menu {
     @Override
     public void setMenuItems() {
 
-        insertItem(Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format(null), 11);
+        String lore = "View and modify rewards given to the %s place winner at the end of a trivia game.";
 
-        insertItem(Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format(null), 13);
+        insertItemWrap(Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format(null), String.format(lore, "first"), 11);
 
-        insertItem(Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format(null), 15);
+        insertItemWrap(Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format(null), String.format(lore, "second"), 13);
+
+        insertItemWrap(Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format(null), String.format(lore, "third"),15);
+
+        insertItemWrap(Material.ENDER_CHEST, "Per-Round Reward", "View and modify rewards given per round basis to the first answerer.",35);
+
 
         fillRest();
 
