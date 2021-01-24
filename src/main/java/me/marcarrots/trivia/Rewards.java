@@ -4,11 +4,16 @@
 
 package me.marcarrots.trivia;
 
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class Rewards {
 
@@ -22,7 +27,7 @@ public class Rewards {
     public Rewards(Trivia trivia, int place) {
         items = new ArrayList<>();
         this.trivia = trivia;
-        this.place = place + 1;
+        this.place = place;
         experience = 0;
         getValuesFromRewardsFile();
     }
@@ -74,6 +79,33 @@ public class Rewards {
         experience = trivia.getRewardsFile().getData().getInt(place + ".Experience");
         message = trivia.getRewardsFile().getData().getString(place + ".Message");
         items = (List<ItemStack>) trivia.getRewardsFile().getData().get(place + ".Items");
+    }
+
+    public void giveReward(Player player) {
+        if (getMessage() != null) {
+            BukkitScheduler scheduler = getServer().getScheduler();
+            scheduler.scheduleSyncDelayedTask(trivia, () -> player.sendMessage(getMessage()), 3);
+        }
+        if (trivia.vaultEnabled()) {
+            EconomyResponse r = Trivia.getEcon().depositPlayer(player, getMoney());
+            if (!r.transactionSuccess()) {
+                player.sendMessage(String.format("An error occurred: %s", r.errorMessage));
+            }
+        }
+        if (getExperience() != 0) {
+            player.giveExp(getExperience());
+        }
+        if (getItems() == null || getItems().size() == 0) {
+            return;
+        }
+        for (ItemStack item : getItems()) {
+            if (player.getInventory().firstEmpty() == -1) {
+                player.getWorld().dropItem(player.getLocation(), item);
+            } else {
+                player.getInventory().addItem(item);
+                player.updateInventory();
+            }
+        }
     }
 
 }

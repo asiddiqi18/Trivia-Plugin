@@ -166,6 +166,7 @@ public class Game {
                     Effects.playSound(e.getPlayer(), trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
                     scores.addScore(e.getPlayer());
                     roundResult = RoundResult.ANSWERED;
+                    trivia.getRewards()[0].giveReward(e.getPlayer());
                     timer.nextQuestion();
                 }, 2L);
             }

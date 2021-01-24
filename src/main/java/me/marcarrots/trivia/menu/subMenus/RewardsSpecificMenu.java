@@ -100,15 +100,15 @@ public class RewardsSpecificMenu extends Menu {
 
             items.add(item);
         }
-        trivia.getRewards()[place - 1].setItems(items);
+        trivia.getRewards()[place].setItems(items);
         trivia.getRewardsFile().saveData();
     }
 
     @Override
     public void setMenuItems() {
-        Rewards reward = null; // place starts at 1, while index starts at 0.
+        Rewards reward = null;
         try {
-            reward = trivia.getRewards()[place - 1];
+            reward = trivia.getRewards()[place];
         } catch (Exception e) {
             e.printStackTrace();
         }

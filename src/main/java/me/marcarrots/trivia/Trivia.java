@@ -183,7 +183,7 @@ public final class Trivia extends JavaPlugin {
     private void loadRewards() {
         rewardsFile = new FileManager(this, "rewards.yml");
         if (getConfig().contains("Rewards")) {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 if (getConfig().contains("Rewards." + i)) {
                     Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old rewards data to new data...");
                     rewardsFile.getData().set(i + ".Money", getConfig().getDouble("Rewards." + i + ".Money"));
@@ -196,7 +196,7 @@ public final class Trivia extends JavaPlugin {
             getConfig().set("Rewards", null);
             saveConfig();
         }
-        int rewardAmt = 3;
+        int rewardAmt = 4;
         rewards = new Rewards[rewardAmt];
         for (int i = 0; i < rewardAmt; i++) {
             rewards[i] = new Rewards(this, i);

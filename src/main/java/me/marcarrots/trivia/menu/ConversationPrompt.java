@@ -95,13 +95,13 @@ public class ConversationPrompt extends StringPrompt {
                     playerMenuUtility.setAnswerString(Arrays.asList(input.split("\\s*,\\s*")));
                     break;
                 case SET_MONEY:
-                    trivia.getRewards()[place - 1].setMoney(Double.parseDouble(input));
+                    trivia.getRewards()[place].setMoney(Double.parseDouble(input));
                     break;
                 case SET_EXPERIENCE:
-                    trivia.getRewards()[place - 1].setExperience(Integer.parseInt(input));
+                    trivia.getRewards()[place].setExperience(Integer.parseInt(input));
                     break;
                 case SET_WIN_MESSAGE:
-                    trivia.getRewards()[place - 1].setMessage(input);
+                    trivia.getRewards()[place].setMessage(input);
                     break;
             }
         } catch (NumberFormatException e) {
