@@ -6,7 +6,7 @@
 
     <groupId>me.marcarrots</groupId>
     <artifactId>trivia</artifactId>
-    <version>1.8</version>
+    <version>1.9</version>
     <packaging>jar</packaging>
 
     <name>Trivia</name>
