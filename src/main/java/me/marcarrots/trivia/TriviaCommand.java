@@ -4,14 +4,13 @@
 
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.Language.Lang;
 import me.marcarrots.trivia.menu.subMenus.MainMenu;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
 
@@ -45,8 +44,9 @@ public class TriviaCommand implements CommandExecutor {
                     try {
                         trivia.reloadConfig();
                         trivia.readQuestions();
-                        trivia.loadConfig();
+                        trivia.loadConfigFile();
                         trivia.loadMessages();
+                        trivia.loadRewards();
                         commandSender.sendMessage(Lang.RELOAD.format(null));
                     } catch (Exception e) {
                         commandSender.sendMessage(ChatColor.RED + "Failed to reload files");
