@@ -1,6 +1,9 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.*;
+import me.marcarrots.trivia.Language.Lang;
+import me.marcarrots.trivia.QuestionHolder;
+import me.marcarrots.trivia.Timer;
+import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.MenuType;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;

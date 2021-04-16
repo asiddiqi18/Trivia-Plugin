@@ -1,5 +1,7 @@
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.Language.Lang;
+import me.marcarrots.trivia.Language.LangBuilder;
 import me.marcarrots.trivia.api.StringSimilarity;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
@@ -16,14 +18,14 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class Game {
     private final QuestionHolder questionHolder;
     private final Trivia trivia;
+    private final BukkitScheduler scheduler;
     private long timePerQuestion;
     private int amountOfRounds;
     private boolean doRepetition;
-    private double similarityScore;
-    private boolean bossBarEnabled;
-    private int timeBetween;
+    private final double similarityScore;
+    private final boolean bossBarEnabled;
+    private final int timeBetween;
     private CommandSender player;
-    private final BukkitScheduler scheduler;
     private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
@@ -35,7 +37,7 @@ public class Game {
 
     public Game(Trivia trivia, QuestionHolder questionHolder) {
         this.trivia = trivia;
-        this.questionHolder = new QuestionHolder(trivia, questionHolder);
+        this.questionHolder = new QuestionHolder(questionHolder);
         this.scores = new PlayerScoreHolder(trivia);
         this.roundResult = RoundResult.ANSWERED;
         this.scheduler = Bukkit.getServer().getScheduler();
@@ -88,7 +90,7 @@ public class Game {
         Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
         startBossBar();
         timer = new Timer(trivia, amountOfRounds, timePerQuestion, bossBar,
-                ()-> { // after game
+                () -> { // after game
                     Bukkit.broadcastMessage(Trivia.border);
                     Bukkit.broadcastMessage(Lang.TRIVIA_OVER.format(null));
                     Bukkit.broadcastMessage(Lang.TRIVIA_OVER_WINNER_LINE.format(null));
@@ -195,7 +197,7 @@ public class Game {
                 bossBar.setStyle(BarStyle.SEGMENTED_10);
             }
         } else if (amountOfRounds % 6 == 0) {
-            if (amountOfRounds %  12 == 0) {
+            if (amountOfRounds % 12 == 0) {
                 bossBar.setStyle(BarStyle.SEGMENTED_12);
             } else {
                 bossBar.setStyle(BarStyle.SEGMENTED_6);
@@ -214,7 +216,7 @@ public class Game {
                 .setTotalQuestionNum(amountOfRounds)
         ));
         bossBar.setColor(BarColor.RED);
-        bossBar.setProgress(((float)getQuestionNum()-1)/amountOfRounds);
+        bossBar.setProgress(((float) getQuestionNum() - 1) / amountOfRounds);
     }
 
     private void afterAnswerFillBossBar() {
@@ -222,8 +224,8 @@ public class Game {
             return;
         }
         bossBar.setColor(BarColor.GREEN);
-        double incrementAmt = 1/((double)amountOfRounds*20);
-        double goal = ((float)getQuestionNum())/amountOfRounds;
+        double incrementAmt = 1 / ((double) amountOfRounds * 20);
+        double goal = ((float) getQuestionNum()) / amountOfRounds;
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -262,6 +264,7 @@ public class Game {
         bossBar.setColor(BarColor.GREEN);
         new BukkitRunnable() {
             boolean turn = false;
+
             @Override
             public void run() {
                 if (turn) {
@@ -271,7 +274,7 @@ public class Game {
                 bossBar.setTitle(Lang.BOSS_BAR_THANKS.format(null));
                 turn = true;
             }
-        }.runTaskTimer(trivia,100, 100);
+        }.runTaskTimer(trivia, 100, 100);
     }
 
     public void showBarToPlayer(Player player) {

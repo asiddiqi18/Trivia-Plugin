@@ -1,6 +1,10 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.*;
+import me.marcarrots.trivia.Language.Lang;
+import me.marcarrots.trivia.Language.LangBuilder;
+import me.marcarrots.trivia.Question;
+import me.marcarrots.trivia.QuestionHolder;
+import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -53,14 +57,14 @@ public class ListMenu extends PaginatedMenu {
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         } else if (type == Material.DARK_OAK_BUTTON) {
-            if (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Left")) {
+            if (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Previous Page")) {
                 if (page == 0) {
                     player.sendMessage(ChatColor.GRAY + "You are already on the first page.");
                 } else {
                     page--;
                     open();
                 }
-            } else if (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Right")) {
+            } else if (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Next Page")) {
                 if (index + 1 < questionList.size()) {
                     page++;
                     open();
@@ -83,8 +87,9 @@ public class ListMenu extends PaginatedMenu {
         if (!questionList.isEmpty())
             for (int i = 0; i < getMaxItemsPerPage(); i++) {
                 index = getMaxItemsPerPage() * page + i;
-                if (index >= questionList.size())
+                if (index >= questionList.size()) {
                     break;
+                }
                 if (questionList.get(index) != null) {
                     Question question = questionList.get(index);
                     ItemStack questionItem = new ItemStack(Material.PAPER, 1);
@@ -101,7 +106,7 @@ public class ListMenu extends PaginatedMenu {
                     }
                     questionMeta.setLore(loreList);
                     questionMeta.getPersistentDataContainer().set(new NamespacedKey(trivia, "trivia_question_id"), PersistentDataType.INTEGER,
-                            Integer.valueOf(question.getId()));
+                            question.getId());
                     questionItem.setItemMeta(questionMeta);
                     inventory.addItem(questionItem);
                 }

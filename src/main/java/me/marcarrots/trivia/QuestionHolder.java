@@ -8,10 +8,8 @@ public class QuestionHolder {
 
     private final List<Question> triviaQuestionList;
     private boolean uniqueQuestions;
-    private Trivia trivia;
 
-    public QuestionHolder(Trivia trivia, QuestionHolder questionHolder) {
-        this.trivia = trivia;
+    public QuestionHolder(QuestionHolder questionHolder) {
         this.triviaQuestionList = new ArrayList<>();
         this.triviaQuestionList.addAll(questionHolder.getTriviaQuestionList());
         this.uniqueQuestions = questionHolder.isUniqueQuestions();

@@ -12,18 +12,27 @@ import java.util.function.Consumer;
 
 public class Timer implements Runnable {
 
-    private int counter;
-    private Trivia trivia;
-    private int taskID;
-
     private final int rounds;
     private final long secondsPer;
     private final Consumer<Timer> everyRound;
     private final Runnable afterTimer;
+    private int counter;
+    private final Trivia trivia;
+    private int taskID;
     private int roundsLeft;
     private int activeTimers;
-    private BossBar bossBar;
+    private final BossBar bossBar;
 
+
+    public Timer(Trivia trivia, int rounds, long secondsPer, BossBar bossBar, Runnable afterTimer, Consumer<Timer> everyRound) {
+        this.trivia = trivia;
+        this.rounds = rounds;
+        this.roundsLeft = rounds;
+        this.secondsPer = secondsPer;
+        this.afterTimer = afterTimer;
+        this.everyRound = everyRound;
+        this.bossBar = bossBar;
+    }
 
     public static String getElapsedTime(long time) {
 
@@ -62,23 +71,13 @@ public class Timer implements Runnable {
 
     }
 
-    public Timer(Trivia trivia, int rounds, long secondsPer, BossBar bossBar, Runnable afterTimer, Consumer<Timer> everyRound) {
-        this.trivia = trivia;
-        this.rounds = rounds;
-        this.roundsLeft = rounds;
-        this.secondsPer = secondsPer;
-        this.afterTimer = afterTimer;
-        this.everyRound = everyRound;
-        this.bossBar = bossBar;
-    }
-
     @Override
     public void run() {
         counter += 1; // 100 ms
         if (counter % 5 == 0 && bossBar != null) {
-            bossBar.setProgress(((rounds - roundsLeft - 1) + ((float)counter / (secondsPer*10))) / rounds);
+            bossBar.setProgress(((rounds - roundsLeft - 1) + ((float) counter / (secondsPer * 10))) / rounds);
         }
-        if (counter >= secondsPer*10) {
+        if (counter >= secondsPer * 10) {
             handleNextRound();
         }
     }
@@ -113,8 +112,8 @@ public class Timer implements Runnable {
     }
 
     public void skipTimer() {
-            activeTimers -= 1;
-            Bukkit.getScheduler().cancelTask(taskID);
+        activeTimers -= 1;
+        Bukkit.getScheduler().cancelTask(taskID);
     }
 
     public void nextQuestion() {

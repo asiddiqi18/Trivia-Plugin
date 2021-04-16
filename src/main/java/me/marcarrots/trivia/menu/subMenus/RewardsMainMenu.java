@@ -4,7 +4,7 @@
 
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.Lang;
+import me.marcarrots.trivia.Language.Lang;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.Menu;
@@ -13,9 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 public class RewardsMainMenu extends Menu {
     public RewardsMainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
@@ -76,9 +73,9 @@ public class RewardsMainMenu extends Menu {
 
         insertItemWrap(Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format(null), String.format(lore, "second"), 13);
 
-        insertItemWrap(Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format(null), String.format(lore, "third"),15);
+        insertItemWrap(Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format(null), String.format(lore, "third"), 15);
 
-        insertItemWrap(Material.ENDER_CHEST, "Per-Round Reward", "View and modify rewards given per round basis to the first answerer.",35);
+        insertItemWrap(Material.ENDER_CHEST, "Per-Round Reward", "View and modify rewards given per round basis to the first answerer.", 35);
 
 
         fillRest();

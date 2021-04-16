@@ -14,8 +14,8 @@ import java.util.Scanner;
 
 public final class UpdateChecker {
 
-    private Trivia trivia;
-    private int resourceId;
+    private final Trivia trivia;
+    private final int resourceId;
 
     public UpdateChecker(Trivia trivia, int resourceId) {
         this.trivia = trivia;

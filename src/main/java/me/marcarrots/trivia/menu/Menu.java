@@ -1,7 +1,7 @@
 package me.marcarrots.trivia.menu;
 
 
-import me.marcarrots.trivia.Lang;
+import me.marcarrots.trivia.Language.Lang;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import org.bukkit.Bukkit;

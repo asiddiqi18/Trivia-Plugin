@@ -4,12 +4,7 @@ import org.bukkit.entity.Player;
 
 public class PlayerScore implements Comparable<PlayerScore> {
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     private Player player;
-
     private int points;
 
     public PlayerScore(Player player) {
@@ -23,6 +18,10 @@ public class PlayerScore implements Comparable<PlayerScore> {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public int getPoints() {

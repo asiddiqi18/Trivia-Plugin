@@ -27,9 +27,9 @@ public abstract class PaginatedMenu extends Menu {
     //Set the border and menu buttons for the menu
     public void addMenuBorder() {
         ItemStack left = new ItemStack(Material.DARK_OAK_BUTTON, 1);
-        ItemMeta leftmeta = left.getItemMeta();
-        leftmeta.setDisplayName(ChatColor.GREEN + "Left");
-        left.setItemMeta(leftmeta);
+        ItemMeta leftMeta = left.getItemMeta();
+        leftMeta.setDisplayName(ChatColor.GREEN + "Previous Page");
+        left.setItemMeta(leftMeta);
 
         inventory.setItem(48, left);
 
@@ -37,7 +37,7 @@ public abstract class PaginatedMenu extends Menu {
 
         ItemStack right = new ItemStack(Material.DARK_OAK_BUTTON, 1);
         ItemMeta rightmeta = right.getItemMeta();
-        rightmeta.setDisplayName(ChatColor.GREEN + "Right");
+        rightmeta.setDisplayName(ChatColor.GREEN + "Next Page");
         right.setItemMeta(rightmeta);
 
         inventory.setItem(50, right);

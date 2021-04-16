@@ -4,6 +4,7 @@
 
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.Language.Lang;
 import me.marcarrots.trivia.api.MetricsLite;
 import me.marcarrots.trivia.api.UpdateChecker;
 import me.marcarrots.trivia.data.FileManager;
@@ -17,7 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -91,7 +91,7 @@ public final class Trivia extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        loadConfig();
+        loadConfigFile();
         loadQuestions();
         loadMessages();
         loadRewards();
@@ -128,7 +128,7 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
-    public void loadConfig() {
+    public void loadConfigFile() {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
 
@@ -180,8 +180,10 @@ public final class Trivia extends JavaPlugin {
         Lang.setFile(messagesFile.getData());
     }
 
-    private void loadRewards() {
-        rewardsFile = new FileManager(this, "rewards.yml");
+    public void loadRewards() {
+        if (rewardsFile == null) {
+            rewardsFile = new FileManager(this, "rewards.yml");
+        }
         if (getConfig().contains("Rewards")) {
             for (int i = 0; i < 4; i++) {
                 if (getConfig().contains("Rewards." + i)) {
@@ -197,6 +199,7 @@ public final class Trivia extends JavaPlugin {
             saveConfig();
         }
         int rewardAmt = 4;
+        rewardsFile.reloadFiles();
         rewards = new Rewards[rewardAmt];
         for (int i = 0; i < rewardAmt; i++) {
             rewards[i] = new Rewards(this, i);
@@ -290,11 +293,10 @@ public final class Trivia extends JavaPlugin {
 
         }
 
-        getConfig().set("Config Version", 5);
-        saveConfig();
 
         if (!newConfigKeys.isEmpty()) {
             // iterate through all the new keys
+            getConfig().set("Config Version", 5);
             for (Map.Entry<String, Object> entry : newConfigKeys.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();

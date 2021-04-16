@@ -1,18 +1,14 @@
 package me.marcarrots.trivia;
 
-import net.milkbowl.vault.economy.EconomyResponse;
+import me.marcarrots.trivia.Language.Lang;
+import me.marcarrots.trivia.Language.LangBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.*;
-
-import static org.bukkit.Bukkit.getServer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class PlayerScoreHolder {
 
@@ -77,7 +73,7 @@ public class PlayerScoreHolder {
                 }
 
                 if (i < 3) {
-                    rewards[i+1].giveReward(player);
+                    rewards[i + 1].giveReward(player);
                 }
 
             }
