@@ -2,7 +2,11 @@
  * Trivia by MarCarrot, 2020
  */
 
-package me.marcarrots.trivia;
+/*
+ * Trivia by MarCarrot, 2020
+ */
+
+package me.marcarrots.trivia.Language;
 
 import org.bukkit.entity.Player;
 
@@ -17,11 +21,6 @@ public class LangBuilder {
     private String elapsedTime;
     private String val;
 
-    public LangBuilder setPlayer(Player player) {
-        this.player = player;
-        return this;
-    }
-
     public LangBuilder setQuestion(String question) {
         this.questionString = question;
         return this;
@@ -32,9 +31,26 @@ public class LangBuilder {
         return this;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public LangBuilder setPlayer(Player player) {
+        this.player = player;
+        return this;
+    }
+
+    public int getQuestionNum() {
+        return questionNum;
+    }
+
     public LangBuilder setQuestionNum(int questionNum) {
         this.questionNum = questionNum;
         return this;
+    }
+
+    public int getTotalQuestionNum() {
+        return totalQuestionNum;
     }
 
     public LangBuilder setTotalQuestionNum(int totalQuestionNum) {
@@ -42,35 +58,13 @@ public class LangBuilder {
         return this;
     }
 
+    public int getPoints() {
+        return points;
+    }
+
     public LangBuilder setPoints(int points) {
         this.points = points;
         return this;
-    }
-
-    public LangBuilder setElapsedTime(String time) {
-        this.elapsedTime = time;
-        return this;
-    }
-
-    public LangBuilder setVal(String val) {
-        this.val = val;
-        return this;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public int getQuestionNum() {
-        return questionNum;
-    }
-
-    public int getTotalQuestionNum() {
-        return totalQuestionNum;
-    }
-
-    public int getPoints() {
-        return points;
     }
 
     public String getQuestionString() {
@@ -85,7 +79,17 @@ public class LangBuilder {
         return elapsedTime;
     }
 
+    public LangBuilder setElapsedTime(String time) {
+        this.elapsedTime = time;
+        return this;
+    }
+
     public String getVal() {
         return val;
+    }
+
+    public LangBuilder setVal(String val) {
+        this.val = val;
+        return this;
     }
 }

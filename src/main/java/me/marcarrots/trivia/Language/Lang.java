@@ -1,4 +1,8 @@
-package me.marcarrots.trivia;
+/*
+ * Trivia by MarCarrot, 2020
+ */
+
+package me.marcarrots.trivia.Language;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -66,16 +70,16 @@ public enum Lang {
         this.def = start;
     }
 
+    public static void setFile(FileConfiguration config) {
+        LANG = config;
+    }
+
     public String getPath() {
         return path;
     }
 
     public String getDefault() {
         return def;
-    }
-
-    public static void setFile(FileConfiguration config) {
-        LANG = config;
     }
 
     public String format(LangBuilder builder) {
