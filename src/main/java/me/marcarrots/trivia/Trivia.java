@@ -36,8 +36,6 @@ public final class Trivia extends JavaPlugin {
     private FileManager messagesFile;
     private FileManager rewardsFile;
     final static String border = ChatColor.translateAlternateColorCodes('&', "&e&m------------------------------");
-
-
     private String updateNotice = null;
     private AutomatedGameManager automatedGameManager;
 
@@ -106,12 +104,13 @@ public final class Trivia extends JavaPlugin {
             Bukkit.getLogger().info("No vault has been detected, disabling vault features...");
         }
 
-        new UpdateChecker(this, 80401).getVersion(version -> {
-            if (!getDescription().getVersion().equalsIgnoreCase(version)) {
+        new UpdateChecker(this, 80401).getVersion(newVersion -> {
+            String currentVersion = getDescription().getVersion();
+            if (Integer.parseInt(newVersion.substring(2)) > Integer.parseInt(currentVersion.substring(2))) {
                 updateNotice = String.format("%s - There is a new version available for Trivia (new version: %s, current version: %s)! Get it at: %s.",
                         ChatColor.AQUA + "[Trivia!]" + ChatColor.YELLOW,
-                        ChatColor.GREEN + version + ChatColor.YELLOW,
-                        ChatColor.GREEN + getDescription().getVersion() + ChatColor.YELLOW,
+                        ChatColor.GREEN + newVersion + ChatColor.YELLOW,
+                        ChatColor.GREEN + currentVersion + ChatColor.YELLOW,
                         ChatColor.WHITE + "https://www.spigotmc.org/resources/trivia-easy-to-setup-game-%C2%BB-custom-rewards-%C2%BB-in-game-gui-menus-more.80401/" + ChatColor.YELLOW);
                 Bukkit.getLogger().info(ChatColor.stripColor(updateNotice));
             }
@@ -267,6 +266,7 @@ public final class Trivia extends JavaPlugin {
         return getServer().getPluginManager().getPlugin("Vault") != null;
     }
 
+    // transform old config to new config
     private void configUpdater() {
         HashMap<String, Object> newConfigKeys = new HashMap<>();
         HashMap<String, Object> newLangKeys = new HashMap<>();
@@ -292,7 +292,6 @@ public final class Trivia extends JavaPlugin {
             newLangKeys.put("Boss Bar Thanks", "Thanks for playing!");
 
         }
-
 
         if (!newConfigKeys.isEmpty()) {
             // iterate through all the new keys
