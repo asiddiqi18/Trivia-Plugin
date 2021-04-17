@@ -4,6 +4,8 @@ import me.marcarrots.trivia.menu.PromptType;
 
 import java.util.*;
 
+// Wrapper List class of 'Question'
+
 public class QuestionHolder {
 
     private final List<Question> triviaQuestionList;
