@@ -85,7 +85,7 @@ public class Game {
         } else {
             questionHolder.setUniqueQuestions(true);
         }
-        scores.addPlayersToGame();
+        scores.addOnlinePlayersToGame();
         Bukkit.broadcastMessage(Lang.TRIVIA_START.format(null));
         Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
         startBossBar();

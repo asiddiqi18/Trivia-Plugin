@@ -12,7 +12,7 @@ public class PlayerScore implements Comparable<PlayerScore> {
         points = 0;
     }
 
-    public void addScore() {
+    public void incrementScore() {
         points++;
     }
 

@@ -27,7 +27,7 @@ public class PlayerJoin implements Listener {
         }
 
         trivia.getGame().showBarToPlayer(event.getPlayer());
-        trivia.getGame().getScores().updatePlayersToGame(event.getPlayer());
+        trivia.getGame().getScores().addPlayerToGame(event.getPlayer());
 
     }
 

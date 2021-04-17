@@ -10,6 +10,9 @@ import org.bukkit.boss.BossBar;
 
 import java.util.function.Consumer;
 
+// Timer class manages scheduling for trivia games
+// for instance, round time, time between rounds
+
 public class Timer implements Runnable {
 
     private final int rounds;
@@ -20,7 +23,6 @@ public class Timer implements Runnable {
     private final Trivia trivia;
     private int taskID;
     private int roundsLeft;
-    private int activeTimers;
     private final BossBar bossBar;
 
 
@@ -34,6 +36,7 @@ public class Timer implements Runnable {
         this.bossBar = bossBar;
     }
 
+    // function to convert epoch to readable time
     public static String getElapsedTime(long time) {
 
         long durationInMillis = time - System.currentTimeMillis();
@@ -71,6 +74,9 @@ public class Timer implements Runnable {
 
     }
 
+    // main loop for timer that executes every 100 ms
+    // every 500 ms, update boss bar
+    // every 1000ms * (seconds per round), go to next round
     @Override
     public void run() {
         counter += 1; // 100 ms
@@ -83,19 +89,22 @@ public class Timer implements Runnable {
     }
 
     public void handleNextRound() {
+        // cancel current timer
         skipTimer();
+        // check if no more rounds left
         if (roundsLeft < 1) {
             afterTimer.run();
             return;
         }
+        // schedule new timer
         counter = 0;
         roundsLeft -= 1;
         everyRound.accept(this);
     }
 
+    // schedule new timer
     public void startTimer() {
         counter = 0;
-        activeTimers += 1;
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(trivia, this, 10, 2);
     }
 
@@ -112,7 +121,6 @@ public class Timer implements Runnable {
     }
 
     public void skipTimer() {
-        activeTimers -= 1;
         Bukkit.getScheduler().cancelTask(taskID);
     }
 
