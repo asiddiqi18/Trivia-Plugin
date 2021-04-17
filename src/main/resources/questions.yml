@@ -1,11 +1,10 @@
 1:
-  question: "Who is the original creator of Minecraft?"
+  question: Who is the original creator of Minecraft?
   answer:
     - 'notch'
     - 'markus persson'
-
 2:
-  question: "What do you need to turn powder to concrete?"
+  question: What do you need to turn powder to concrete?
   answer:
     - 'water'
 3:
@@ -67,14 +66,14 @@
     - '3'
     - 'Three'
 16:
-  question: How many days did it take to create the original release of Minecraft?
+  question: How much gunpowder is required to craft 1 TNT?
   answer:
     - '6'
     - 'Six'
 17:
-  question: How many main biomes are there in Minecraft?
+  question: Mojang Studios is based in which country?
   answer:
-    - '17'
+    - 'Sweden'
 18:
   question: What block can you wear on your head to prevent Endermen from turning
     hostile while looking at them?
@@ -84,3 +83,51 @@
   question: Which is more rare, pumpkins or diamonds?
   answer:
     - 'Pumpkins'
+20:
+  question: Which country invented tea?
+  answer:
+    - 'China'
+21:
+  question: Groups of lions are known as what?
+  answer:
+    - 'Prides'
+22:
+  question: What language has the most words?
+  answer:
+    - 'English'
+23:
+  question: Name the world's largest ocean.
+  answer:
+    - 'Pacific'
+    - 'Pacific Ocean'
+24:
+  question: What year was the very first model of the iPhone released?
+  answer:
+    - '2007'
+25:
+  question: In a website browser address bar, what does “www” stand for?
+  answer:
+    - 'World Wide Web'
+26:
+  question: How many hearts does an octopus have?
+  answer:
+    - 'Three'
+    - '3'
+27:
+  question: Which chess piece can only move diagonally?
+  answer:
+    - 'Bishop'
+28:
+  question: What’s the most populous city in the United States?
+  answer:
+    - 'New York City'
+    - 'New York'
+    - 'NYC'
+29:
+  question: What is the largest lizard?
+  answer:
+    - 'Komodo Dragon'
+30:
+  question: What is the largest planet in our solar system?
+  answer:
+    - 'Jupiter'
