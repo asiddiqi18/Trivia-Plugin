@@ -1,30 +1,56 @@
+# - Info --------------------------------------------------------------------
 # This file stores the rewards for trivia winners for places 1, 2, and 3.
 # You can change these rewards from in-game (recommended) or here.
+# The only setting you can ONLY change from here and not in-game, is 'Commands'
+# -------------------------------------------------------------------------
+# You can write your own commands below the 'Commands' section and that command will
+# be ran by the server console when a player wins the game.
+# You may like this feature if your server has a points or crates plugin and you'd
+# like to give winners stuff from those plugins!
+# The placeholders for commands are shown below.
+# -------------------------------------------------------------------------
+# Placeholders:
+#   %player% for player name,
+#   %username% for user's name.
+# -------------------------------------------------------------------------
+# Example: to send a player a message when they win (from essentials), it would look like this:
+# Commands:
+#   - 'msg %username% Congratulations! You won!'
+# -------------------------------------------------------------------------
 '1':
   Money: 1000.0
   Experience: 1500
   Message: '&b&lCongratulations! &eYou finished in &6First Place&e! Received &bx3
-    diamonds&e.'
+    diamonds&e and &b1500 experience&e.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
       v: 2580
       type: DIAMOND
       amount: 3
+  Commands:
+    - ''
+    - ''
 '2':
   Money: 500.0
   Experience: 1000
-  Message: '&lSo Close! &eYou finished in &6Second Place&e! Received &bx3 gold ingots&e.'
+  Message: '&lSo Close! &eYou finished in &6Second Place&e! Received &bx3 gold ingots&e and &b1000 experience&e.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
       v: 2580
       type: GOLD_INGOT
       amount: 3
+  Commands:
+    - ''
+    - ''
 '3':
   Money: 200.0
   Experience: 500
-  Message: Nice! &eYou finished in &6Third Place&e! Received &bx3 iron ingots&e.
+  Message: 'Nice! &eYou finished in &6Third Place&e! Received &bx3 iron ingots&e and &b500 experience&e.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
       v: 2580
       type: IRON_INGOT
       amount: 3
+  Commands:
+    - ''
+    - ''
