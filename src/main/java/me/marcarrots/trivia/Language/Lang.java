@@ -32,7 +32,7 @@ public enum Lang {
     MAIN_MENU_START("Main Menu Start", "Start Trivia"),
     MAIN_MENU_START_DESCRIPTION("Main Menu Start Description", "Modify options and get the game started!"),
     MAIN_MENU_REWARDS("Main Menu Rewards", "Rewards"),
-    MAIN_MENU_REWARDS_DESCRIPTION("Main Menu Rewards Description", "Adjust trivia prizes that are given to winners."),
+    MAIN_MENU_REWARDS_DESCRIPTION("Main Menu Rewards Description", "Adjust trivia prizes given to winners."),
     MAIN_MENU_LIST("Main Menu List", "List Questions"),
     MAIN_MENU_LIST_DESCRIPTION("Main Menu List Description", "Create new questions or modify existing questions."),
     PARAMS_MENU_TITLE("Params Menu Title", "Game parameters"),
@@ -90,8 +90,13 @@ public enum Lang {
 
         message = message.replace("%prefix%", Lang.PREFIX.getDefault());
 
-        if (builder != null) {
+        message = fillPlaceholders(builder, message);
 
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public static String fillPlaceholders(LangBuilder builder, String message) {
+        if (builder != null) {
             if (builder.getPlayer() != null) {
                 message = message.replace("%player%", builder.getPlayer().getDisplayName());
                 message = message.replace("%username%", builder.getPlayer().getName());
