@@ -13,11 +13,6 @@ public class Question {
     public Question() {
     }
 
-    public Question(String question, List<String> answer) {
-        this.question = question;
-        this.answer = answer;
-    }
-
     public int getId() {
         return id;
     }
