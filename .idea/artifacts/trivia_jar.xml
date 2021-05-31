@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="trivia:jar">
+  <artifact type="jar" build-on-make="true" name="trivia:jar">
     <output-path>$USER_HOME$/Desktop/Spigot/Spigot-Server/plugins</output-path>
     <root id="archive" name="Trivia.jar">
       <element id="module-output" name="untitled" />
