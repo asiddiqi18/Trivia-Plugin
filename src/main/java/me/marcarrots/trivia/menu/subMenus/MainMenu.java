@@ -63,15 +63,17 @@ public class MainMenu extends Menu {
 
         BukkitScheduler scheduler = trivia.getServer().getScheduler();
 
-        insertItem(Material.GREEN_TERRACOTTA, Lang.MAIN_MENU_START.format(null), WordWrapLore(Lang.MAIN_MENU_START_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 11, false);
+        insertItem(Material.GREEN_TERRACOTTA, Lang.MAIN_MENU_START.format(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_START_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 11, false);
 
-        insertItem(Material.EMERALD, Lang.MAIN_MENU_REWARDS.format(null), WordWrapLore(Lang.MAIN_MENU_REWARDS_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 13, false);
+        insertItem(Material.EMERALD, Lang.MAIN_MENU_REWARDS.format(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_REWARDS_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 13, false);
 
-        insertItem(Material.PAPER, Lang.MAIN_MENU_LIST.format(null), WordWrapLore(Lang.MAIN_MENU_LIST_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 15, false);
+        insertItem(Material.PAPER, Lang.MAIN_MENU_LIST.format(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_LIST_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 15, false);
 
 
         if (trivia.getAutomatedGameManager().isSchedulingEnabled()) {
             scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + Timer.getElapsedTime(trivia.getAutomatedGameManager().getNextAutomatedTime()), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedGameManager().getAutomatedPlayerReq()), 35, false), 0, 20);
+        } else {
+            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, ChatColor.RED + "Scheduled Games Not Enabled", Arrays.asList(ChatColor.YELLOW + "Enable this feature through the " + ChatColor.UNDERLINE + "config.yml", ChatColor.YELLOW + "in order to automatically start games!"), 35, false), 0, 20);
         }
 
         fillRest();
