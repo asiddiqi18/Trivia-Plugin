@@ -15,23 +15,26 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Locale;
+
 public class Game {
     private final QuestionHolder questionHolder;
     private final Trivia trivia;
     private final BukkitScheduler scheduler;
-    private long timePerQuestion;
-    private int amountOfRounds;
-    private boolean doRepetition;
     private final double similarityScore;
     private final boolean bossBarEnabled;
     private final int timeBetween;
+    private long timePerQuestion;
+    private int amountOfRounds;
+    private boolean doRepetition;
     private CommandSender player;
     private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
     private Timer timer;
     private RoundResult roundResult;
-    private String correctAnswer;
     private int task;
     private BossBar bossBar;
 
@@ -127,7 +130,7 @@ public class Game {
                         perRoundBossBarUpdate();
                         Bukkit.broadcastMessage(Lang.QUESTION.format(new LangBuilder()
                                 .setQuestion(getCurrentQuestion().getQuestionString())
-                                .setAnswer(correctAnswer)
+                                .setAnswer(String.valueOf(getCurrentQuestion().getAnswerList()))
                                 .setQuestionNum(getQuestionNum())
                                 .setTotalQuestionNum(amountOfRounds)
                         ));
@@ -148,31 +151,46 @@ public class Game {
     }
 
     public void playerAnswer(AsyncPlayerChatEvent e) {
-        if (currentQuestion == null)
+
+        if (currentQuestion == null) {
             return;
-        for (String answer : currentQuestion.getAnswerList()) {
-            if (StringSimilarity.similarity(e.getMessage(), answer) >= similarityScore) {
-                correctAnswer = answer;
-                BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-                scheduler.scheduleSyncDelayedTask(trivia, () -> {
-                    String timeToAnswer = Timer.getElapsedTime(roundTimeStart);
-                    afterAnswerFillBossBar();
-                    Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(new LangBuilder()
-                            .setPlayer(e.getPlayer())
-                            .setQuestion(getCurrentQuestion().getQuestionString())
-                            .setAnswer(correctAnswer)
-                            .setQuestionNum(getQuestionNum())
-                            .setTotalQuestionNum(amountOfRounds)
-                            .setElapsedTime(timeToAnswer)
-                    ));
-                    Effects.playSound(e.getPlayer(), trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
-                    scores.addScore(e.getPlayer());
-                    roundResult = RoundResult.ANSWERED;
-                    trivia.getRewards()[0].giveReward(e.getPlayer());
-                    timer.nextQuestion();
-                }, 2L);
+        }
+
+        String userAnswer = e.getMessage();
+
+        for (String correctAnswer : currentQuestion.getAnswerList()) {
+            if (StringSimilarity.similarity(userAnswer.toLowerCase(), correctAnswer.toLowerCase()) >= similarityScore) {
+                handleRightAnswer(e.getPlayer(), correctAnswer);
+                break;
+            }
+            else if (userAnswer.toLowerCase().endsWith(correctAnswer.toLowerCase())) {
+                handleRightAnswer(e.getPlayer(), correctAnswer);
+                break;
             }
         }
+    }
+
+    private void handleRightAnswer(Player player, String rightAnswer) {
+        BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+
+        // delay by 100ms
+        scheduler.scheduleSyncDelayedTask(trivia, () -> {
+            String timeToAnswer = Timer.getElapsedTime(roundTimeStart);
+            afterAnswerFillBossBar();
+            Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(new LangBuilder()
+                    .setPlayer(player)
+                    .setQuestion(getCurrentQuestion().getQuestionString())
+                    .setAnswer(rightAnswer)
+                    .setQuestionNum(getQuestionNum())
+                    .setTotalQuestionNum(amountOfRounds)
+                    .setElapsedTime(timeToAnswer)
+            ));
+            Effects.playSound(player, trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
+            scores.addScore(player);
+            roundResult = RoundResult.ANSWERED;
+            trivia.getRewards()[0].giveReward(player);
+            timer.nextQuestion();
+        }, 2L);
     }
 
     public boolean forceSkipRound() {
