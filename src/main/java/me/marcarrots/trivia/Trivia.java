@@ -138,16 +138,16 @@ public final class Trivia extends JavaPlugin {
     public void loadQuestions() {
         questionsFile = new FileManager(this, "questions.yml");
 
-        for (String questionNum : questionsFile.getData().getKeys(false)) {
-            try {
-                if (Integer.parseInt(questionNum) > largestQuestionNum)
-                    largestQuestionNum = Integer.parseInt(questionNum);
-            } catch (NumberFormatException e) {
-                Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
-            }
-        }
-
         readQuestions();
+    }
+
+    private void extractLargestQuestionNum(String questionNum) {
+        try {
+            if (Integer.parseInt(questionNum) > largestQuestionNum)
+                largestQuestionNum = Integer.parseInt(questionNum);
+        } catch (NumberFormatException e) {
+            Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
+        }
     }
 
     public void loadMessages() {
@@ -205,6 +205,7 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
+    // save question as object
     public void readQuestions() {
         questionHolder.clear();
 
@@ -224,10 +225,11 @@ public final class Trivia extends JavaPlugin {
         }
 
         questionsFile.reloadFiles();
-        questionsFile.getData().getKeys(false).forEach(key -> {
+        for (String key : questionsFile.getData().getKeys(false)) {
             try {
                 Question triviaQuestion = new Question();
                 triviaQuestion.setId(Integer.parseInt(key));
+                extractLargestQuestionNum(key);
                 triviaQuestion.setQuestion(questionsFile.getData().getString(key + ".question"));
                 triviaQuestion.setAnswer(questionsFile.getData().getStringList(key + ".answer"));
                 triviaQuestion.setAuthor(questionsFile.getData().getString(key + ".author"));
@@ -235,9 +237,10 @@ public final class Trivia extends JavaPlugin {
             } catch (NumberFormatException | NullPointerException e) {
                 Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));
             }
-        });
+        }
     }
 
+    // write question to questions.yml
     public void writeQuestions(String question, List<String> answer, String author) {
         HashMap<String, Object> questionMap = new HashMap<>();
         questionMap.put("question", question);

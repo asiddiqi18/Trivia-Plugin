@@ -42,15 +42,22 @@ public class TriviaCommand implements CommandExecutor {
             switch (prompt) {
                 case "reload":
                     try {
+                        commandSender.sendMessage(Trivia.border);
                         trivia.reloadConfig();
+                        commandSender.sendMessage(ChatColor.YELLOW + "- Config file reloaded.");
                         trivia.readQuestions();
+                        commandSender.sendMessage(ChatColor.YELLOW + "- Questions file reloaded.");
                         trivia.loadConfigFile();
                         trivia.loadMessages();
+                        commandSender.sendMessage(ChatColor.YELLOW + "- Messages file reloaded.");
                         trivia.loadRewards();
-                        commandSender.sendMessage(Lang.RELOAD.format(null));
+                        commandSender.sendMessage(ChatColor.YELLOW + "- Rewards file reloaded.");
+                        commandSender.sendMessage(ChatColor.GREEN + "✔ Successfully reloaded all files!");
                     } catch (Exception e) {
-                        commandSender.sendMessage(ChatColor.RED + "Failed to reload files");
+                        commandSender.sendMessage(ChatColor.RED + "- Failed to reload files");
                         e.printStackTrace();
+                    } finally {
+                        commandSender.sendMessage(Trivia.border);
                     }
                     return false;
                 case "stop":
