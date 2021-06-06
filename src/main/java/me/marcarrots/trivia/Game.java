@@ -52,9 +52,9 @@ public class Game {
         player = playerMenuUtility.getOwner();
     }
 
-    public void setParameters(CommandSender sender) {
+    public void setParameters(CommandSender sender, int rounds) {
         timePerQuestion = trivia.getConfig().getLong("Default time per round", 10L);
-        amountOfRounds = trivia.getConfig().getInt("Default rounds", 10);
+        amountOfRounds = rounds;
         doRepetition = false;
         player = sender;
     }

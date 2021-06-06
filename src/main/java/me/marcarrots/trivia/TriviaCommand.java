@@ -6,6 +6,7 @@ package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.Language.Lang;
 import me.marcarrots.trivia.menu.subMenus.MainMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,6 +40,10 @@ public class TriviaCommand implements CommandExecutor {
             }
         } else {
             String prompt = strings[0];
+            String param1 = null;
+            if (strings.length == 2) {
+                param1 = strings[1];
+            }
             switch (prompt) {
                 case "reload":
                     try {
@@ -73,8 +78,12 @@ public class TriviaCommand implements CommandExecutor {
                         commandSender.sendMessage(ChatColor.RED + "There is already a trivia game in progress.");
                         return false;
                     }
+                    int setRounds = trivia.getConfig().getInt("Default rounds", 10);
+                    if (param1 != null && param1.trim().matches("-?\\d+")) {
+                        setRounds = Integer.parseInt(param1);
+                    }
                     trivia.setGame(new Game(trivia, questionHolder));
-                    trivia.getGame().setParameters(commandSender);
+                    trivia.getGame().setParameters(commandSender, setRounds);
                     trivia.getGame().start();
                     return false;
                 case "skip":
@@ -117,7 +126,7 @@ public class TriviaCommand implements CommandExecutor {
                 default:
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&m------------&e[ &6Trivia &e]&m------------"));
                     commandSender.sendMessage(helpFormat("", "(Main command) Opens up the in-game menu to start trivia or change settings."));
-                    commandSender.sendMessage(helpFormat("start", "Quickly starts up a trivia game."));
+                    commandSender.sendMessage(helpFormat("start <# of rounds>", "Quickly starts up a trivia game. Optionally, specify number of rounds."));
                     commandSender.sendMessage(helpFormat("stop", "Stops the current trivia game in progress."));
                     commandSender.sendMessage(helpFormat("skip", "Skips a trivia question during a game."));
                     commandSender.sendMessage(helpFormat("import", "Imports a pre-made question/answer from a given ID to your server."));
