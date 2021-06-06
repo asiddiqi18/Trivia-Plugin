@@ -5,7 +5,6 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.Language.Lang;
-import me.marcarrots.trivia.api.MetricsLite;
 import me.marcarrots.trivia.api.UpdateChecker;
 import me.marcarrots.trivia.data.FileManager;
 import me.marcarrots.trivia.listeners.ChatEvent;
@@ -13,6 +12,7 @@ import me.marcarrots.trivia.listeners.InventoryClick;
 import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -95,7 +95,7 @@ public final class Trivia extends JavaPlugin {
         loadRewards();
 
         game = null;
-        new MetricsLite(this, 7912);
+        Metrics metrics = new Metrics(this, 7912);
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
         getServer().getPluginManager().registerEvents(chatEvent, this);
         getServer().getPluginManager().registerEvents(playerJoin, this);
