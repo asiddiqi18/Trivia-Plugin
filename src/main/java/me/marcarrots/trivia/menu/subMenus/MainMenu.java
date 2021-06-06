@@ -26,7 +26,7 @@ public class MainMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return Lang.MAIN_MENU_TITLE.format(null);
+        return Lang.MAIN_MENU_TITLE.format_single(null);
     }
 
     @Override
@@ -63,11 +63,11 @@ public class MainMenu extends Menu {
 
         BukkitScheduler scheduler = trivia.getServer().getScheduler();
 
-        insertItem(Material.GREEN_TERRACOTTA, Lang.MAIN_MENU_START.format(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_START_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 11, false);
+        insertItem(Material.GREEN_TERRACOTTA, Lang.MAIN_MENU_START.format_single(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_START_DESCRIPTION.format_single(null), ChatColor.DARK_PURPLE, 30), 11, false);
 
-        insertItem(Material.EMERALD, Lang.MAIN_MENU_REWARDS.format(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_REWARDS_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 13, false);
+        insertItem(Material.EMERALD, Lang.MAIN_MENU_REWARDS.format_single(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_REWARDS_DESCRIPTION.format_single(null), ChatColor.DARK_PURPLE, 30), 13, false);
 
-        insertItem(Material.PAPER, Lang.MAIN_MENU_LIST.format(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_LIST_DESCRIPTION.format(null), ChatColor.DARK_PURPLE, 30), 15, false);
+        insertItem(Material.PAPER, Lang.MAIN_MENU_LIST.format_single(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_LIST_DESCRIPTION.format_single(null), ChatColor.DARK_PURPLE, 30), 15, false);
 
 
         if (trivia.getAutomatedGameManager().isSchedulingEnabled()) {

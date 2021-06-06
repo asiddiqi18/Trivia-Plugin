@@ -15,10 +15,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Locale;
-
 public class Game {
     private final QuestionHolder questionHolder;
     private final Trivia trivia;
@@ -89,17 +85,13 @@ public class Game {
             questionHolder.setUniqueQuestions(true);
         }
         scores.addOnlinePlayersToGame();
-        Bukkit.broadcastMessage(Lang.TRIVIA_START.format(null));
+        Lang.broadcastMessage(Lang.TRIVIA_START.format_multiple(null));
         Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
         startBossBar();
         timer = new Timer(trivia, amountOfRounds, timePerQuestion, bossBar,
                 () -> { // after game
-                    Bukkit.broadcastMessage(Trivia.border);
-                    Bukkit.broadcastMessage(Lang.TRIVIA_OVER.format(null));
-                    Bukkit.broadcastMessage(Lang.TRIVIA_OVER_WINNER_LINE.format(null));
                     Effects.playSoundToAll("Game over sound", trivia.getConfig(), "Game over pitch");
                     scores.broadcastLargestScores();
-                    Bukkit.broadcastMessage(Trivia.border);
                     scores = null;
                     trivia.clearGame();
                     gameOverBossBar();
@@ -107,7 +99,7 @@ public class Game {
                 (t) -> { // after each round
                     roundTimeStart = System.currentTimeMillis();
                     if (roundResult.equals(RoundResult.UNANSWERED)) {
-                        Bukkit.broadcastMessage(Lang.TIME_UP.format(new LangBuilder()
+                        Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new LangBuilder()
                                 .setQuestion(getCurrentQuestion().getQuestionString())
                                 .setAnswer(String.valueOf(getCurrentQuestion().getAnswerList()))
                                 .setQuestionNum(getQuestionNum())
@@ -116,7 +108,7 @@ public class Game {
 
                         Effects.playSoundToAll("Time up sound", trivia.getConfig(), "Time up pitch");
                     } else if (roundResult.equals(RoundResult.SKIPPED)) {
-                        Bukkit.broadcastMessage(Lang.SKIP.format(new LangBuilder()
+                        Lang.broadcastMessage(Lang.SKIP.format_multiple(new LangBuilder()
                                 .setQuestion(getCurrentQuestion().getQuestionString())
                                 .setAnswer(String.valueOf(getCurrentQuestion().getAnswerList()))
                                 .setQuestionNum(getQuestionNum())
@@ -128,7 +120,7 @@ public class Game {
                         setRandomQuestion();
                         t.startTimer();
                         perRoundBossBarUpdate();
-                        Bukkit.broadcastMessage(Lang.QUESTION.format(new LangBuilder()
+                        Lang.broadcastMessage(Lang.QUESTION.format_multiple(new LangBuilder()
                                 .setQuestion(getCurrentQuestion().getQuestionString())
                                 .setAnswer(String.valueOf(getCurrentQuestion().getAnswerList()))
                                 .setQuestionNum(getQuestionNum())
@@ -176,8 +168,8 @@ public class Game {
         // delay by 100ms
         scheduler.scheduleSyncDelayedTask(trivia, () -> {
             String timeToAnswer = Timer.getElapsedTime(roundTimeStart);
-            afterAnswerFillBossBar();
-            Bukkit.broadcastMessage(Lang.SOLVED_MESSAGE.format(new LangBuilder()
+            afterAnswerFillBossBar(BarColor.GREEN);
+            Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new LangBuilder()
                     .setPlayer(player)
                     .setQuestion(getCurrentQuestion().getQuestionString())
                     .setAnswer(rightAnswer)
@@ -197,6 +189,7 @@ public class Game {
         if (currentQuestion == null) {
             return false;
         }
+        afterAnswerFillBossBar(BarColor.YELLOW);
         roundResult = RoundResult.SKIPPED;
         timer.nextQuestion();
         return true;
@@ -206,7 +199,7 @@ public class Game {
         if (!bossBarEnabled) {
             return;
         }
-        bossBar = Bukkit.createBossBar(Lang.TRIVIA_START.format(null), BarColor.YELLOW, BarStyle.SOLID);
+        bossBar = Bukkit.createBossBar(Lang.TRIVIA_START.format_single(null), BarColor.YELLOW, BarStyle.SOLID);
         bossBar.setProgress(0);
         if (amountOfRounds % 10 == 0) {
             if (amountOfRounds % 20 == 0) {
@@ -229,7 +222,7 @@ public class Game {
         if (!bossBarEnabled) {
             return;
         }
-        bossBar.setTitle(Lang.BOSS_BAR_INFO.format(new LangBuilder()
+        bossBar.setTitle(Lang.BOSS_BAR_INFO.format_single(new LangBuilder()
                 .setQuestionNum(getQuestionNum())
                 .setTotalQuestionNum(amountOfRounds)
         ));
@@ -237,11 +230,11 @@ public class Game {
         bossBar.setProgress(((float) getQuestionNum() - 1) / amountOfRounds);
     }
 
-    private void afterAnswerFillBossBar() {
+    private void afterAnswerFillBossBar(BarColor color) {
         if (!bossBarEnabled) {
             return;
         }
-        bossBar.setColor(BarColor.GREEN);
+        bossBar.setColor(color);
         double incrementAmt = 1 / ((double) amountOfRounds * 20);
         double goal = ((float) getQuestionNum()) / amountOfRounds;
         new BukkitRunnable() {
@@ -278,7 +271,7 @@ public class Game {
         if (!bossBarEnabled) {
             return;
         }
-        bossBar.setTitle(Lang.BOSS_BAR_GAME_OVER.format(null));
+        bossBar.setTitle(Lang.BOSS_BAR_GAME_OVER.format_single(null));
         bossBar.setColor(BarColor.GREEN);
         new BukkitRunnable() {
             boolean turn = false;
@@ -289,7 +282,7 @@ public class Game {
                     hideBossBar();
                     this.cancel();
                 }
-                bossBar.setTitle(Lang.BOSS_BAR_THANKS.format(null));
+                bossBar.setTitle(Lang.BOSS_BAR_THANKS.format_single(null));
                 turn = true;
             }
         }.runTaskTimer(trivia, 100, 100);

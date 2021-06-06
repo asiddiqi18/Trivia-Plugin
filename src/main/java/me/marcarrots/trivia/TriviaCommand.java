@@ -66,7 +66,7 @@ public class TriviaCommand implements CommandExecutor {
                         return false;
                     }
                     trivia.getGame().stop();
-                    commandSender.sendMessage(Lang.GAME_HALTED.format(null));
+                    commandSender.sendMessage(Lang.GAME_HALTED.format_multiple(null));
                     return false;
                 case "start":
                     if (trivia.getGame() != null) {

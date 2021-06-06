@@ -43,10 +43,13 @@ public class PlayerScoreHolder {
         List<PlayerScore> scoreValues = new ArrayList<>(scores.values());
         Collections.sort(scoreValues);
 
+        String[] message = Lang.TRIVIA_WINNER_MESSAGE.format_multiple(new LangBuilder());
+        List<String> winnerList = new ArrayList<>();
         if (scoreValues.size() == 0 || scoreValues.get(0).getPoints() == 0) {
-            Bukkit.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format(null));
+            Lang.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format_multiple(null));
             return;
         }
+
         for (int i = 0; i < displayAmount; i++) {
             final PlayerScore score = scoreValues.get(i);
             if (score != null) {
@@ -55,7 +58,7 @@ public class PlayerScoreHolder {
                 }
                 Player player = score.getPlayer();
                 Rewards[] rewards = trivia.getRewards();
-                Bukkit.broadcastMessage(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format(new LangBuilder()
+                winnerList.add(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format_single(new LangBuilder()
                         .setPlayer(player)
                         .setPoints(score.getPoints())
                 ));
@@ -70,6 +73,22 @@ public class PlayerScoreHolder {
 
             }
         }
+
+        List<String> result = new ArrayList<>();
+        for (String s : message) {
+            if (s.contains("%winner_list%")) {
+                result.addAll(winnerList);
+            } else if (s.contains("%top_winner%")) {
+                result.add(s.replace("%top_winner%", scoreValues.get(0).getPlayer().getDisplayName()));
+            } else {
+                result.add(s);
+            }
+        }
+
+        String[] resultArray = new String[result.size()];
+        Lang.broadcastMessage(result.toArray(resultArray));
+
+
     }
 
 }

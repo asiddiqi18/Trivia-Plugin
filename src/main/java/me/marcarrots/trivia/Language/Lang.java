@@ -4,17 +4,20 @@
 
 package me.marcarrots.trivia.Language;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public enum Lang {
     PREFIX("Prefix", "&6[Trivia]&r"),
+    BORDER("Border", "&e&m------------------------------"),
     TRIVIA_START("Trivia Start", "&eTrivia is commencing. Get ready!"),
     TRIVIA_OVER("Trivia Over", "&eTrivia is over!"),
-    TRIVIA_OVER_WINNER_LINE("Winner Line", "&6Winners:"),
     TRIVIA_ANNOUNCE_WINNER_LIST("Winner List", "&0- &3%player%: &b%points%"),
+    TRIVIA_WINNER_MESSAGE("Winner Message", "%border% ; &6Winners: ; %winner_list% ; %border%"),
     TRIVIA_NO_WINNERS("No Winners", "&6There are no winners of this trivia event!"),
     SOLVED_MESSAGE("Solved Message", "&a%player% has answered the question correctly! The answer was &2%answer%&a."),
     TIME_UP("Question Time Up", "&cTime is up! Next question..."),
@@ -82,20 +85,37 @@ public enum Lang {
         return def;
     }
 
-    public String format(LangBuilder builder) {
+    public String[] format_multiple(LangBuilder builder) {
+        if (LANG == null) {
+            return new String[]{""};
+        }
+
+        String message = Objects.requireNonNull(LANG.getString(this.path, def));
+
+        String[] items = message.split("\\s*;\\s*");
+
+        for (int i = 0; i < items.length; i++) {
+            items[i] = fillPlaceholders(builder, items[i]);
+        }
+
+        return items;
+    }
+
+    public String format_single(LangBuilder builder) {
         if (LANG == null) {
             return "";
         }
-        String message = Objects.requireNonNull(LANG.getString(this.path, def));
 
-        message = message.replace("%prefix%", Lang.PREFIX.getDefault());
+        String message = Objects.requireNonNull(LANG.getString(this.path, def));
 
         message = fillPlaceholders(builder, message);
 
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return message;
     }
 
     public static String fillPlaceholders(LangBuilder builder, String message) {
+        message = message.replace("%prefix%", Lang.PREFIX.getDefault());
+        message = message.replace("%border%", Lang.BORDER.getDefault());
         if (builder != null) {
             if (builder.getPlayer() != null) {
                 message = message.replace("%player%", builder.getPlayer().getDisplayName());
@@ -119,6 +139,19 @@ public enum Lang {
         }
 
         return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public static void broadcastMessage(String[] message) {
+        for (String s : message) {
+            broadcastMessage(s);
+        }
+    }
+
+    public static void broadcastMessage(String message) {
+        if (message.equals("")) {
+            return;
+        }
+        Bukkit.broadcastMessage(message);
     }
 
 

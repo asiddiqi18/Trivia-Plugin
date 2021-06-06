@@ -3,6 +3,8 @@
 # Tip: The first few values are the messages your players will actually see, the rest are menu messages.
 # Placeholders:
 # %prefix% - a custom prefix that you can define in the 'Plugin Prefix' section.
+# %border% - a horizontal border that you can define in the 'Border' section
+# ; - inserts a line break
 # %player% - player's display name.
 # %username% - player's actual name.
 # %points% - the amount of trivia questions a player has solved.
@@ -10,22 +12,28 @@
 # %questionNumber% - the question number.
 # %totalQuestions% - total amount of questions in the hosted game.
 # %val% - placeholder for any arbitrary value, used for the GUI.
+# %winner_list% - shows a list of the top trivia winners
+# %top_winner% - shows the name of the 1st place winner after trivia match.
 
 Plugin Prefix: "&6[Trivia]&r"
+Border: "&e&m------------------------------"
 Trivia Start: "%prefix% &eTrivia is commencing. Get ready!"
 Trivia Over: "&eTrivia is over!"
-Winner Line: "&6Winners:"
+Winner Message: "%border% ; &eTrivia is over! ; &6Winners: ; %winner_list% ; %border%"
 Winner List: "&0- &3%player%: &b%points%"
 No Winners: "%prefix% &6There are no winners of this trivia event!"
 Solved Message: "&a%player% has answered the question correctly! The answer was &2%answer%&a."
 Question Time Up: "&cTime is up! Next question..."
 Question Display: "&6(%questionNumber%) &e%question%"
-Question Skipped: "&cQuestion skipped! On to the next question..."
+Question Skipped: "&cQuestion skipped! On to the next question...s "
 Boss Bar Game Info: "Trivia Match (%questionNumber%/%totalQuestions%)"
 Boss Bar Game Over: "Trivia is over!"
 Boss Bar Thanks: "Thanks for playing!"
 Reload Success: "&aAll trivia files have been reloaded."
 Game Halted: "&cTrivia has been forcibly halted!"
+#
+# The rest of these messages are for the GUI, these won't be seen by your players, but only by mods/admins.
+#
 Menu Change: "&cClick here to change"
 Menu Back: "&aGo back"
 Menu Close: "&cClose"

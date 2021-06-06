@@ -43,12 +43,12 @@ public abstract class Menu implements InventoryHolder {
 
         CLOSE = new ItemStack(Material.BARRIER, 1);
         ItemMeta close_meta = CLOSE.getItemMeta();
-        close_meta.setDisplayName(Lang.MENU_CLOSE.format(null));
+        close_meta.setDisplayName(Lang.MENU_CLOSE.format_multiple(null)[0]);
         CLOSE.setItemMeta(close_meta);
 
         BACK = new ItemStack(Material.ARROW, 1);
         ItemMeta back_meta = BACK.getItemMeta();
-        back_meta.setDisplayName(Lang.MENU_BACK.format(null));
+        back_meta.setDisplayName(Lang.MENU_BACK.format_multiple(null)[0]);
         BACK.setItemMeta(back_meta);
     }
 
@@ -99,7 +99,7 @@ public abstract class Menu implements InventoryHolder {
         if (amountMeta != null) {
             amountMeta.setDisplayName(ChatColor.GREEN + displayName);
             if (changeable) {
-                itemLore.add(Lang.MENU_CHANGE.format(null));
+                itemLore.addAll(Arrays.asList(Lang.MENU_CHANGE.format_multiple(null)));
             }
             amountMeta.setLore(itemLore);
         }
@@ -114,7 +114,7 @@ public abstract class Menu implements InventoryHolder {
             amountMeta.setDisplayName(ChatColor.GREEN + s);
             List<String> loreList;
             loreList = WordWrapLore(ChatColor.LIGHT_PURPLE + s2, ChatColor.LIGHT_PURPLE, 50);
-            loreList.add(Lang.MENU_CHANGE.format(null));
+            loreList.addAll(Arrays.asList(Lang.MENU_CHANGE.format_multiple(null)));
             amountMeta.setLore(loreList);
         }
         amountItem.setItemMeta(amountMeta);
