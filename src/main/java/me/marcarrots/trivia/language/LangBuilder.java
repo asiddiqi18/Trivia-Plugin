@@ -6,7 +6,7 @@
  * Trivia by MarCarrot, 2020
  */
 
-package me.marcarrots.trivia.Language;
+package me.marcarrots.trivia.language;
 
 import org.bukkit.entity.Player;
 

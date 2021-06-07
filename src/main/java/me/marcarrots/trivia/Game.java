@@ -1,7 +1,7 @@
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.Language.Lang;
-import me.marcarrots.trivia.Language.LangBuilder;
+import me.marcarrots.trivia.language.Lang;
+import me.marcarrots.trivia.language.LangBuilder;
 import me.marcarrots.trivia.api.StringSimilarity;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;

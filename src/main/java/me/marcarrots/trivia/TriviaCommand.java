@@ -4,9 +4,8 @@
 
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.Language.Lang;
+import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.subMenus.MainMenu;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -73,7 +72,7 @@ public class TriviaCommand implements CommandExecutor {
                     trivia.getGame().stop();
                     commandSender.sendMessage(Lang.GAME_HALTED.format_multiple(null));
                     return false;
-                case "start":
+                case "start": // TODO: send player message summarizing parameters
                     if (trivia.getGame() != null) {
                         commandSender.sendMessage(ChatColor.RED + "There is already a trivia game in progress.");
                         return false;

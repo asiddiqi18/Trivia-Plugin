@@ -2,13 +2,12 @@
  * Trivia by MarCarrot, 2020
  */
 
-package me.marcarrots.trivia.Language;
+package me.marcarrots.trivia.language;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public enum Lang {

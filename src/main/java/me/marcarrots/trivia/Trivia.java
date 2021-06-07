@@ -4,7 +4,7 @@
 
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.Language.Lang;
+import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.api.UpdateChecker;
 import me.marcarrots.trivia.data.FileManager;
 import me.marcarrots.trivia.listeners.ChatEvent;
