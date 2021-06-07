@@ -93,7 +93,7 @@ public class ParameterMenu extends Menu {
             insertItem(Material.RED_DYE, Lang.PARAMS_MENU_REPEAT.format_single(null), Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_RED + "False"), 14, true);
         }
 
-        insertItem(Material.GREEN_TERRACOTTA, Lang.PARAMS_MENU_START.format_single(null), Arrays.asList(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "-----------------------", ChatColor.DARK_PURPLE + "Rounds: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds(), ChatColor.DARK_PURPLE + "Seconds per round: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer(), ChatColor.DARK_PURPLE + "Repeat questions: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.isRepeatEnabled()), 16, false);
+        insertItem(Material.GREEN_TERRACOTTA, Lang.PARAMS_MENU_START.format_single(null), Arrays.asList(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "--------------------", ChatColor.DARK_PURPLE + "Rounds: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds(), ChatColor.DARK_PURPLE + "Seconds per round: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer(), ChatColor.DARK_PURPLE + "Repeat questions: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.isRepeatEnabled()), 16, false);
         inventory.setItem(27, BACK);
         inventory.setItem(31, CLOSE);
         fillRest();

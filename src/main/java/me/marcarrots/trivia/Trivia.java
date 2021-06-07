@@ -18,7 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import java.util.*;
 import java.util.logging.Level;
 
@@ -293,7 +292,6 @@ public final class Trivia extends JavaPlugin {
             newLangKeys.put("Boss Bar Game Info", "Trivia Match (%questionNumber%/%totalQuestions%)");
             newLangKeys.put("Boss Bar Game Over", "Trivia is over!");
             newLangKeys.put("Boss Bar Thanks", "Thanks for playing!");
-
         }
 
         if (!newConfigKeys.isEmpty()) {
@@ -305,6 +303,14 @@ public final class Trivia extends JavaPlugin {
                 getConfig().set(key, value);
                 saveConfig();
             }
+        }
+
+        Set<String> keys = messagesFile.getData().getKeys(false);
+        if (!keys.contains("Winner Message")) {
+            newLangKeys.put("Winner Message", "%border% ; &eTrivia is over! ; &6Winners: ; %winner_list% ; %border%");
+        }
+        if (keys.contains("Winner Line")) {
+            newLangKeys.put("Winner Line", null);
         }
 
         if (!newLangKeys.isEmpty()) {
