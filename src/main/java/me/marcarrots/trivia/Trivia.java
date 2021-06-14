@@ -34,7 +34,6 @@ public final class Trivia extends JavaPlugin {
     private FileManager questionsFile;
     private FileManager messagesFile;
     private FileManager rewardsFile;
-    final static String border = ChatColor.translateAlternateColorCodes('&', "&e&m------------------------------");
     private String updateNotice = null;
     private AutomatedGameManager automatedGameManager;
 
@@ -130,24 +129,19 @@ public final class Trivia extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
 
+        if (automatedGameManager != null) {
+            automatedGameManager.cancel();
+        }
         automatedGameManager = new AutomatedGameManager(this);
         automatedGameManager.automatedSchedule();
+
     }
 
     public void loadQuestions() {
         questionsFile = new FileManager(this, "questions.yml");
-
         readQuestions();
     }
 
-    private void extractLargestQuestionNum(String questionNum) {
-        try {
-            if (Integer.parseInt(questionNum) > largestQuestionNum)
-                largestQuestionNum = Integer.parseInt(questionNum);
-        } catch (NumberFormatException e) {
-            Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
-        }
-    }
 
     public void loadMessages() {
         if (messagesFile == null) {
@@ -178,6 +172,7 @@ public final class Trivia extends JavaPlugin {
         Lang.setFile(messagesFile.getData());
     }
 
+
     public void loadRewards() {
         if (rewardsFile == null) {
             rewardsFile = new FileManager(this, "rewards.yml");
@@ -207,7 +202,6 @@ public final class Trivia extends JavaPlugin {
     // save question as object
     public void readQuestions() {
         questionHolder.clear();
-
         if (getConfig().contains("Questions and Answers")) {
             Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old question data to new data...");
             List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
@@ -232,7 +226,7 @@ public final class Trivia extends JavaPlugin {
                 triviaQuestion.setQuestion(questionsFile.getData().getString(key + ".question"));
                 triviaQuestion.setAnswer(questionsFile.getData().getStringList(key + ".answer"));
                 triviaQuestion.setAuthor(questionsFile.getData().getString(key + ".author"));
-                this.questionHolder.add(triviaQuestion);
+                questionHolder.add(triviaQuestion);
             } catch (NumberFormatException | NullPointerException e) {
                 Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));
             }
@@ -252,6 +246,16 @@ public final class Trivia extends JavaPlugin {
     }
 
 
+    private void extractLargestQuestionNum(String questionNum) {
+        try {
+            if (Integer.parseInt(questionNum) > largestQuestionNum)
+                largestQuestionNum = Integer.parseInt(questionNum);
+        } catch (NumberFormatException e) {
+            Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
+        }
+    }
+
+
     private boolean setupEconomy() {
         if (!vaultEnabled()) {
             return false;
@@ -264,9 +268,11 @@ public final class Trivia extends JavaPlugin {
         return true;
     }
 
+
     public boolean vaultEnabled() {
         return getServer().getPluginManager().getPlugin("Vault") != null;
     }
+
 
     // transform old config to new config
     private void configUpdater() {

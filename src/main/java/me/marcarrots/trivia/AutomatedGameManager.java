@@ -18,32 +18,38 @@ public class AutomatedGameManager {
 
     public AutomatedGameManager(Trivia trivia) {
         this.trivia = trivia;
-        trivia.getServer().getScheduler().cancelTask(schedulerTask);
         schedulingEnabled = trivia.getConfig().getBoolean("Scheduled games", false);
         automatedTime = trivia.getConfig().getInt("Scheduled games interval", 60);
         automatedPlayerReq = trivia.getConfig().getInt("Scheduled games minimum players", 6);
     }
 
+
     public boolean isSchedulingEnabled() {
         return schedulingEnabled;
     }
+
 
     public int getAutomatedPlayerReq() {
         return automatedPlayerReq;
     }
 
+
     public long getNextAutomatedTime() {
         return nextAutomatedTime;
     }
+
+
+    private void setNextAutomatedTime() {
+        nextAutomatedTime = System.currentTimeMillis() + ((long) automatedTime * 60 * 1000);
+    }
+
 
     public void automatedSchedule() {
         if (!schedulingEnabled) {
             return;
         }
         setNextAutomatedTime();
-        BukkitScheduler scheduler = trivia.getServer().getScheduler();
-        scheduler.cancelTask(schedulerTask);
-        schedulerTask = scheduler.scheduleSyncRepeatingTask(trivia, () -> {
+        schedulerTask = trivia.getServer().getScheduler().scheduleSyncRepeatingTask(trivia, () -> {
             if (Bukkit.getOnlinePlayers().size() < automatedPlayerReq) {
                 return;
             }
@@ -54,8 +60,9 @@ public class AutomatedGameManager {
 
     }
 
-    private void setNextAutomatedTime() {
-        nextAutomatedTime = System.currentTimeMillis() + ((long) automatedTime * 60 * 1000);
+    public void cancel() {
+        trivia.getServer().getScheduler().cancelTask(schedulerTask);
     }
+
 
 }
