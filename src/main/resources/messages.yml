@@ -1,6 +1,7 @@
 # This file contains most of the messages from the plugin. Feel free to change them to your liking.
 # Feel free to modify them to your liking.
 # Tip: The first few values are the messages your players will actually see, the rest are menu messages.
+# To prevent a chat message from showing, set its value to ""
 # Placeholders:
 # %prefix% - a custom prefix that you can define in the 'Plugin Prefix' section.
 # %border% - a horizontal border that you can define in the 'Border' section
@@ -25,7 +26,7 @@ No Winners: "%prefix% &6There are no winners of this trivia event!"
 Solved Message: "&a%player% has answered the question correctly! The answer was &2%answer%&a."
 Question Time Up: "&cTime is up! Next question..."
 Question Display: "&6(%questionNumber%) &e%question%"
-Question Skipped: "&cQuestion skipped! On to the next question...s "
+Question Skipped: "&cQuestion skipped! On to the next question... "
 Boss Bar Game Info: "Trivia Match (%questionNumber%/%totalQuestions%)"
 Boss Bar Game Over: "Trivia is over!"
 Boss Bar Thanks: "Thanks for playing!"

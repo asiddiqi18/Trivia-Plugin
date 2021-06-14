@@ -93,6 +93,7 @@ public class Timer implements Runnable {
         skipTimer();
         // check if no more rounds left
         if (roundsLeft < 1) {
+            roundsLeft -= 1;
             afterTimer.run();
             return;
         }

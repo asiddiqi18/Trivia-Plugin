@@ -90,7 +90,7 @@ public class Rewards {
 
     public void giveReward(Player player) {
         // send reward message to player if there is one
-        if (message != null) {
+        if (message != null && !message.equalsIgnoreCase("none")) {
             BukkitScheduler scheduler = getServer().getScheduler();
             scheduler.scheduleSyncDelayedTask(trivia, () -> player.sendMessage(getMessage()), 3);
         }

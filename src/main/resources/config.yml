@@ -8,8 +8,8 @@ Default time per round: 15
 # Default rounds is the default value for the total number of rounds in a game.
 Default rounds: 10
 
-# Time between rounds is for the transition time (in seconds) between the rounds themselves.
-Time between rounds: 2
+# Time between rounds is for the transition time (in seconds) between the questions themselves.
+Time between rounds: 3
 
 # Top winner amount's value will show up to these many winners displayed in chat after a trivia game.
 Top winner amount: 3

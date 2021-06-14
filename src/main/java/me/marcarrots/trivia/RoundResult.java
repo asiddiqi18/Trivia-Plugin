@@ -8,6 +8,7 @@ public enum RoundResult {
 
     ANSWERED,
     SKIPPED,
-    UNANSWERED
+    UNANSWERED,
+    INITIAL
 
 }
