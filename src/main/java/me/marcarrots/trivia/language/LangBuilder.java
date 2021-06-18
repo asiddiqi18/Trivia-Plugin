@@ -10,10 +10,12 @@ package me.marcarrots.trivia.language;
 
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class LangBuilder {
     private Player player;
     private String questionString;
-    private String answerString;
+    private List<String> answerString;
     private int questionNum;
 
     private int totalQuestionNum;
@@ -26,7 +28,7 @@ public class LangBuilder {
         return this;
     }
 
-    public LangBuilder setAnswer(String answer) {
+    public LangBuilder setAnswer(List<String> answer) {
         this.answerString = answer;
         return this;
     }
@@ -71,7 +73,7 @@ public class LangBuilder {
         return questionString;
     }
 
-    public String getAnswerString() {
+    public List<String> getAnswerString() {
         return answerString;
     }
 

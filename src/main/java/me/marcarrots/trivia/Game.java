@@ -15,6 +15,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 public class Game {
     private final QuestionHolder questionHolder;
     private final Trivia trivia;
@@ -120,7 +123,7 @@ public class Game {
         if (roundResult == RoundResult.UNANSWERED) { // if time ran out
             Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new LangBuilder()
                     .setQuestion(currentQuestion.getQuestionString())
-                    .setAnswer(String.valueOf(currentQuestion.getAnswerList()))
+                    .setAnswer(currentQuestion.getAnswerList())
                     .setQuestionNum(getQuestionNum())
                     .setTotalQuestionNum(amountOfRounds)
             ));
@@ -129,7 +132,7 @@ public class Game {
             afterAnswerFillBossBar(BarColor.YELLOW);
             Lang.broadcastMessage(Lang.SKIP.format_multiple(new LangBuilder()
                     .setQuestion(currentQuestion.getQuestionString())
-                    .setAnswer(String.valueOf(currentQuestion.getAnswerList()))
+                    .setAnswer(currentQuestion.getAnswerList())
                     .setQuestionNum(getQuestionNum())
             ));
         } else if (roundResult == RoundResult.ANSWERED) { // if question was answered
@@ -138,7 +141,7 @@ public class Game {
             Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new LangBuilder()
                     .setPlayer(roundWinner)
                     .setQuestion(currentQuestion.getQuestionString())
-                    .setAnswer(userRightAnswer)
+                    .setAnswer(Collections.singletonList(userRightAnswer))
                     .setQuestionNum(getQuestionNum())
                     .setTotalQuestionNum(amountOfRounds)
                     .setElapsedTime(timeToAnswer)
@@ -163,7 +166,7 @@ public class Game {
             perRoundBossBarUpdate();
             Lang.broadcastMessage(Lang.QUESTION.format_multiple(new LangBuilder()
                     .setQuestion(currentQuestion.getQuestionString())
-                    .setAnswer(String.valueOf(currentQuestion.getAnswerList()))
+                    .setAnswer(currentQuestion.getAnswerList())
                     .setQuestionNum(getQuestionNum())
                     .setTotalQuestionNum(amountOfRounds)
             ));

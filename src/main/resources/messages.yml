@@ -9,7 +9,9 @@
 # %player% - player's display name.
 # %username% - player's actual name.
 # %points% - the amount of trivia questions a player has solved.
-# %question% and %answer% - question and answer respectively.
+# %question% - the question for the current round
+# %answer% - the list of all acceptable answer to the question for the current round
+# %single_answer% - the first answer, if multiple acceptable answers exist
 # %questionNumber% - the question number.
 # %totalQuestions% - total amount of questions in the hosted game.
 # %val% - placeholder for any arbitrary value, used for the GUI.

@@ -124,7 +124,12 @@ public enum Lang {
                 message = message.replace("%question%", builder.getQuestionString());
             }
             if (builder.getAnswerString() != null) {
-                message = message.replace("%answer%", builder.getAnswerString());
+                message = message.replace("%single_answer%", builder.getAnswerString().get(0));
+                if (builder.getAnswerString().size() == 1) {
+                    message = message.replace("%answer%", String.valueOf(builder.getAnswerString().get(0)));
+                } else {
+                    message = message.replace("%answer%", String.valueOf(builder.getAnswerString()));
+                }
             }
             if (builder.getElapsedTime() != null) {
                 message = message.replace("%time_to_answer%", builder.getElapsedTime());
