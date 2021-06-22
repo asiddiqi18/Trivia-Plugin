@@ -91,6 +91,7 @@
   question: Groups of lions are known as what?
   answer:
     - 'Prides'
+    - 'Pride'
 22:
   question: What language has the most words?
   answer:
@@ -127,6 +128,7 @@
   question: What is the largest lizard?
   answer:
     - 'Komodo Dragon'
+    - 'Komodo'
 30:
   question: What is the largest planet in our solar system?
   answer:

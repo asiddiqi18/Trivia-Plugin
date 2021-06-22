@@ -11,10 +11,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Objects;
 
 public enum Lang {
-    PREFIX("Prefix", "&6[Trivia]&r"),
+    PREFIX("Plugin Prefix", "&6[Trivia]&r"),
     BORDER("Border", "&e&m------------------------------"),
     TRIVIA_START("Trivia Start", "&eTrivia is commencing. Get ready!"),
-    TRIVIA_OVER("Trivia Over", "&eTrivia is over!"),
     TRIVIA_ANNOUNCE_WINNER_LIST("Winner List", "&0- &3%player%: &b%points%"),
     TRIVIA_WINNER_MESSAGE("Winner Message", "%border% ; &6Winners: ; %winner_list% ; %border%"),
     TRIVIA_NO_WINNERS("No Winners", "&6There are no winners of this trivia event!"),
@@ -26,7 +25,6 @@ public enum Lang {
     BOSS_BAR_GAME_OVER("Boss Bar Game Over", "Trivia is over!"),
     BOSS_BAR_THANKS("Boss Bar Thanks", "Thanks for playing!"),
     GAME_HALTED("Game Halted", "&cTrivia has been forcibly halted!"),
-    RELOAD("Reload Success", "&aAll trivia files have been reloaded."),
     MENU_CHANGE("Menu Change", "&aGo back"),
     MENU_BACK("Menu Back", "&cClick here to change"),
     MENU_CLOSE("Menu Close", "&cClose"),
@@ -58,18 +56,15 @@ public enum Lang {
     REWARDS_GENERAL_THIRD("Rewards General Third", "Third Place"),
     REWARDS_SPECIFIC_MONEY("Rewards Specific Money", "Rewarded Money"),
     REWARDS_SPECIFIC_EXP("Rewards Specific Exp", "Rewarded Experience Points"),
-    REWARDS_SPECIFIC_MESSAGE("Rewards Specific Message", "Rewarded Message"),
-
-
-    ;
+    REWARDS_SPECIFIC_MESSAGE("Rewards Specific Message", "Rewarded Message");
 
     private static FileConfiguration LANG;
     private final String path;
     private final String def;
 
-    Lang(String path, String start) {
+    Lang(String path, String def) {
         this.path = path;
-        this.def = start;
+        this.def = def;
     }
 
     public static void setFile(FileConfiguration config) {
