@@ -30,7 +30,7 @@ public final class Trivia extends JavaPlugin {
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
     private int largestQuestionNum = 0;
     private Rewards[] rewards;
-    private Game game;
+    private Game game = null;
     private FileManager questionsFile;
     private FileManager messagesFile;
     private FileManager rewardsFile;
@@ -87,21 +87,27 @@ public final class Trivia extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        // load stuff from files
         loadConfigFile();
         loadQuestions();
         loadMessages();
         loadRewards();
 
-        game = null;
+        // bStats
         Metrics metrics = new Metrics(this, 7912);
+
+        // register listeners and commands
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
         getServer().getPluginManager().registerEvents(chatEvent, this);
         getServer().getPluginManager().registerEvents(playerJoin, this);
-        Objects.requireNonNull(getCommand("trivia")).setExecutor(new TriviaCommand(this, questionHolder));
+        getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder));
+
+        // check for soft-dependencies
         if (!setupEconomy()) {
-            Bukkit.getLogger().info("No vault has been detected, disabling vault features...");
+            Bukkit.getLogger().info(  "[Trivia!] No vault has been detected, disabling vault features...");
         }
 
+        // check for updates
         new UpdateChecker(this, 80401).getVersion(newVersion -> {
             String currentVersion = getDescription().getVersion();
             if (Integer.parseInt(newVersion.substring(2)) > Integer.parseInt(currentVersion.substring(2))) {
@@ -114,6 +120,7 @@ public final class Trivia extends JavaPlugin {
             }
         });
 
+        // update config for older versions
         configUpdater();
     }
 
@@ -147,6 +154,7 @@ public final class Trivia extends JavaPlugin {
         if (messagesFile == null) {
             messagesFile = new FileManager(this, "messages.yml");
         }
+        // migrate old way of storing messages to new way
         if (getConfig().contains("Messages")) {
             Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old message data to new data...");
             List<String> messageKeys = Arrays.asList(
@@ -163,13 +171,50 @@ public final class Trivia extends JavaPlugin {
 
             for (String key : messageKeys) {
                 messagesFile.getData().set(key, getConfig().getString("Messages." + key, ""));
-                messagesFile.saveData();
             }
             getConfig().set("Messages", null);
             saveConfig();
         }
-        messagesFile.reloadFiles();
+
         Lang.setFile(messagesFile.getData());
+
+        Lang[] langValues = Lang.values();
+
+
+        // add new keys to file
+        List<String> addedKeys = new ArrayList<>();
+        for (Lang val : langValues) {
+            if (!messagesFile.getData().getKeys(false).contains(val.getPath())) {
+                addedKeys.add(val.getPath());
+                messagesFile.getData().set(val.getPath(), val.getDefault());
+            }
+        }
+
+        // remove unused keys from file
+        List<String> removedKeys = new ArrayList<>();
+        if (langValues.length < messagesFile.getData().getKeys(false).size()) {
+            Set<String> valStrings = new HashSet<>();
+            for (Lang val : langValues) {
+                valStrings.add(val.getPath());
+            }
+            for (String key : messagesFile.getData().getKeys(false)) {
+                if (!valStrings.contains(key)) {
+                    removedKeys.add(key);
+                    messagesFile.getData().set(key, null);
+                }
+            }
+        }
+
+        messagesFile.saveData();
+
+        if (addedKeys.size() > 0) {
+            Bukkit.getLogger().info("[Trivia!] The following keys were added to messages.yml: " + addedKeys);
+        }
+        if (removedKeys.size() > 0) {
+            Bukkit.getLogger().info("[Trivia!] The following keys were removed from messages.yml: " + removedKeys);
+        }
+
+        messagesFile.reloadFiles();
     }
 
 
@@ -280,7 +325,6 @@ public final class Trivia extends JavaPlugin {
         HashMap<String, Object> newLangKeys = new HashMap<>();
         int currentConfigVersion = getConfig().getInt("Config Version");
         // if they have version 1 of the config...
-        Bukkit.getLogger().info("Current config version: " + currentConfigVersion);
         if (currentConfigVersion <= 1) {
             newConfigKeys.put("Scheduled games", false);
             newConfigKeys.put("Scheduled games interval", 60);
@@ -312,11 +356,13 @@ public final class Trivia extends JavaPlugin {
         }
 
         Set<String> keys = messagesFile.getData().getKeys(false);
-        if (!keys.contains("Winner Message")) {
-            newLangKeys.put("Winner Message", "%border% ; &eTrivia is over! ; &6Winners: ; %winner_list% ; %border%");
-        }
+
+        // get rid of unused keys
         if (keys.contains("Winner Line")) {
             newLangKeys.put("Winner Line", null);
+        }
+        if (keys.contains("Trivia Over")) {
+            newLangKeys.put("Trivia Over", null);
         }
 
         if (!newLangKeys.isEmpty()) {
