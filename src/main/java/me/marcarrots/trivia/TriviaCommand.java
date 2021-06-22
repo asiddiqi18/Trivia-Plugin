@@ -82,9 +82,14 @@ public class TriviaCommand implements CommandExecutor {
                     if (param1 != null && param1.trim().matches("-?\\d+")) {
                         setRounds = Integer.parseInt(param1);
                     }
-                    trivia.setGame(new Game(trivia, questionHolder));
-                    trivia.getGame().setParameters(commandSender, setRounds);
-                    trivia.getGame().start();
+                    try {
+                        Game game = new Game(trivia, questionHolder);
+                        trivia.setGame(game);
+                        trivia.getGame().setParameters(commandSender, setRounds);
+                        trivia.getGame().start();
+                    } catch (IllegalAccessException e) {
+                        commandSender.sendMessage(ChatColor.RED + e.getMessage());
+                    }
                     return false;
                 case "skip":
                     if (trivia.getGame() == null) {

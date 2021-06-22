@@ -48,9 +48,14 @@ public class ParameterMenu extends Menu {
                 player.sendMessage(ChatColor.RED + "A trivia game is already in progress.");
                 return;
             }
-            trivia.setGame(new Game(trivia, questionHolder));
-            trivia.getGame().setParameters(playerMenuUtility);
-            trivia.getGame().start();
+            try {
+                Game game = new Game(trivia, questionHolder);
+                trivia.setGame(game);
+                trivia.getGame().setParameters(playerMenuUtility);
+                trivia.getGame().start();
+            } catch (IllegalAccessException e) {
+                player.sendMessage(ChatColor.RED + e.getMessage());
+            }
             player.closeInventory();
         } else if (type == Material.OAK_SIGN) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_ROUNDS
