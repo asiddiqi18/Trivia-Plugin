@@ -1,8 +1,8 @@
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.api.StringSimilarity;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.LangBuilder;
-import me.marcarrots.trivia.api.StringSimilarity;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,7 +15,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 public class Game {
@@ -39,7 +38,10 @@ public class Game {
     private Player roundWinner;
     private String userRightAnswer;
 
-    public Game(Trivia trivia, QuestionHolder questionHolder) {
+    public Game(Trivia trivia, QuestionHolder questionHolder) throws IllegalAccessException {
+        if (questionHolder.getSize() == 0) {
+            throw new IllegalAccessException("There are no Trivia questions loaded. Create some questions before hosting a game!");
+        }
         this.trivia = trivia;
         this.questionHolder = new QuestionHolder(questionHolder);
         this.scores = new PlayerScoreHolder(trivia);
@@ -73,10 +75,6 @@ public class Game {
     }
 
     public void start() {
-        if (questionHolder.getSize() == 0) {
-            commandSender.sendMessage(ChatColor.RED + "There are no trivia questions loaded.");
-            return;
-        }
         if (doRepetition) {
             questionHolder.setUniqueQuestions(false);
         } else if (questionHolder.getSize() < amountOfRounds) {
@@ -121,12 +119,7 @@ public class Game {
 
     private void handleRoundOutcome() {
         if (roundResult == RoundResult.UNANSWERED) { // if time ran out
-            Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new LangBuilder()
-                    .setQuestion(currentQuestion.getQuestionString())
-                    .setAnswer(currentQuestion.getAnswerList())
-                    .setQuestionNum(getQuestionNum())
-                    .setTotalQuestionNum(amountOfRounds)
-            ));
+            Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new LangBuilder().setQuestion(currentQuestion.getQuestionString()).setAnswer(currentQuestion.getAnswerList()).setQuestionNum(getQuestionNum()).setTotalQuestionNum(amountOfRounds)));
             Effects.playSoundToAll("Time up sound", trivia.getConfig(), "Time up pitch");
         } else if (roundResult == RoundResult.SKIPPED) { // if round was skipped
             afterAnswerFillBossBar(BarColor.YELLOW);
@@ -153,9 +146,10 @@ public class Game {
                 roundWinner = null;
             }
             userRightAnswer = null;
-            roundResult = RoundResult.INITIAL;
         }
+        roundResult = RoundResult.INITIAL;
     }
+
 
     private void handleNextQuestion(Timer t) {
         currentQuestion = null;
@@ -195,20 +189,19 @@ public class Game {
             if (StringSimilarity.similarity(userAnswer.toLowerCase(), correctAnswer.toLowerCase()) >= similarityScore) {
                 handleRightAnswer(e.getPlayer(), correctAnswer);
                 break;
-            }
-            else if (userAnswer.toLowerCase().endsWith(correctAnswer.toLowerCase())) {
-                handleRightAnswer(e.getPlayer(), correctAnswer);
+            } else if (userAnswer.toLowerCase().endsWith(correctAnswer.toLowerCase())) {
+                // handleRightAnswer(e.getPlayer(), correctAnswer);
                 break;
             }
         }
     }
 
     private void handleRightAnswer(Player player, String rightAnswer) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(trivia, () -> {
-                roundWinner = player;
-                userRightAnswer = rightAnswer;
-                roundResult = RoundResult.ANSWERED;
-                timer.nextQuestion();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(trivia, () -> {
+            roundWinner = player;
+            userRightAnswer = rightAnswer;
+            roundResult = RoundResult.ANSWERED;
+            timer.nextQuestion();
         }, 2L);
     }
 
