@@ -1,9 +1,9 @@
 package me.marcarrots.trivia.menu.subMenus;
 
 import me.marcarrots.trivia.language.Lang;
-import me.marcarrots.trivia.language.LangBuilder;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
+import me.marcarrots.trivia.language.Placeholder;
 import me.marcarrots.trivia.menu.ConversationPrompt;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
@@ -24,7 +24,10 @@ public class ViewMenu extends Menu {
     @Override
 
     public String getMenuName() {
-        return Lang.VIEW_MENU_TITLE.format_single(new LangBuilder().setVal(String.valueOf(playerMenuUtility.getQuestion().getId())));
+        return Lang.VIEW_MENU_TITLE.format_single(new Placeholder.PlaceholderBuilder()
+                .val(String.valueOf(playerMenuUtility.getQuestion().getId()))
+                .build()
+        );
     }
 
     @Override

@@ -1,10 +1,10 @@
 package me.marcarrots.trivia.menu.subMenus;
 
 import me.marcarrots.trivia.language.Lang;
-import me.marcarrots.trivia.language.LangBuilder;
 import me.marcarrots.trivia.Question;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
+import me.marcarrots.trivia.language.Placeholder;
 import me.marcarrots.trivia.menu.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,7 +29,10 @@ public class ListMenu extends PaginatedMenu {
     }
 
     public String getMenuName() {
-        return Lang.LIST_MENU_TITLE.format_single(new LangBuilder().setVal(String.valueOf(page + 1)));
+        return Lang.LIST_MENU_TITLE.format_single(new Placeholder.PlaceholderBuilder()
+                .val(String.valueOf(page + 1))
+                .build()
+        );
     }
 
 
@@ -94,17 +97,30 @@ public class ListMenu extends PaginatedMenu {
                     Question question = questionList.get(index);
                     ItemStack questionItem = new ItemStack(Material.PAPER, question.getId() % 64);
                     ItemMeta questionMeta = questionItem.getItemMeta();
-                    questionMeta.setDisplayName(Lang.LIST_MENU_QUESTION.format_single(new LangBuilder().setVal(String.valueOf(question.getId()))));
+                    questionMeta.setDisplayName(Lang.LIST_MENU_QUESTION.format_single(new Placeholder.PlaceholderBuilder()
+                            .val(String.valueOf(question.getId()))
+                            .build()
+                    ));
 
-                    List<String> questionWrap = WordWrapLore(Lang.LIST_MENU_QUESTION_LORE.format_single(new LangBuilder().setVal(ChatColor.YELLOW + question.getQuestionString())), ChatColor.YELLOW, 50);
-                    List<String> answerWrap = WordWrapLore(Lang.LIST_MENU_ANSWER_LORE.format_single(new LangBuilder().setVal(ChatColor.YELLOW + question.getAnswerList().toString())), ChatColor.YELLOW, 50);
+                    List<String> questionWrap = WordWrapLore(Lang.LIST_MENU_QUESTION_LORE.format_single(new Placeholder.PlaceholderBuilder()
+                            .val(ChatColor.YELLOW + question.getQuestionString())
+                            .build()
+                    ), ChatColor.YELLOW, 50);
+                    List<String> answerWrap = WordWrapLore(Lang.LIST_MENU_ANSWER_LORE.format_single(new Placeholder.PlaceholderBuilder()
+                            .val(ChatColor.YELLOW + question.getAnswerList()
+                                    .toString())
+                            .build()
+                    ), ChatColor.YELLOW, 50);
                     List<String> changeWrap = WordWrapLore(ChatColor.RED + "Click to modify this question.", ChatColor.YELLOW, 50);
 
                     List<String> loreList = new ArrayList<>(questionWrap);
                     loreList.addAll(answerWrap);
                     loreList.addAll(changeWrap);
                     if (question.getAuthor() != null) {
-                        loreList.add(Lang.LIST_MENU_AUTHOR_LORE.format_single(new LangBuilder().setVal(question.getAuthor())));
+                        loreList.add(Lang.LIST_MENU_AUTHOR_LORE.format_single(new Placeholder.PlaceholderBuilder()
+                                .val(question.getAuthor())
+                                .build()
+                        ));
                     }
                     questionMeta.setLore(loreList);
                     questionMeta.getPersistentDataContainer().set(new NamespacedKey(trivia, "trivia_question_id"), PersistentDataType.INTEGER,

@@ -5,7 +5,7 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.language.Lang;
-import me.marcarrots.trivia.language.LangBuilder;
+import me.marcarrots.trivia.language.Placeholder;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -105,7 +105,7 @@ public class Rewards {
         if (commands != null) {
             for (String command : commands) {
                 if (command.length() > 0) {
-                    command = Lang.fillPlaceholders(new LangBuilder().setPlayer(player), command);
+                    command = Lang.fillPlaceholders(new Placeholder.PlaceholderBuilder().player(player).build(), command);
                     Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
                 }
             }

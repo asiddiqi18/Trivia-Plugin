@@ -2,7 +2,7 @@ package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.api.StringSimilarity;
 import me.marcarrots.trivia.language.Lang;
-import me.marcarrots.trivia.language.LangBuilder;
+import me.marcarrots.trivia.language.Placeholder;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -119,25 +119,33 @@ public class Game {
 
     private void handleRoundOutcome() {
         if (roundResult == RoundResult.UNANSWERED) { // if time ran out
-            Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new LangBuilder().setQuestion(currentQuestion.getQuestionString()).setAnswer(currentQuestion.getAnswerList()).setQuestionNum(getQuestionNum()).setTotalQuestionNum(amountOfRounds)));
+            Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new Placeholder.PlaceholderBuilder()
+                    .question(currentQuestion.getQuestionString())
+                    .answer(currentQuestion.getAnswerList())
+                    .questionNum(getQuestionNum())
+                    .totalQuestionNum(amountOfRounds)
+                    .build()
+            ));
             Effects.playSoundToAll("Time up sound", trivia.getConfig(), "Time up pitch");
         } else if (roundResult == RoundResult.SKIPPED) { // if round was skipped
             afterAnswerFillBossBar(BarColor.YELLOW);
-            Lang.broadcastMessage(Lang.SKIP.format_multiple(new LangBuilder()
-                    .setQuestion(currentQuestion.getQuestionString())
-                    .setAnswer(currentQuestion.getAnswerList())
-                    .setQuestionNum(getQuestionNum())
+            Lang.broadcastMessage(Lang.SKIP.format_multiple(new Placeholder.PlaceholderBuilder()
+                    .question(currentQuestion.getQuestionString())
+                    .answer(currentQuestion.getAnswerList())
+                    .questionNum(getQuestionNum())
+                    .build()
             ));
         } else if (roundResult == RoundResult.ANSWERED) { // if question was answered
             String timeToAnswer = Timer.getElapsedTime(roundTimeStart);
             afterAnswerFillBossBar(BarColor.GREEN);
-            Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new LangBuilder()
-                    .setPlayer(roundWinner)
-                    .setQuestion(currentQuestion.getQuestionString())
-                    .setAnswer(Collections.singletonList(userRightAnswer))
-                    .setQuestionNum(getQuestionNum())
-                    .setTotalQuestionNum(amountOfRounds)
-                    .setElapsedTime(timeToAnswer)
+            Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
+                    .player(roundWinner)
+                    .question(currentQuestion.getQuestionString())
+                    .answer(Collections.singletonList(userRightAnswer))
+                    .questionNum(getQuestionNum())
+                    .totalQuestionNum(amountOfRounds)
+                    .elapsedTime(timeToAnswer)
+                    .build()
             ));
             if (roundWinner != null) {
                 Effects.playSound(roundWinner, trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
@@ -158,11 +166,12 @@ public class Game {
             setRandomQuestion();
             t.startTimer();
             perRoundBossBarUpdate();
-            Lang.broadcastMessage(Lang.QUESTION.format_multiple(new LangBuilder()
-                    .setQuestion(currentQuestion.getQuestionString())
-                    .setAnswer(currentQuestion.getAnswerList())
-                    .setQuestionNum(getQuestionNum())
-                    .setTotalQuestionNum(amountOfRounds)
+            Lang.broadcastMessage(Lang.QUESTION.format_multiple(new Placeholder.PlaceholderBuilder()
+                    .question(currentQuestion.getQuestionString())
+                    .answer(currentQuestion.getAnswerList())
+                    .questionNum(getQuestionNum())
+                    .totalQuestionNum(amountOfRounds)
+                    .build()
             ));
         }, timeBetween * 20L);
     }
@@ -241,9 +250,10 @@ public class Game {
         if (!bossBarEnabled) {
             return;
         }
-        bossBar.setTitle(Lang.BOSS_BAR_INFO.format_single(new LangBuilder()
-                .setQuestionNum(getQuestionNum())
-                .setTotalQuestionNum(amountOfRounds)
+        bossBar.setTitle(Lang.BOSS_BAR_INFO.format_single(new Placeholder.PlaceholderBuilder()
+                .questionNum(getQuestionNum())
+                .totalQuestionNum(amountOfRounds)
+                .build()
         ));
         bossBar.setColor(BarColor.RED);
         bossBar.setProgress(((float) getQuestionNum() - 1) / amountOfRounds);

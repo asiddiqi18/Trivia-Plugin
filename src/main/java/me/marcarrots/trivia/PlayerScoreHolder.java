@@ -1,7 +1,7 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.language.Lang;
-import me.marcarrots.trivia.language.LangBuilder;
+import me.marcarrots.trivia.language.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -43,7 +43,7 @@ public class PlayerScoreHolder {
         List<PlayerScore> scoreValues = new ArrayList<>(scores.values());
         Collections.sort(scoreValues);
 
-        String[] message = Lang.TRIVIA_WINNER_MESSAGE.format_multiple(new LangBuilder());
+        String[] message = Lang.TRIVIA_WINNER_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder().build());
         List<String> winnerList = new ArrayList<>();
         if (scoreValues.size() == 0 || scoreValues.get(0).getPoints() == 0) {
             Lang.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format_multiple(null));
@@ -58,9 +58,10 @@ public class PlayerScoreHolder {
                 }
                 Player player = score.getPlayer();
                 Rewards[] rewards = trivia.getRewards();
-                winnerList.add(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format_single(new LangBuilder()
-                        .setPlayer(player)
-                        .setPoints(score.getPoints())
+                winnerList.add(Lang.TRIVIA_ANNOUNCE_WINNER_LIST.format_single(new Placeholder.PlaceholderBuilder()
+                        .player(player)
+                        .points(score.getPoints())
+                        .build()
                 ));
 
                 if (trivia.getConfig().getBoolean("Summon fireworks", true)) {

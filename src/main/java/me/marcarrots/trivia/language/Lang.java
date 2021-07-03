@@ -79,7 +79,7 @@ public enum Lang {
         return def;
     }
 
-    public String[] format_multiple(LangBuilder builder) {
+    public String[] format_multiple(Placeholder placeholder) {
         if (LANG == null) {
             return new String[]{""};
         }
@@ -89,55 +89,55 @@ public enum Lang {
         String[] items = message.split("\\s*;\\s*");
 
         for (int i = 0; i < items.length; i++) {
-            items[i] = fillPlaceholders(builder, items[i]);
+            items[i] = fillPlaceholders(placeholder, items[i]);
         }
 
         return items;
     }
 
-    public String format_single(LangBuilder builder) {
+    public String format_single(Placeholder placeholder) {
         if (LANG == null) {
             return "";
         }
 
         String message = Objects.requireNonNull(LANG.getString(this.path, def));
 
-        message = fillPlaceholders(builder, message);
+        message = fillPlaceholders(placeholder, message);
 
         return message;
     }
 
-    public static String fillPlaceholders(LangBuilder builder, String message) {
+    public static String fillPlaceholders(Placeholder placeholder, String message) {
         message = message.replace("%prefix%", Lang.PREFIX.getDefault());
         message = message.replace("%border%", Lang.BORDER.getDefault());
-        if (builder != null) {
-            if (builder.getPlayer() != null) {
-                message = message.replace("%player%", builder.getPlayer().getDisplayName());
-                message = message.replace("%username%", builder.getPlayer().getName());
+        if (placeholder != null) {
+            if (placeholder.getPlayer() != null) {
+                message = message.replace("%player%", placeholder.getPlayer().getDisplayName());
+                message = message.replace("%username%", placeholder.getPlayer().getName());
             }
-            if (builder.getQuestionString() != null) {
-                message = message.replace("%question%", builder.getQuestionString());
+            if (placeholder.getQuestionString() != null) {
+                message = message.replace("%question%", placeholder.getQuestionString());
             }
-            if (builder.getAnswerString() != null) {
-                message = message.replace("%single_answer%", builder.getAnswerString().get(0));
-                if (builder.getAnswerString().size() == 1) {
-                    message = message.replace("%answer%", String.valueOf(builder.getAnswerString().get(0)));
+            if (placeholder.getAnswerString() != null) {
+                message = message.replace("%single_answer%", placeholder.getAnswerString().get(0));
+                if (placeholder.getAnswerString().size() == 1) {
+                    message = message.replace("%answer%", String.valueOf(placeholder.getAnswerString().get(0)));
                 } else {
-                    message = message.replace("%answer%", String.valueOf(builder.getAnswerString()));
+                    message = message.replace("%answer%", String.valueOf(placeholder.getAnswerString()));
                 }
             }
-            if (builder.getElapsedTime() != null) {
-                message = message.replace("%time_to_answer%", builder.getElapsedTime());
+            if (placeholder.getElapsedTime() != null) {
+                message = message.replace("%time_to_answer%", placeholder.getElapsedTime());
             }
-            if (builder.getVal() != null) {
-                message = message.replace("%val%", builder.getVal());
+            if (placeholder.getVal() != null) {
+                message = message.replace("%val%", placeholder.getVal());
             }
-            message = message.replace("%questionNumber%", String.valueOf(builder.getQuestionNum()));
-            message = message.replace("%totalQuestions%", String.valueOf(builder.getTotalQuestionNum()));
-            message = message.replace("%points%", String.valueOf(builder.getPoints()));
+            message = message.replace("%questionNumber%", String.valueOf(placeholder.getQuestionNum()));
+            message = message.replace("%totalQuestions%", String.valueOf(placeholder.getTotalQuestionNum()));
+            message = message.replace("%points%", String.valueOf(placeholder.getPoints()));
         }
 
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return MessageUtil.HexGradient(message);
     }
 
     public static void broadcastMessage(String[] message) {
