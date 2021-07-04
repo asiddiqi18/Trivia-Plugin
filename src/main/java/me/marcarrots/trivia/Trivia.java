@@ -4,9 +4,9 @@
 
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.api.UpdateChecker;
 import me.marcarrots.trivia.data.FileManager;
+import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.listeners.ChatEvent;
 import me.marcarrots.trivia.listeners.InventoryClick;
 import me.marcarrots.trivia.listeners.PlayerJoin;
@@ -18,6 +18,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import java.util.*;
 import java.util.logging.Level;
 
@@ -104,7 +105,7 @@ public final class Trivia extends JavaPlugin {
 
         // check for soft-dependencies
         if (!setupEconomy()) {
-            Bukkit.getLogger().info(  "[Trivia!] No vault has been detected, disabling vault features...");
+            Bukkit.getLogger().info("[Trivia!] No vault has been detected, disabling vault features...");
         }
 
         // check for updates

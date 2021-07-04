@@ -1,9 +1,9 @@
 package me.marcarrots.trivia.menu.subMenus;
 
 import me.marcarrots.trivia.Game;
-import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
+import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -5,7 +5,6 @@
 package me.marcarrots.trivia.language;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Objects;
@@ -71,45 +70,9 @@ public enum Lang {
         LANG = config;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public String getDefault() {
-        return def;
-    }
-
-    public String[] format_multiple(Placeholder placeholder) {
-        if (LANG == null) {
-            return new String[]{""};
-        }
-
-        String message = Objects.requireNonNull(LANG.getString(this.path, def));
-
-        String[] items = message.split("\\s*;\\s*");
-
-        for (int i = 0; i < items.length; i++) {
-            items[i] = fillPlaceholders(placeholder, items[i]);
-        }
-
-        return items;
-    }
-
-    public String format_single(Placeholder placeholder) {
-        if (LANG == null) {
-            return "";
-        }
-
-        String message = Objects.requireNonNull(LANG.getString(this.path, def));
-
-        message = fillPlaceholders(placeholder, message);
-
-        return message;
-    }
-
     public static String fillPlaceholders(Placeholder placeholder, String message) {
-        message = message.replace("%prefix%", Lang.PREFIX.getDefault());
-        message = message.replace("%border%", Lang.BORDER.getDefault());
+        message = message.replace("%prefix%", Lang.PREFIX.getVal());
+        message = message.replace("%border%", Lang.BORDER.getVal());
         if (placeholder != null) {
             if (placeholder.getPlayer() != null) {
                 message = message.replace("%player%", placeholder.getPlayer().getDisplayName());
@@ -151,6 +114,46 @@ public enum Lang {
             return;
         }
         Bukkit.broadcastMessage(message);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getDefault() {
+        return def;
+    }
+
+    public String getVal() {
+        return LANG.getString(path, def);
+    }
+
+    public String[] format_multiple(Placeholder placeholder) {
+        if (LANG == null) {
+            return new String[]{""};
+        }
+
+        String message = Objects.requireNonNull(LANG.getString(path, def));
+
+        String[] items = message.split("\\s*;\\s*");
+
+        for (int i = 0; i < items.length; i++) {
+            items[i] = fillPlaceholders(placeholder, items[i]);
+        }
+
+        return items;
+    }
+
+    public String format_single(Placeholder placeholder) {
+        if (LANG == null) {
+            return "";
+        }
+
+        String message = Objects.requireNonNull(LANG.getString(this.path, def));
+
+        message = fillPlaceholders(placeholder, message);
+
+        return message;
     }
 
 

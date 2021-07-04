@@ -119,13 +119,13 @@ public class TriviaCommand implements CommandExecutor {
                         e.printStackTrace();
                         return false;
                     } catch (NumberFormatException e) {
-                        commandSender.sendMessage(String.format("%sThe ID '%s' is invalid and could not be imported. Find valid ones at: %s%s", ChatColor.RED,  strings[1], ChatColor.DARK_RED, "pastebin.com/7cTQznMZ"));
+                        commandSender.sendMessage(String.format("%sThe ID '%s' is invalid and could not be imported. Find valid ones at: %s%s", ChatColor.RED, strings[1], ChatColor.DARK_RED, "pastebin.com/7cTQznMZ"));
                         return false;
                     }
                     commandSender.sendMessage(border);
                     commandSender.sendMessage(String.format(ChatColor.GREEN + "Successfully imported question #%s!", strings[1]));
                     commandSender.sendMessage(String.format("  %sQuestion:    %s%s", ChatColor.GREEN, ChatColor.DARK_AQUA, q.getQuestionString()));
-                    commandSender.sendMessage(String.format("  %sAnswer(s):   %s%s",ChatColor.GREEN, ChatColor.DARK_AQUA, q.getAnswerList().toString()));
+                    commandSender.sendMessage(String.format("  %sAnswer(s):   %s%s", ChatColor.GREEN, ChatColor.DARK_AQUA, q.getAnswerList().toString()));
                     commandSender.sendMessage(border);
                     return false;
                 default:

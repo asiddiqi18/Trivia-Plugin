@@ -5,7 +5,6 @@
 package me.marcarrots.trivia;
 
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitScheduler;
 
 public class AutomatedGameManager {
 

@@ -17,12 +17,16 @@ public class Question {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getAuthor() {
         return author;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public Question getQuestionObj() {
@@ -43,10 +47,6 @@ public class Question {
 
     public void setAnswer(List<String> answer) {
         this.answer = Objects.requireNonNull(answer);
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     @Override

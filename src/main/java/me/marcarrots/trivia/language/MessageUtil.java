@@ -18,10 +18,10 @@ public class MessageUtil {
     private static final Pattern patternGradientHex = Pattern.compile("\\[(#[a-fA-F\\d]{6})-(#[a-fA-F\\d]{6})](.+?)(?=\\[#[a-fA-F\\d]{6}|$)");
 
     /**
-     * @author MarCarrot
      * @param input An input string with color codes to be translated. Color codes include '&' for old-style formatting
      *              colors, and '[#FFFFFF]' for hexadecimal colors (replace FFFFFF with desired color).
      * @return string The output string will contain colors, ready to be sent via Player.sendMessage(), etc..
+     * @author MarCarrot
      */
     public static String HexColorMessage(String input) {
         Matcher matcher = patternSolidHex.matcher(input);
@@ -38,12 +38,12 @@ public class MessageUtil {
     }
 
     /**
-     * @author MarCarrot
      * @param input An input string with color codes to be translated. Syntax is as follows:
      *              '[#AABBCC-112233] message here' where the message starts with the hex color
      *              #AABBCC and ends with 112233. Also, insert solid colors with '[#ABCDEF] message'
      *              within the same input for non-gradient effect.
      * @return string The output string will contain colors, ready to be sent via Player.sendMessage(), etc..
+     * @author MarCarrot
      */
     public static String HexGradient(String input) {
         Matcher matcher = patternGradientHex.matcher(input);

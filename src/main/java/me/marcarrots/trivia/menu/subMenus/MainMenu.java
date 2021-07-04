@@ -1,9 +1,9 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.language.Lang;
+import me.marcarrots.trivia.Elapsed;
 import me.marcarrots.trivia.QuestionHolder;
-import me.marcarrots.trivia.Timer;
 import me.marcarrots.trivia.Trivia;
+import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.MenuType;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
@@ -89,7 +89,7 @@ public class MainMenu extends Menu {
         }.runTaskTimer(trivia, 0, 100);
 
         if (trivia.getAutomatedGameManager().isSchedulingEnabled()) {
-            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + Timer.getElapsedTime(trivia.getAutomatedGameManager().getNextAutomatedTime()), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedGameManager().getAutomatedPlayerReq()), 35, false), 0, 20);
+            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + Elapsed.getTimeSince(trivia.getAutomatedGameManager().getNextAutomatedTime()).getElapsedFormattedString(), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedGameManager().getAutomatedPlayerReq()), 35, false), 0, 20);
         } else {
             scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, ChatColor.RED + "Scheduled Games Not Enabled", Arrays.asList(ChatColor.YELLOW + "Enable this feature through the " + ChatColor.UNDERLINE + "config.yml", ChatColor.YELLOW + "in order to automatically host games!"), 35, false), 0, 20);
         }

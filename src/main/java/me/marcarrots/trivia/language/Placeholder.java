@@ -73,7 +73,8 @@ public class Placeholder {
         private String elapsedTime;
         private String val;
 
-        public PlaceholderBuilder() { }
+        public PlaceholderBuilder() {
+        }
 
         public Placeholder build() {
             return new Placeholder(this);
@@ -120,6 +121,6 @@ public class Placeholder {
         }
 
     }
-    
-    
+
+
 }

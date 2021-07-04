@@ -8,13 +8,12 @@ import java.awt.*;
 
 public class Gradient {
 
-    private float red;
-    private float green;
-    private float blue;
-
     private final float red_diff;
     private final float green_diff;
     private final float blue_diff;
+    private float red;
+    private float green;
+    private float blue;
 
     public Gradient(String base, String target, int intervals) {
         red = Integer.valueOf(base.substring(1, 3), 16);

@@ -19,11 +19,11 @@ public class Timer implements Runnable {
     private final long secondsPer;
     private final Consumer<Timer> everyRound;
     private final Runnable afterTimer;
-    private int counter;
     private final Trivia trivia;
+    private final BossBar bossBar;
+    private int counter;
     private int taskID;
     private int roundsLeft;
-    private final BossBar bossBar;
 
 
     public Timer(Trivia trivia, int rounds, long secondsPer, BossBar bossBar, Runnable afterTimer, Consumer<Timer> everyRound) {
@@ -36,42 +36,12 @@ public class Timer implements Runnable {
         this.bossBar = bossBar;
     }
 
-    // function to convert epoch to readable time
-    public static String getElapsedTime(long time) {
+    public int getRounds() {
+        return rounds;
+    }
 
-        long durationInMillis = time - System.currentTimeMillis();
-
-        if (durationInMillis < 0) {
-            durationInMillis *= -1;
-        }
-
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-        long hoursInMilli = minutesInMilli * 60;
-        long daysInMilli = hoursInMilli * 24;
-
-        long elapsedDays = durationInMillis / daysInMilli;
-        durationInMillis = durationInMillis % daysInMilli;
-        long elapsedHours = durationInMillis / hoursInMilli;
-        durationInMillis = durationInMillis % hoursInMilli;
-        long elapsedMinutes = durationInMillis / minutesInMilli;
-        durationInMillis = durationInMillis % minutesInMilli;
-        long elapsedSeconds = durationInMillis / secondsInMilli;
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        if (elapsedDays > 0) {
-            stringBuilder.append(String.format("%02d days, ", elapsedDays));
-        }
-        if (elapsedHours > 0) {
-            stringBuilder.append(String.format("%02d hours, ", elapsedHours));
-        }
-        if (elapsedMinutes > 0) {
-            stringBuilder.append(String.format("%02d minutes, ", elapsedMinutes));
-        }
-        stringBuilder.append(String.format("%d seconds", elapsedSeconds));
-        return stringBuilder.toString();
-
+    public int getRoundsLeft() {
+        return roundsLeft;
     }
 
     // main loop for timer that executes every 100 ms
@@ -109,30 +79,14 @@ public class Timer implements Runnable {
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(trivia, this, 10, 2);
     }
 
-    public void startTimerInitial() {
-        handleNextRound();
-    }
-
-    public int getRounds() {
-        return rounds;
-    }
-
-    public int getRoundsLeft() {
-        return roundsLeft;
-    }
 
     public void skipTimer() {
         Bukkit.getScheduler().cancelTask(taskID);
     }
 
-    public void nextQuestion() {
-        skipTimer();
-        startTimerInitial();
-    }
-
     public void endTimer() {
         roundsLeft = 0;
-        nextQuestion();
+        handleNextRound();
     }
 
 }

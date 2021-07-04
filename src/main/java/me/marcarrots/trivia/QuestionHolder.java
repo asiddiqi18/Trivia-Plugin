@@ -2,7 +2,10 @@ package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.menu.PromptType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 // Wrapper List class of 'Question'
 

@@ -1,8 +1,8 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
+import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
 import me.marcarrots.trivia.menu.ConversationPrompt;
 import me.marcarrots.trivia.menu.Menu;
