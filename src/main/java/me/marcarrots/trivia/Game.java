@@ -11,6 +11,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -45,7 +46,7 @@ public class Game {
         this.trivia = trivia;
         this.questionHolder = new QuestionHolder(questionHolder);
         this.scores = new PlayerScoreHolder(trivia);
-        this.roundResult = RoundResult.INITIAL;
+        this.roundResult = RoundResult.IN_BETWEEN;
         this.scheduler = Bukkit.getServer().getScheduler();
         this.similarityScore = trivia.getConfig().getDouble("Similarity score");
         this.timeBetween = trivia.getConfig().getInt("Time between rounds", 2);
@@ -113,7 +114,7 @@ public class Game {
                     handleNextQuestion(t);
                 }
         );
-        timer.startTimerInitial();
+        timer.handleNextRound();
     }
 
 
@@ -136,7 +137,7 @@ public class Game {
                     .build()
             ));
         } else if (roundResult == RoundResult.ANSWERED) { // if question was answered
-            String timeToAnswer = Timer.getElapsedTime(roundTimeStart);
+            String timeToAnswer = Elapsed.getTimeSince(roundTimeStart).getElapsedFormattedString();
             afterAnswerFillBossBar(BarColor.GREEN);
             Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
                     .player(roundWinner)
@@ -155,7 +156,7 @@ public class Game {
             }
             userRightAnswer = null;
         }
-        roundResult = RoundResult.INITIAL;
+        roundResult = RoundResult.IN_BETWEEN;
     }
 
 
@@ -188,30 +189,24 @@ public class Game {
 
     public void playerAnswer(AsyncPlayerChatEvent e) {
 
-        if (currentQuestion == null) {
+        if (currentQuestion == null || roundResult != RoundResult.UNANSWERED) {
             return;
         }
 
         String userAnswer = e.getMessage();
+        Player player = e.getPlayer();
 
         for (String correctAnswer : currentQuestion.getAnswerList()) {
-            if (StringSimilarity.similarity(userAnswer.toLowerCase(), correctAnswer.toLowerCase()) >= similarityScore) {
-                handleRightAnswer(e.getPlayer(), correctAnswer);
-                break;
-            } else if (userAnswer.toLowerCase().endsWith(correctAnswer.toLowerCase())) {
-                // handleRightAnswer(e.getPlayer(), correctAnswer);
-                break;
+            if (StringSimilarity.similarity(userAnswer.toLowerCase(), correctAnswer.toLowerCase()) >= similarityScore || userAnswer.toLowerCase().endsWith(correctAnswer.toLowerCase())) {
+                roundResult = RoundResult.ANSWERED;
+                Bukkit.getScheduler().scheduleSyncDelayedTask(trivia, () -> {
+                    roundWinner = player;
+                    userRightAnswer = correctAnswer;
+                    timer.handleNextRound();
+                }, 2L);
+                return;
             }
         }
-    }
-
-    private void handleRightAnswer(Player player, String rightAnswer) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(trivia, () -> {
-            roundWinner = player;
-            userRightAnswer = rightAnswer;
-            roundResult = RoundResult.ANSWERED;
-            timer.nextQuestion();
-        }, 2L);
     }
 
     public boolean forceSkipRound() {
@@ -219,7 +214,7 @@ public class Game {
             return false;
         }
         roundResult = RoundResult.SKIPPED;
-        timer.nextQuestion();
+        timer.handleNextRound();
         return true;
     }
 
