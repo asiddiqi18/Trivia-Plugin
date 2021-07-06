@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Objects;
 import java.util.Random;
@@ -27,9 +28,11 @@ public class Effects {
         Color color3 = Color.fromBGR(random.nextInt(256), random.nextInt(256), random.nextInt(256));
 
         Firework firework = player.getWorld().spawn(player.getLocation().add(0.5, 0.5, 0.5), Firework.class);
+        firework.setMetadata("trivia-firework", new FixedMetadataValue(Trivia.getPlugin(Trivia.class), true));
         FireworkMeta fm = firework.getFireworkMeta();
         fm.addEffect(FireworkEffect.builder().flicker(true).trail(true).with(type).withColor(color1).withColor(color2).withFade(color3).build());
         fm.setPower(3);
+
         firework.setFireworkMeta(fm);
     }
 

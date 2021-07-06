@@ -8,6 +8,7 @@ import me.marcarrots.trivia.api.UpdateChecker;
 import me.marcarrots.trivia.data.FileManager;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.listeners.ChatEvent;
+import me.marcarrots.trivia.listeners.EntityDamage;
 import me.marcarrots.trivia.listeners.InventoryClick;
 import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
@@ -26,8 +27,6 @@ public final class Trivia extends JavaPlugin {
 
     private static Economy econ = null;
     private final QuestionHolder questionHolder = new QuestionHolder();
-    private final ChatEvent chatEvent = new ChatEvent(this);
-    private final PlayerJoin playerJoin = new PlayerJoin(this);
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
     private int largestQuestionNum = 0;
     private Rewards[] rewards;
@@ -95,12 +94,13 @@ public final class Trivia extends JavaPlugin {
         loadRewards();
 
         // bStats
-        Metrics metrics = new Metrics(this, 7912);
+        new Metrics(this, 7912);
 
         // register listeners and commands
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
-        getServer().getPluginManager().registerEvents(chatEvent, this);
-        getServer().getPluginManager().registerEvents(playerJoin, this);
+        getServer().getPluginManager().registerEvents(new ChatEvent(this),this);
+        getServer().getPluginManager().registerEvents(new PlayerJoin(this),this);
+        getServer().getPluginManager().registerEvents(new EntityDamage(),this);
         getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder));
 
         // check for soft-dependencies
