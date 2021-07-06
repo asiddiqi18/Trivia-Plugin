@@ -4,7 +4,7 @@
   <groupId>me.marcarrots</groupId>
   <artifactId>trivia</artifactId>
   <name>Trivia</name>
-  <version>1.11</version>
+  <version>1.12</version>
   <description>Trivia plugin for Minecraft Spigot</description>
   <build>
     <defaultGoal>clean package</defaultGoal>
