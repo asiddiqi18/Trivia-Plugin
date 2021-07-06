@@ -83,9 +83,10 @@ public class TriviaCommand implements CommandExecutor {
                         setRounds = Integer.parseInt(param1);
                     }
                     try {
-                        Game game = new Game(trivia, questionHolder);
+                        long timePerQuestion = trivia.getConfig().getLong("Default time per round", 10L);
+                        boolean doRepetition = false;
+                        Game game = new Game(trivia, questionHolder, timePerQuestion, setRounds, doRepetition, commandSender);
                         trivia.setGame(game);
-                        trivia.getGame().setParameters(commandSender, setRounds);
                         trivia.getGame().start();
                     } catch (IllegalAccessException e) {
                         commandSender.sendMessage(ChatColor.RED + e.getMessage());

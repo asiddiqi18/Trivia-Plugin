@@ -7,6 +7,7 @@ import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
@@ -49,9 +50,12 @@ public class ParameterMenu extends Menu {
                 return;
             }
             try {
-                Game game = new Game(trivia, questionHolder);
+                long timePerQuestion = playerMenuUtility.getTimePer();
+                int amountOfRounds = playerMenuUtility.getTotalRounds();
+                boolean doRepetition = playerMenuUtility.isRepeatEnabled();
+                CommandSender commandSender = playerMenuUtility.getOwner();
+                Game game = new Game(trivia, questionHolder, timePerQuestion, amountOfRounds, doRepetition, commandSender);
                 trivia.setGame(game);
-                trivia.getGame().setParameters(playerMenuUtility);
                 trivia.getGame().start();
             } catch (IllegalAccessException e) {
                 player.sendMessage(ChatColor.RED + e.getMessage());

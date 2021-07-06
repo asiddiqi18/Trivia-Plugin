@@ -39,11 +39,16 @@ public class Game {
     private Player roundWinner;
     private String userRightAnswer;
 
-    public Game(Trivia trivia, QuestionHolder questionHolder) throws IllegalAccessException {
+    public Game(Trivia trivia, QuestionHolder questionHolder, long timePerQuestion, int amountOfRounds, boolean doRepetition, CommandSender commandSender) throws IllegalAccessException {
         if (questionHolder.getSize() == 0) {
             throw new IllegalAccessException("There are no Trivia questions loaded. Create some questions before hosting a game!");
         }
         this.trivia = trivia;
+        this.timePerQuestion = timePerQuestion;
+        this.amountOfRounds = amountOfRounds;
+        this.doRepetition = doRepetition;
+        this.commandSender = commandSender;
+
         this.questionHolder = new QuestionHolder(questionHolder);
         this.scores = new PlayerScoreHolder(trivia);
         this.roundResult = RoundResult.IN_BETWEEN;
@@ -51,20 +56,6 @@ public class Game {
         this.similarityScore = trivia.getConfig().getDouble("Similarity score");
         this.timeBetween = trivia.getConfig().getInt("Time between rounds", 2);
         this.bossBarEnabled = trivia.getConfig().getBoolean("Enable boss bar", true);
-    }
-
-    public void setParameters(PlayerMenuUtility playerMenuUtility) {
-        timePerQuestion = playerMenuUtility.getTimePer();
-        amountOfRounds = playerMenuUtility.getTotalRounds();
-        doRepetition = playerMenuUtility.isRepeatEnabled();
-        commandSender = playerMenuUtility.getOwner();
-    }
-
-    public void setParameters(CommandSender sender, int rounds) {
-        timePerQuestion = trivia.getConfig().getLong("Default time per round", 10L);
-        amountOfRounds = rounds;
-        doRepetition = false;
-        commandSender = sender;
     }
 
     public PlayerScoreHolder getScores() {
