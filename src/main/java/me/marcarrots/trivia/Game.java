@@ -76,7 +76,7 @@ public class Game {
             questionHolder.setUniqueQuestions(true);
         }
 
-        String border = Lang.BORDER.format_single(null);
+        String border = Lang.BORDER.format_single();
 
         commandSender.sendMessage(border);
         commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lTrivia match started!"));
@@ -184,7 +184,7 @@ public class Game {
             return;
         }
 
-        String userAnswer = e.getMessage();
+        String userAnswer = ChatColor.stripColor(e.getMessage());
         Player player = e.getPlayer();
 
         for (String correctAnswer : currentQuestion.getAnswerList()) {
@@ -213,7 +213,7 @@ public class Game {
         if (!bossBarEnabled) {
             return;
         }
-        bossBar = Bukkit.createBossBar(Lang.TRIVIA_START.format_single(null), BarColor.YELLOW, BarStyle.SOLID);
+        bossBar = Bukkit.createBossBar(Lang.TRIVIA_START.format_single(), BarColor.YELLOW, BarStyle.SOLID);
         bossBar.setProgress(0);
         if (amountOfRounds % 10 == 0) {
             if (amountOfRounds % 20 == 0) {
@@ -286,7 +286,7 @@ public class Game {
         if (!bossBarEnabled) {
             return;
         }
-        bossBar.setTitle(Lang.BOSS_BAR_GAME_OVER.format_single(null));
+        bossBar.setTitle(Lang.BOSS_BAR_GAME_OVER.format_single());
         bossBar.setColor(BarColor.GREEN);
         new BukkitRunnable() {
             boolean turn = false;
@@ -297,7 +297,7 @@ public class Game {
                     hideBossBar();
                     this.cancel();
                 }
-                bossBar.setTitle(Lang.BOSS_BAR_THANKS.format_single(null));
+                bossBar.setTitle(Lang.BOSS_BAR_THANKS.format_single());
                 turn = true;
             }
         }.runTaskTimer(trivia, 100, 100);
