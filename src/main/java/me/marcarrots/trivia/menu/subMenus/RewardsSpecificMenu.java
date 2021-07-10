@@ -22,6 +22,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -151,7 +152,7 @@ public class RewardsSpecificMenu extends Menu {
         }
         insertItem(42, Material.EXPERIENCE_BOTTLE, Lang.REWARDS_SPECIFIC_EXP.format_single(), Collections.singletonList(String.valueOf(reward.getExperience())), true, false);
 
-        insertItem(44, Material.WRITABLE_BOOK, Lang.REWARDS_SPECIFIC_MESSAGE.format_single(), Collections.singletonList(reward.getMessage() != null ? reward.getMessage() : "No rewards are set."), true, false);
+        insertItem(44, Material.WRITABLE_BOOK, Lang.REWARDS_SPECIFIC_MESSAGE.format_single(), Arrays.asList(ChatColor.DARK_PURPLE + "The message below will be shown to this winner:", reward.getMessage() != null ? reward.getMessage() : ChatColor.DARK_PURPLE + "No message is set."), true, true);
         inventory.setItem(36, BACK);
         inventory.setItem(40, CLOSE);
     }

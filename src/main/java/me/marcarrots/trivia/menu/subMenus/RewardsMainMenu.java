@@ -9,6 +9,7 @@ import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -69,13 +70,13 @@ public class RewardsMainMenu extends Menu {
 
         String lore = "View and modify rewards given to the %s place winner at the end of a trivia game.";
 
-        insertItem(11, Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format_single(), String.format(lore, "first"), false, true);
+        insertItem(11, Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format_single(), String.format(ChatColor.DARK_PURPLE + lore, "first"), true, true);
 
-        insertItem(13, Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(), String.format(lore, "second"), false, true);
+        insertItem(13, Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(), String.format(ChatColor.DARK_PURPLE + lore, "second"), true, true);
 
-        insertItem(15, Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(), String.format(lore, "third"), false, true);
+        insertItem(15, Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(), String.format(ChatColor.DARK_PURPLE + lore, "third"), true, true);
 
-        insertItem(35, Material.ENDER_CHEST, "Per-Round Reward", "View and modify rewards given per round basis to the first answerer.", false, true);
+        insertItem(35, Material.ENDER_CHEST, ChatColor.LIGHT_PURPLE + "Per-Round Reward", ChatColor.DARK_PURPLE + "View and modify rewards given per round basis to the first answerer.", true, true);
 
         fillRest();
 

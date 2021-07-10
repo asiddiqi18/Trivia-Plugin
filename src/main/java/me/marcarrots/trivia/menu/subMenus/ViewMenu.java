@@ -74,8 +74,8 @@ public class ViewMenu extends Menu {
     @Override
     public void setMenuItems() {
 
-        insertItem(11, Material.GREEN_TERRACOTTA, Lang.VIEW_MENU_QUESTION.format_single(), playerMenuUtility.getQuestion().getQuestionString(), false, true);
-        insertItem(13, Material.YELLOW_TERRACOTTA, Lang.VIEW_MENU_ANSWER.format_single(), playerMenuUtility.getQuestion().getAnswerList().toString(), false, true);
+        insertItem(11, Material.GREEN_TERRACOTTA, Lang.VIEW_MENU_QUESTION.format_single(), ChatColor.DARK_PURPLE + playerMenuUtility.getQuestion().getQuestionString(), true, true);
+        insertItem(13, Material.YELLOW_TERRACOTTA, Lang.VIEW_MENU_ANSWER.format_single(), ChatColor.DARK_PURPLE + playerMenuUtility.getQuestion().getAnswerList().toString(), true, true);
         insertItem(15, Material.RED_TERRACOTTA, Lang.VIEW_MENU_DELETE.format_single(), "", false, false);
 
         inventory.setItem(27, BACK);

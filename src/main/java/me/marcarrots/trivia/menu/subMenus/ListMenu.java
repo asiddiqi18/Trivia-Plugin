@@ -107,7 +107,6 @@ public class ListMenu extends PaginatedMenu {
                             .val(ChatColor.YELLOW + question.getAnswerList().toString())
                             .build()
                     ));
-                    loreWrapped.add(ChatColor.RED + "Click to modify this question.");
 
                     if (question.getAuthor() != null) {
                         loreWrapped.add(Lang.LIST_MENU_AUTHOR_LORE.format_single(new Placeholder.PlaceholderBuilder()
@@ -115,6 +114,8 @@ public class ListMenu extends PaginatedMenu {
                                 .build()
                         ));
                     }
+
+                    loreWrapped.add(ChatColor.RED + "Click to modify this question.");
 
                     ItemMeta questionMeta = questionItem.getItemMeta();
                     questionMeta.getPersistentDataContainer().set(new NamespacedKey(trivia, "trivia_question_id"), PersistentDataType.INTEGER,

@@ -83,7 +83,11 @@ public abstract class Menu implements InventoryHolder {
     protected void insertItem(int index, Material material, String displayName, String lore, boolean changeable, boolean wrap) {
         ItemStack item = new ItemStack(material, 1);
         List<String> loreList = new ArrayList<>(Collections.singletonList(lore)); // do this because "lore" might not be mutable
-        insertItem(index, item, displayName, loreList, changeable, wrap);
+        if (lore.equals("")) {
+            insertItem(index, item, displayName, null, changeable, wrap);
+        } else {
+            insertItem(index, item, displayName, loreList, changeable, wrap);
+        }
     }
 
     protected void insertItem(int index, Material material, String displayName, List<String> lore, boolean changeable, boolean wrap) {
@@ -101,22 +105,15 @@ public abstract class Menu implements InventoryHolder {
                     List<String> newLoreList = new ArrayList<>();
                     for (String oldLoreLine : lore) {
                         String color = ChatColor.getLastColors(oldLoreLine);
-                        newLoreList.addAll(WordWrapLore(oldLoreLine, color, 50));
+                        newLoreList.addAll(WordWrapLore(oldLoreLine, color, 40));
                     }
                     lore = newLoreList;
                 }
                 if (changeable) {
                     String[] changeableArray = Lang.MENU_CHANGE.format_multiple(null);
                     List<String> changeableList = Arrays.asList(changeableArray);
-                    System.out.println(changeableList);
-                    if (lore == null) {
-                        System.out.println("Lore is null");
-                    } else if (changeableList == null) {
-                        System.out.println("changeableList is null");
-                    } else {
-                        lore.addAll(changeableList);
+                    lore.addAll(changeableList);
                     }
-                }
                 meta.setLore(lore);
             }
         }
