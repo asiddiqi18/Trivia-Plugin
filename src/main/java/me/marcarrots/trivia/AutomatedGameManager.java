@@ -49,7 +49,9 @@ public class AutomatedGameManager {
         }
         setNextAutomatedTime();
         schedulerTask = trivia.getServer().getScheduler().scheduleSyncRepeatingTask(trivia, () -> {
-            if (Bukkit.getOnlinePlayers().size() < automatedPlayerReq) {
+            int onlinePlayerCount = Bukkit.getOnlinePlayers().size();
+            if (onlinePlayerCount < automatedPlayerReq) {
+                Bukkit.getLogger().info(String.format("Automated Trivia Canceled (%s players online, needed %s)...",onlinePlayerCount, automatedPlayerReq));
                 return;
             }
             Bukkit.getLogger().info("Automated Trivia Beginning...");
