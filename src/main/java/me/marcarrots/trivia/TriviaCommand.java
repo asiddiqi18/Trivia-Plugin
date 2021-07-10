@@ -32,7 +32,7 @@ public class TriviaCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        String border = Lang.BORDER.format_single(null);
+        String border = Lang.BORDER.format_single();
         if (strings.length == 0) {
             if (commandSender instanceof Player) {
                 MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility((Player) commandSender), trivia, questionHolder);

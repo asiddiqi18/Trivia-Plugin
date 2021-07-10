@@ -144,6 +144,10 @@ public enum Lang {
         return items;
     }
 
+    public String format_single() {
+        return format_single(null);
+    }
+
     public String format_single(Placeholder placeholder) {
         if (LANG == null) {
             return "";

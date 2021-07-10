@@ -21,7 +21,7 @@ public class RewardsMainMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return Lang.REWARDS_GENERAL_MENU_TITLE.format_single(null);
+        return Lang.REWARDS_GENERAL_MENU_TITLE.format_single();
     }
 
     @Override
@@ -69,14 +69,13 @@ public class RewardsMainMenu extends Menu {
 
         String lore = "View and modify rewards given to the %s place winner at the end of a trivia game.";
 
-        insertItemWrap(Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format_single(null), String.format(lore, "first"), 11);
+        insertItem(11, Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format_single(), String.format(lore, "first"), false, true);
 
-        insertItemWrap(Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(null), String.format(lore, "second"), 13);
+        insertItem(13, Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(), String.format(lore, "second"), false, true);
 
-        insertItemWrap(Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(null), String.format(lore, "third"), 15);
+        insertItem(15, Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(), String.format(lore, "third"), false, true);
 
-        insertItemWrap(Material.ENDER_CHEST, "Per-Round Reward", "View and modify rewards given per round basis to the first answerer.", 35);
-
+        insertItem(35, Material.ENDER_CHEST, "Per-Round Reward", "View and modify rewards given per round basis to the first answerer.", false, true);
 
         fillRest();
 

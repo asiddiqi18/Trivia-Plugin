@@ -145,13 +145,13 @@ public class RewardsSpecificMenu extends Menu {
         }
 
         if (trivia.vaultEnabled()) {
-            insertItem(Material.EMERALD, Lang.REWARDS_SPECIFIC_MONEY.format_single(null), Collections.singletonList("$" + reward.getMoney()), 38, true);
+            insertItem(38, Material.EMERALD, Lang.REWARDS_SPECIFIC_MONEY.format_single(), Collections.singletonList("$" + reward.getMoney()), true, false);
         } else {
-            insertItem(Material.EMERALD, ChatColor.DARK_RED + "Rewarded Money", Collections.singletonList(ChatColor.RED + "Vault required to give money rewards!"), 38, false);
+            insertItem(38, Material.EMERALD, ChatColor.DARK_RED + "Rewarded Money", Collections.singletonList(ChatColor.RED + "Vault required to give money rewards!"), false, false);
         }
-        insertItem(Material.EXPERIENCE_BOTTLE, Lang.REWARDS_SPECIFIC_EXP.format_single(null), Collections.singletonList(String.valueOf(reward.getExperience())), 42, true);
+        insertItem(42, Material.EXPERIENCE_BOTTLE, Lang.REWARDS_SPECIFIC_EXP.format_single(), Collections.singletonList(String.valueOf(reward.getExperience())), true, false);
 
-        insertItem(Material.WRITABLE_BOOK, Lang.REWARDS_SPECIFIC_MESSAGE.format_single(null), Collections.singletonList(reward.getMessage() != null ? reward.getMessage() : "No rewards are set."), 44, true);
+        insertItem(44, Material.WRITABLE_BOOK, Lang.REWARDS_SPECIFIC_MESSAGE.format_single(), Collections.singletonList(reward.getMessage() != null ? reward.getMessage() : "No rewards are set."), true, false);
         inventory.setItem(36, BACK);
         inventory.setItem(40, CLOSE);
     }

@@ -29,7 +29,7 @@ public class MainMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return Lang.MAIN_MENU_TITLE.format_single(null);
+        return Lang.MAIN_MENU_TITLE.format_single();
     }
 
     @Override
@@ -69,19 +69,18 @@ public class MainMenu extends Menu {
 
         BukkitScheduler scheduler = trivia.getServer().getScheduler();
 
+        insertItem(13, Material.EMERALD, Lang.MAIN_MENU_REWARDS.format_single(), Lang.MAIN_MENU_REWARDS_DESCRIPTION.format_single(), false, true);
 
-        insertItem(Material.EMERALD, Lang.MAIN_MENU_REWARDS.format_single(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_REWARDS_DESCRIPTION.format_single(null), ChatColor.DARK_PURPLE, 30), 13, false);
-
-        insertItem(Material.PAPER, Lang.MAIN_MENU_LIST.format_single(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_LIST_DESCRIPTION.format_single(null), ChatColor.DARK_PURPLE, 30), 15, false);
+        insertItem(15, Material.PAPER, Lang.MAIN_MENU_LIST.format_single(), Lang.MAIN_MENU_LIST_DESCRIPTION.format_single(), false, true);
 
         new BukkitRunnable() {
 
             @Override
             public void run() {
                 if (trivia.getGame() != null) {
-                    insertItem(Material.RED_TERRACOTTA, ChatColor.DARK_RED + "Stop Trivia", WordWrapLore(ChatColor.RED + "There's currently a game in progress! Click here to stop this current game.", ChatColor.RED, 30), 11, false);
+                    insertItem(11, Material.RED_TERRACOTTA, ChatColor.DARK_RED + "Stop Trivia", ChatColor.RED + "There's currently a game in progress! Click here to stop this current game.", false, true);
                 } else {
-                    insertItem(Material.GREEN_TERRACOTTA, Lang.MAIN_MENU_START.format_single(null), WordWrapLore(ChatColor.DARK_PURPLE + Lang.MAIN_MENU_START_DESCRIPTION.format_single(null), ChatColor.DARK_PURPLE, 30), 11, false);
+                    insertItem(11, Material.GREEN_TERRACOTTA, Lang.MAIN_MENU_START.format_single(), ChatColor.DARK_PURPLE + Lang.MAIN_MENU_START_DESCRIPTION.format_single(), false, true);
                 }
                 taskID = this.getTaskId();
             }
@@ -89,9 +88,9 @@ public class MainMenu extends Menu {
         }.runTaskTimer(trivia, 0, 100);
 
         if (trivia.getAutomatedGameManager().isSchedulingEnabled()) {
-            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + Elapsed.getTimeSince(trivia.getAutomatedGameManager().getNextAutomatedTime()).getElapsedFormattedString(), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedGameManager().getAutomatedPlayerReq()), 35, false), 0, 20);
+            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(35, Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + Elapsed.getTimeSince(trivia.getAutomatedGameManager().getNextAutomatedTime()).getElapsedFormattedString(), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedGameManager().getAutomatedPlayerReq()), false, false), 0, 20);
         } else {
-            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(Material.CLOCK, ChatColor.RED + "Scheduled Games Not Enabled", Arrays.asList(ChatColor.YELLOW + "Enable this feature through the " + ChatColor.UNDERLINE + "config.yml", ChatColor.YELLOW + "in order to automatically host games!"), 35, false), 0, 20);
+            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(35, Material.CLOCK, ChatColor.RED + "Scheduled Games Not Enabled", Arrays.asList(ChatColor.YELLOW + "Enable this feature through the " + ChatColor.UNDERLINE + "config.yml", ChatColor.YELLOW + "in order to automatically host games!"), false, false), 0, 20);
         }
 
         fillRest();

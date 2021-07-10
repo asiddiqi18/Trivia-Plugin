@@ -96,40 +96,38 @@ public class ListMenu extends PaginatedMenu {
                 if (questionList.get(index) != null) {
                     Question question = questionList.get(index);
                     ItemStack questionItem = new ItemStack(Material.PAPER, question.getId() % 64);
-                    ItemMeta questionMeta = questionItem.getItemMeta();
-                    questionMeta.setDisplayName(Lang.LIST_MENU_QUESTION.format_single(new Placeholder.PlaceholderBuilder()
-                            .val(String.valueOf(question.getId()))
-                            .build()
-                    ));
 
-                    List<String> questionWrap = WordWrapLore(Lang.LIST_MENU_QUESTION_LORE.format_single(new Placeholder.PlaceholderBuilder()
+                    List<String> loreWrapped = new ArrayList<>();
+
+                    loreWrapped.add(Lang.LIST_MENU_QUESTION_LORE.format_single(new Placeholder.PlaceholderBuilder()
                             .val(ChatColor.YELLOW + question.getQuestionString())
                             .build()
-                    ), ChatColor.YELLOW, 50);
-                    List<String> answerWrap = WordWrapLore(Lang.LIST_MENU_ANSWER_LORE.format_single(new Placeholder.PlaceholderBuilder()
-                            .val(ChatColor.YELLOW + question.getAnswerList()
-                                    .toString())
+                    ));
+                    loreWrapped.add(Lang.LIST_MENU_ANSWER_LORE.format_single(new Placeholder.PlaceholderBuilder()
+                            .val(ChatColor.YELLOW + question.getAnswerList().toString())
                             .build()
-                    ), ChatColor.YELLOW, 50);
-                    List<String> changeWrap = WordWrapLore(ChatColor.RED + "Click to modify this question.", ChatColor.YELLOW, 50);
+                    ));
+                    loreWrapped.add(ChatColor.RED + "Click to modify this question.");
 
-                    List<String> loreList = new ArrayList<>(questionWrap);
-                    loreList.addAll(answerWrap);
-                    loreList.addAll(changeWrap);
                     if (question.getAuthor() != null) {
-                        loreList.add(Lang.LIST_MENU_AUTHOR_LORE.format_single(new Placeholder.PlaceholderBuilder()
+                        loreWrapped.add(Lang.LIST_MENU_AUTHOR_LORE.format_single(new Placeholder.PlaceholderBuilder()
                                 .val(question.getAuthor())
                                 .build()
                         ));
                     }
-                    questionMeta.setLore(loreList);
+
+                    ItemMeta questionMeta = questionItem.getItemMeta();
                     questionMeta.getPersistentDataContainer().set(new NamespacedKey(trivia, "trivia_question_id"), PersistentDataType.INTEGER,
                             question.getId());
                     questionItem.setItemMeta(questionMeta);
-                    inventory.addItem(questionItem);
+
+                    insertItem(-1, questionItem, Lang.LIST_MENU_QUESTION.format_single(new Placeholder.PlaceholderBuilder()
+                            .val(String.valueOf(question.getId()))
+                            .build()),
+                            loreWrapped, false, true);
                 }
             }
-        insertItem(Material.EMERALD, Lang.LIST_MENU_NEW_QUESTION.format_single(null), 53);
+        insertItem(53, Material.EMERALD,  Lang.LIST_MENU_NEW_QUESTION.format_single(), "", false, false);
         if (playerMenuUtility.getPreviousMenu() != null) {
             ItemStack previousMenuItem = BACK;
             ItemMeta previousMenuMeta = previousMenuItem.getItemMeta();

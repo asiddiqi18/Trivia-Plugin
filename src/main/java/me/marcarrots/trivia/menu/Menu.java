@@ -14,9 +14,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public abstract class Menu implements InventoryHolder {
@@ -82,53 +80,61 @@ public abstract class Menu implements InventoryHolder {
         }
     }
 
-    protected void insertItem(Material material, String s, int i) {
-        ItemStack amountItem = new ItemStack(material, 1);
-        ItemMeta amountMeta = amountItem.getItemMeta();
-        if (amountMeta != null) {
-            amountMeta.setDisplayName(ChatColor.GREEN + s);
-        }
-        amountItem.setItemMeta(amountMeta);
-        inventory.setItem(i, amountItem);
+    protected void insertItem(int index, Material material, String displayName, String lore, boolean changeable, boolean wrap) {
+        ItemStack item = new ItemStack(material, 1);
+        List<String> loreList = new ArrayList<>(Collections.singletonList(lore)); // do this because "lore" might not be mutable
+        insertItem(index, item, displayName, loreList, changeable, wrap);
     }
 
-    protected void insertItem(Material material, String displayName, List<String> lore, int i, boolean changeable) {
-        ItemStack amountItem = new ItemStack(material, 1);
-        ItemMeta amountMeta = amountItem.getItemMeta();
-        List<String> itemLore = new ArrayList<>(lore);
-        if (amountMeta != null) {
-            amountMeta.setDisplayName(ChatColor.GREEN + displayName);
-            if (changeable) {
-                itemLore.addAll(Arrays.asList(Lang.MENU_CHANGE.format_multiple(null)));
+    protected void insertItem(int index, Material material, String displayName, List<String> lore, boolean changeable, boolean wrap) {
+        ItemStack item = new ItemStack(material, 1);
+        List<String> loreList = new ArrayList<>(lore); // do this because "lore" might not be mutable
+        insertItem(index, item, displayName, loreList, changeable, wrap);
+    }
+
+    protected void insertItem(int index, ItemStack item, String displayName, List<String> lore, boolean changeable, boolean wrap) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(displayName);
+            if (lore != null) {
+                if (wrap) {
+                    List<String> newLoreList = new ArrayList<>();
+                    for (String oldLoreLine : lore) {
+                        String color = ChatColor.getLastColors(oldLoreLine);
+                        newLoreList.addAll(WordWrapLore(oldLoreLine, color, 50));
+                    }
+                    lore = newLoreList;
+                }
+                if (changeable) {
+                    String[] changeableArray = Lang.MENU_CHANGE.format_multiple(null);
+                    List<String> changeableList = Arrays.asList(changeableArray);
+                    System.out.println(changeableList);
+                    if (lore == null) {
+                        System.out.println("Lore is null");
+                    } else if (changeableList == null) {
+                        System.out.println("changeableList is null");
+                    } else {
+                        lore.addAll(changeableList);
+                    }
+                }
+                meta.setLore(lore);
             }
-            amountMeta.setLore(itemLore);
         }
-        amountItem.setItemMeta(amountMeta);
-        inventory.setItem(i, amountItem);
+        item.setItemMeta(meta);
+        if (index == -1) {
+            inventory.addItem(item);
+        } else {
+            inventory.setItem(index, item);
+        }
     }
 
-    protected void insertItemWrap(Material material, String s, String s2, int i) {
-        ItemStack amountItem = new ItemStack(material, 1);
-        ItemMeta amountMeta = amountItem.getItemMeta();
-        if (amountMeta != null) {
-            amountMeta.setDisplayName(ChatColor.GREEN + s);
-            List<String> loreList;
-            loreList = WordWrapLore(ChatColor.LIGHT_PURPLE + s2, ChatColor.LIGHT_PURPLE, 50);
-            loreList.addAll(Arrays.asList(Lang.MENU_CHANGE.format_multiple(null)));
-            amountMeta.setLore(loreList);
-        }
-        amountItem.setItemMeta(amountMeta);
-        inventory.setItem(i, amountItem);
-    }
-
-    protected List<String> WordWrapLore(String string, ChatColor color, int wrapLength) {
-        StringBuilder sb = new StringBuilder(string);
+    protected List<String> WordWrapLore(String string, String color, int wrapLength) {
+        StringBuilder sb = new StringBuilder(color + string);
         int i = 0;
         while (i + wrapLength < sb.length() && (i = sb.lastIndexOf(" ", i + wrapLength)) != -1) {
             sb.replace(i, i + 1, "\n" + color);
         }
         return new ArrayList<>(Arrays.asList(sb.toString().split("\n")));
-
     }
 
 }

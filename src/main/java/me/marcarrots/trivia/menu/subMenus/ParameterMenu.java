@@ -27,7 +27,7 @@ public class ParameterMenu extends Menu {
 
     @Override
     public String getMenuName() {
-        return Lang.PARAMS_MENU_TITLE.format_single(null);
+        return Lang.PARAMS_MENU_TITLE.format_single();
     }
 
     @Override
@@ -91,38 +91,33 @@ public class ParameterMenu extends Menu {
     @Override
     public void setMenuItems() {
 
-        insertItem(Material.OAK_SIGN,
-                Lang.PARAMS_MENU_TOTAL.format_single(null),
-                Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds() + " rounds."),
-                10,
-                true);
+        insertItem(10, Material.OAK_SIGN,
+                Lang.PARAMS_MENU_TOTAL.format_single(),
+                ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds() + " rounds.",
+                true, false);
 
-        insertItem(Material.CLOCK,
-                Lang.PARAMS_MENU_TIME.format_single(null),
-                Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer() + " seconds."),
-                12,
-                true);
+        insertItem(12, Material.CLOCK,
+                Lang.PARAMS_MENU_TIME.format_single(),
+                ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer() + " seconds.",
+                true, false);
 
 
         if (playerMenuUtility.isRepeatEnabled()) {
-            insertItem(Material.LIME_DYE,
-                    Lang.PARAMS_MENU_REPEAT.format_single(null),
-                    Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_GREEN + "True"),
-                    14,
-                    true);
+            insertItem(14, Material.LIME_DYE,
+                    Lang.PARAMS_MENU_REPEAT.format_single(),
+                    ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_GREEN + "True",
+                    true, false);
         } else {
-            insertItem(Material.RED_DYE,
-                    Lang.PARAMS_MENU_REPEAT.format_single(null),
-                    Collections.singletonList(ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_RED + "False"),
-                    14,
-                    true);
+            insertItem(14, Material.RED_DYE,
+                    Lang.PARAMS_MENU_REPEAT.format_single(),
+                    ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_RED + "False",
+                    true, false);
         }
 
-        insertItem(Material.GREEN_TERRACOTTA,
-                Lang.PARAMS_MENU_START.format_single(null),
+        insertItem(16, Material.GREEN_TERRACOTTA,
+                Lang.PARAMS_MENU_START.format_single(),
                 Arrays.asList(ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "--------------------", ChatColor.DARK_PURPLE + "Rounds: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds(), ChatColor.DARK_PURPLE + "Seconds per round: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer(), ChatColor.DARK_PURPLE + "Repeat questions: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.isRepeatEnabled()),
-                16,
-                false);
+                false, false);
         inventory.setItem(27, BACK);
         inventory.setItem(31, CLOSE);
         fillRest();
