@@ -88,9 +88,22 @@ public class MainMenu extends Menu {
         }.runTaskTimer(trivia, 0, 100);
 
         if (trivia.getAutomatedGameManager().isSchedulingEnabled()) {
-            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(35, Material.CLOCK, "Time Until Next Scheduled Game", Arrays.asList(ChatColor.YELLOW + Elapsed.getTimeSince(trivia.getAutomatedGameManager().getNextAutomatedTime()).getElapsedFormattedString(), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedGameManager().getAutomatedPlayerReq()), false, false), 0, 20);
+            scheduler.scheduleSyncRepeatingTask(trivia,
+                    () -> insertItem(35,
+                            Material.CLOCK,
+                            ChatColor.GREEN + "Time Until Next Scheduled Game",
+                            Arrays.asList(ChatColor.YELLOW + Elapsed.millisToElapsedTime(trivia.getAutomatedGameManager().getNextAutomatedTimeFromNow()).getElapsedFormattedString(), ChatColor.LIGHT_PURPLE + "Minimum players needed: " + trivia.getAutomatedGameManager().getAutomatedPlayerReq()),
+                            false,
+                            false),
+                    0,
+                    20);
         } else {
-            scheduler.scheduleSyncRepeatingTask(trivia, () -> insertItem(35, Material.CLOCK, ChatColor.RED + "Scheduled Games Not Enabled", Arrays.asList(ChatColor.YELLOW + "Enable this feature through the " + ChatColor.UNDERLINE + "config.yml", ChatColor.YELLOW + "in order to automatically host games!"), false, false), 0, 20);
+           insertItem(35,
+                    Material.CLOCK,
+                    ChatColor.RED + "Scheduled Games Not Enabled",
+                    Arrays.asList(ChatColor.YELLOW + "Enable this feature through the " + ChatColor.UNDERLINE + "config.yml", ChatColor.YELLOW + "in order to automatically host games!"),
+                    false,
+                    false);
         }
 
         fillRest();

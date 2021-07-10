@@ -18,11 +18,7 @@ public class Elapsed {
         this.elapsedSeconds = elapsedSeconds;
     }
 
-    public static Elapsed getTimeSince(long millis) {
-
-        if (millis < 0) {
-            throw new IllegalArgumentException("Negative elapsed time received.");
-        }
+    public static Elapsed millisToElapsedTime(long millis) {
 
         long secondsInMilli = 1000;
         long minutesInMilli = secondsInMilli * 60;

@@ -4,7 +4,6 @@ import me.marcarrots.trivia.api.StringSimilarity;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.MessageUtil;
 import me.marcarrots.trivia.language.Placeholder;
-import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -12,7 +11,6 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -129,7 +127,7 @@ public class Game {
                     .build()
             ));
         } else if (roundResult == RoundResult.ANSWERED) { // if question was answered
-            String timeToAnswer = Elapsed.getTimeSince(roundTimeStart).getElapsedFormattedString();
+            String timeToAnswer = Elapsed.millisToElapsedTime(roundTimeStart).getElapsedFormattedString();
             afterAnswerFillBossBar(BarColor.GREEN);
             Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
                     .player(roundWinner)
