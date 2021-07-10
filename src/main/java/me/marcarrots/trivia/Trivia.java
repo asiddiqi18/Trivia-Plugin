@@ -177,10 +177,11 @@ public final class Trivia extends JavaPlugin {
             saveConfig();
         }
 
+        messagesFile.reloadFiles();
+
         Lang.setFile(messagesFile.getData());
 
         Lang[] langValues = Lang.values();
-
 
         // add new keys to file
         List<String> addedKeys = new ArrayList<>();
@@ -204,18 +205,19 @@ public final class Trivia extends JavaPlugin {
                     messagesFile.getData().set(key, null);
                 }
             }
+            messagesFile.saveData();
         }
 
-        messagesFile.saveData();
 
         if (addedKeys.size() > 0) {
             Bukkit.getLogger().info("[Trivia!] The following keys were added to messages.yml: " + addedKeys);
+            messagesFile.saveData();
         }
         if (removedKeys.size() > 0) {
             Bukkit.getLogger().info("[Trivia!] The following keys were removed from messages.yml: " + removedKeys);
+            messagesFile.saveData();
         }
 
-        messagesFile.reloadFiles();
     }
 
 
