@@ -2,6 +2,7 @@ package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.api.StringSimilarity;
 import me.marcarrots.trivia.language.Lang;
+import me.marcarrots.trivia.language.MessageUtil;
 import me.marcarrots.trivia.language.Placeholder;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
@@ -180,15 +181,17 @@ public class Game {
 
     public void playerAnswer(AsyncPlayerChatEvent e) {
 
+
         if (currentQuestion == null || roundResult != RoundResult.UNANSWERED) {
             return;
         }
 
-        String userAnswer = ChatColor.stripColor(e.getMessage());
+        String userAnswerStripped = ChatColor.stripColor(e.getMessage());
         Player player = e.getPlayer();
 
         for (String correctAnswer : currentQuestion.getAnswerList()) {
-            if (StringSimilarity.similarity(userAnswer.toLowerCase(), correctAnswer.toLowerCase()) >= similarityScore || userAnswer.toLowerCase().endsWith(correctAnswer.toLowerCase())) {
+            String correctAnswerStripped = ChatColor.stripColor(MessageUtil.HexColorMessage(correctAnswer));
+            if (StringSimilarity.similarity(userAnswerStripped.toLowerCase(), correctAnswerStripped.toLowerCase()) >= similarityScore) {
                 roundResult = RoundResult.ANSWERED;
                 Bukkit.getScheduler().scheduleSyncDelayedTask(trivia, () -> {
                     roundWinner = player;
