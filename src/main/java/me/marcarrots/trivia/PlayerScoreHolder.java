@@ -31,9 +31,9 @@ public class PlayerScoreHolder {
         }
     }
 
-    public void addScore(Player player) {
+    public void addScore(Player player, int round) {
         PlayerScore score = scores.get(player.getName());
-        score.incrementScore();
+        score.incrementScore(round);
         scores.put(player.getName(), score);
     }
 

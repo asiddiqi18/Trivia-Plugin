@@ -140,7 +140,7 @@ public class Game {
             ));
             if (roundWinner != null) {
                 Effects.playSound(roundWinner, trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
-                scores.addScore(roundWinner);
+                scores.addScore(roundWinner, getQuestionNum());
                 trivia.getRewards()[0].giveReward(roundWinner);
                 roundWinner = null;
             }
