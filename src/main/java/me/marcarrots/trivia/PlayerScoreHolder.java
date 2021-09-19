@@ -45,6 +45,7 @@ public class PlayerScoreHolder {
 
         String[] message = Lang.TRIVIA_WINNER_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder().build());
         List<String> winnerList = new ArrayList<>();
+
         if (scoreValues.size() == 0 || scoreValues.get(0).getPoints() == 0) {
             Lang.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format_multiple(null));
             return;
