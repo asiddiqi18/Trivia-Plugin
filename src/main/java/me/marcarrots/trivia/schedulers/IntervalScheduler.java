@@ -2,45 +2,36 @@
  * Trivia by MarCarrot, 2020
  */
 
-package me.marcarrots.trivia;
+/*
+ * Trivia by MarCarrot, 2020
+ */
 
+package me.marcarrots.trivia.schedulers;
+
+import me.marcarrots.trivia.Trivia;
 import org.bukkit.Bukkit;
 
-public class AutomatedGameManager {
+public class IntervalScheduler extends GameScheduler {
 
-    private final Trivia trivia;
-    private final boolean schedulingEnabled;
-    private final int automatedTimeMinutes;
-    private final int automatedPlayerReq;
     private long nextAutomatedTimeEpoch;
     private int schedulerTask;
 
-    public AutomatedGameManager(Trivia trivia) {
-        this.trivia = trivia;
-        schedulingEnabled = trivia.getConfig().getBoolean("Scheduled games", false);
-        automatedTimeMinutes = trivia.getConfig().getInt("Scheduled games interval", 60);
-        automatedPlayerReq = trivia.getConfig().getInt("Scheduled games minimum players", 6);
+    public IntervalScheduler(Trivia trivia) {
+        super(trivia);
     }
 
-
-    public boolean isSchedulingEnabled() {
-        return schedulingEnabled;
+    public int getSchedulingType() {
+        return schedulingType;
     }
-
 
     public int getAutomatedPlayerReq() {
         return automatedPlayerReq;
     }
 
 
-    private long getNextAutomatedTimeEpoch() {
-        return nextAutomatedTimeEpoch;
-    }
-
     public long getNextAutomatedTimeFromNow() {
         return nextAutomatedTimeEpoch - System.currentTimeMillis();
     }
-
 
 
     private void setNextAutomatedTimeEpoch() {
@@ -49,14 +40,14 @@ public class AutomatedGameManager {
 
 
     public void automatedSchedule() {
-        if (!schedulingEnabled) {
+        if (schedulingType != 0) {
             return;
         }
         setNextAutomatedTimeEpoch();
         schedulerTask = trivia.getServer().getScheduler().scheduleSyncRepeatingTask(trivia, () -> {
             int onlinePlayerCount = Bukkit.getOnlinePlayers().size();
             if (onlinePlayerCount < automatedPlayerReq) {
-                Bukkit.getLogger().info(String.format("Automated Trivia Canceled (%s players online, needed %s)...",onlinePlayerCount, automatedPlayerReq));
+                Bukkit.getLogger().info(String.format("Automated Trivia Canceled (%s players online, needed %s)...", onlinePlayerCount, automatedPlayerReq));
                 setNextAutomatedTimeEpoch();
                 return;
             }

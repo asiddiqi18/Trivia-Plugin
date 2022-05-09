@@ -87,7 +87,7 @@ public class MainMenu extends Menu {
 
         }.runTaskTimer(trivia, 0, 100);
 
-        if (trivia.getAutomatedGameManager().isSchedulingEnabled()) {
+        if (trivia.getAutomatedGameManager().getSchedulingType() != 0) {
             scheduler.scheduleSyncRepeatingTask(trivia,
                     () -> insertItem(35,
                             Material.CLOCK,
