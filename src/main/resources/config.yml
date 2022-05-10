@@ -14,21 +14,11 @@ Time between rounds: 3
 # Top winner amount's value will show up to these many winners displayed in chat after a trivia game.
 Top winner amount: 3
 
-# Change this to specify if you'd like Trivia to be automatically scheduled and hosted.
-# Set to 0 to disable automatic Trivia.
-# Set to 1 to host trivia every on an interval, every x minutes. Change x in 'scheduled games interval'
-# Or if you'd prefer to schedule trivia at specific times in the day...
-# Set to 2 to host trivia at specific times of the day. Change the times at 'scheduled games time'
+# Scheduled games, if true, will let console automatically host trivia every x minutes.
 Scheduled games: false
 
 # Scheduled games interval is the time between the scheduled games (in minutes) if scheduled games are enabled.
 Scheduled games interval: 60
-
-Scheduled games time:
-  - "00:00"
-  - "06:00"
-  - "12:00"
-  - "18:00"
 
 # Scheduled games minimum players is the minimum number of players that must be on for scheduled trivia events to be hosted.
 Scheduled games minimum players: 6

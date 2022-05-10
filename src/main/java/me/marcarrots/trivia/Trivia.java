@@ -12,9 +12,6 @@ import me.marcarrots.trivia.listeners.EntityDamage;
 import me.marcarrots.trivia.listeners.InventoryClick;
 import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
-import me.marcarrots.trivia.schedulers.GameScheduler;
-import me.marcarrots.trivia.schedulers.IntervalScheduler;
-import me.marcarrots.trivia.schedulers.TimeOfDayScheduler;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -38,7 +35,7 @@ public final class Trivia extends JavaPlugin {
     private FileManager messagesFile;
     private FileManager rewardsFile;
     private String updateNotice = null;
-    private GameScheduler automatedGameManager;
+    private AutomatedGameManager automatedGameManager;
 
     public static Economy getEcon() {
         return econ;
@@ -68,7 +65,7 @@ public final class Trivia extends JavaPlugin {
         game = null;
     }
 
-    public GameScheduler getAutomatedGameManager() {
+    public AutomatedGameManager getAutomatedGameManager() {
         return automatedGameManager;
     }
 
@@ -143,16 +140,7 @@ public final class Trivia extends JavaPlugin {
         if (automatedGameManager != null) {
             automatedGameManager.cancel();
         }
-
-        int schedulingMode = getConfig().getInt("Scheduled games", 0);
-
-        if (schedulingMode == 1) {
-            automatedGameManager = new IntervalScheduler(this);
-        } else if (schedulingMode == 2) {
-            automatedGameManager = new TimeOfDayScheduler(this);
-        } else {
-            return;
-        }
+        automatedGameManager = new AutomatedGameManager(this);
         automatedGameManager.automatedSchedule();
 
     }
