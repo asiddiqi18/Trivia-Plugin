@@ -12,18 +12,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-
 public class TriviaCommand implements CommandExecutor {
 
     Trivia trivia;
     QuestionHolder questionHolder;
-    ImportQuestions importQuestions;
 
     public TriviaCommand(Trivia trivia, QuestionHolder questionHolder) {
         this.trivia = trivia;
         this.questionHolder = questionHolder;
-        importQuestions = new ImportQuestions(trivia);
     }
 
     private String helpFormat(String commandName, String commandDescription) {
@@ -73,7 +69,7 @@ public class TriviaCommand implements CommandExecutor {
                     trivia.getGame().stop();
                     commandSender.sendMessage(Lang.GAME_HALTED.format_multiple(null));
                     return false;
-                case "start": // TODO: send player message summarizing parameters
+                case "start":
                     if (trivia.getGame() != null) {
                         commandSender.sendMessage(ChatColor.RED + "There is already a trivia game in progress.");
                         return false;
@@ -104,38 +100,12 @@ public class TriviaCommand implements CommandExecutor {
                 case "version":
                     commandSender.sendMessage("Trivia version: " + trivia.getDescription().getVersion());
                     return false;
-                case "import":
-                    Question q;
-                    try {
-                        if (strings.length != 2) {
-                            commandSender.sendMessage(String.format("%sUsage: %s/trivia import %s<question number>%s,", ChatColor.DARK_AQUA, ChatColor.GOLD, ChatColor.AQUA, ChatColor.DARK_AQUA));
-                            commandSender.sendMessage(String.format("%swhere %s<question number> %sis the id of the question to import.", ChatColor.DARK_AQUA, ChatColor.AQUA, ChatColor.DARK_AQUA));
-                            commandSender.sendMessage(String.format("%sGet a list of available questions with their ids at: %s%s", ChatColor.DARK_AQUA, ChatColor.AQUA, "pastebin.com/7cTQznMZ"));
-                            return false;
-                        } else {
-                            q = importQuestions.readFile(Integer.parseInt(strings[1]));
-                        }
-                    } catch (IOException e) {
-                        commandSender.sendMessage("An unexpected IO error has occurred.");
-                        e.printStackTrace();
-                        return false;
-                    } catch (NumberFormatException e) {
-                        commandSender.sendMessage(String.format("%sThe ID '%s' is invalid and could not be imported. Find valid ones at: %s%s", ChatColor.RED, strings[1], ChatColor.DARK_RED, "pastebin.com/7cTQznMZ"));
-                        return false;
-                    }
-                    commandSender.sendMessage(border);
-                    commandSender.sendMessage(String.format(ChatColor.GREEN + "Successfully imported question #%s!", strings[1]));
-                    commandSender.sendMessage(String.format("  %sQuestion:    %s%s", ChatColor.GREEN, ChatColor.DARK_AQUA, q.getQuestionString()));
-                    commandSender.sendMessage(String.format("  %sAnswer(s):   %s%s", ChatColor.GREEN, ChatColor.DARK_AQUA, q.getAnswerList().toString()));
-                    commandSender.sendMessage(border);
-                    return false;
                 default:
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&m------------&e[ &6Trivia &e]&m------------"));
                     commandSender.sendMessage(helpFormat("", "(Main command) Opens up the in-game menu to start trivia or change settings."));
                     commandSender.sendMessage(helpFormat("start <# of rounds>", "Quickly starts up a trivia game. Optionally, specify number of rounds."));
                     commandSender.sendMessage(helpFormat("stop", "Stops the current trivia game in progress."));
                     commandSender.sendMessage(helpFormat("skip", "Skips a trivia question during a game."));
-                    commandSender.sendMessage(helpFormat("import", "Imports a pre-made question/answer from a given ID to your server."));
                     commandSender.sendMessage(helpFormat("reload", "Reloads all the trivia files."));
                     commandSender.sendMessage(helpFormat("help", "Displays this trivia help menu."));
                     commandSender.sendMessage(border);

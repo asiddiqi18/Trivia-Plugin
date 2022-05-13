@@ -31,9 +31,9 @@ public class PlayerScoreHolder {
         }
     }
 
-    public void addScore(Player player) {
+    public void addScore(Player player, int round) {
         PlayerScore score = scores.get(player.getName());
-        score.incrementScore();
+        score.incrementScore(round);
         scores.put(player.getName(), score);
     }
 
@@ -45,6 +45,7 @@ public class PlayerScoreHolder {
 
         String[] message = Lang.TRIVIA_WINNER_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder().build());
         List<String> winnerList = new ArrayList<>();
+
         if (scoreValues.size() == 0 || scoreValues.get(0).getPoints() == 0) {
             Lang.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format_multiple(null));
             return;
@@ -63,10 +64,6 @@ public class PlayerScoreHolder {
                         .points(score.getPoints())
                         .build()
                 ));
-
-                if (trivia.getConfig().getBoolean("Summon fireworks", true)) {
-                    Effects.summonFireWork(player);
-                }
 
                 if (i < 3) {
                     rewards[i + 1].giveReward(player);

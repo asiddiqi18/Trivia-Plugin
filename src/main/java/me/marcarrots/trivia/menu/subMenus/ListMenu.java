@@ -40,6 +40,7 @@ public class ListMenu extends PaginatedMenu {
         return 54;
     }
 
+    @SuppressWarnings("UnnecessaryUnboxing")
     public void handleMenuClick(InventoryClickEvent event) {
         event.setCancelled(true);
 
@@ -123,12 +124,12 @@ public class ListMenu extends PaginatedMenu {
                     questionItem.setItemMeta(questionMeta);
 
                     insertItem(-1, questionItem, Lang.LIST_MENU_QUESTION.format_single(new Placeholder.PlaceholderBuilder()
-                            .val(String.valueOf(question.getId()))
-                            .build()),
+                                    .val(String.valueOf(question.getId()))
+                                    .build()),
                             loreWrapped, false, true);
                 }
             }
-        insertItem(53, Material.EMERALD,  Lang.LIST_MENU_NEW_QUESTION.format_single(), "", false, false);
+        insertItem(53, Material.EMERALD, Lang.LIST_MENU_NEW_QUESTION.format_single(), "", false, false);
         if (playerMenuUtility.getPreviousMenu() != null) {
             ItemStack previousMenuItem = BACK;
             ItemMeta previousMenuMeta = previousMenuItem.getItemMeta();

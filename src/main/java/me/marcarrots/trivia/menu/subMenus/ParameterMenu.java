@@ -15,7 +15,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 public class ParameterMenu extends Menu {
 

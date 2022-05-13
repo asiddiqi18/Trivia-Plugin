@@ -24,10 +24,10 @@ public class Game {
     private final double similarityScore;
     private final boolean bossBarEnabled;
     private final int timeBetween;
-    private long timePerQuestion;
-    private int amountOfRounds;
-    private boolean doRepetition;
-    private CommandSender commandSender;
+    private final long timePerQuestion;
+    private final int amountOfRounds;
+    private final boolean doRepetition;
+    private final CommandSender commandSender;
     private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
@@ -140,7 +140,7 @@ public class Game {
             ));
             if (roundWinner != null) {
                 Effects.playSound(roundWinner, trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
-                scores.addScore(roundWinner);
+                scores.addScore(roundWinner, getQuestionNum());
                 trivia.getRewards()[0].giveReward(roundWinner);
                 roundWinner = null;
             }

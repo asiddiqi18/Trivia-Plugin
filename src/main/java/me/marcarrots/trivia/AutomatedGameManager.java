@@ -42,7 +42,6 @@ public class AutomatedGameManager {
     }
 
 
-
     private void setNextAutomatedTimeEpoch() {
         nextAutomatedTimeEpoch = System.currentTimeMillis() + ((long) automatedTimeMinutes * 60 * 1000);
     }
@@ -56,7 +55,7 @@ public class AutomatedGameManager {
         schedulerTask = trivia.getServer().getScheduler().scheduleSyncRepeatingTask(trivia, () -> {
             int onlinePlayerCount = Bukkit.getOnlinePlayers().size();
             if (onlinePlayerCount < automatedPlayerReq) {
-                Bukkit.getLogger().info(String.format("Automated Trivia Canceled (%s players online, needed %s)...",onlinePlayerCount, automatedPlayerReq));
+                Bukkit.getLogger().info(String.format("Automated Trivia Canceled (%s players online, needed %s)...", onlinePlayerCount, automatedPlayerReq));
                 setNextAutomatedTimeEpoch();
                 return;
             }

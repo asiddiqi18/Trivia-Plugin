@@ -98,7 +98,7 @@ public class MainMenu extends Menu {
                     0,
                     20);
         } else {
-           insertItem(35,
+            insertItem(35,
                     Material.CLOCK,
                     ChatColor.RED + "Scheduled Games Not Enabled",
                     Arrays.asList(ChatColor.YELLOW + "Enable this feature through the " + ChatColor.UNDERLINE + "config.yml", ChatColor.YELLOW + "in order to automatically host games!"),
