@@ -6,7 +6,7 @@
 
     <groupId>me.marcarrots</groupId>
     <artifactId>trivia</artifactId>
-    <version>1.12</version>
+    <version>1.13</version>
     <packaging>jar</packaging>
 
     <name>Trivia</name>
@@ -37,7 +37,6 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <!-- Replace this with your package! -->
                             <shadedPattern>me.marcarrots.trivia</shadedPattern>
                         </relocation>
                     </relocations>
@@ -98,7 +97,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>2.2.1</version>
+            <version>3.0.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

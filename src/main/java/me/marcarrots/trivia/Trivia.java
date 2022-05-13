@@ -94,7 +94,14 @@ public final class Trivia extends JavaPlugin {
         loadRewards();
 
         // bStats
-        new Metrics(this, 7912);
+
+        try {
+            new Metrics(this, 7912);
+            Bukkit.getLogger().info("bStats successfully loaded");
+        } catch (NoClassDefFoundError e) {
+            Bukkit.getLogger().warning("bStats failed to load.");
+            e.printStackTrace();
+        }
 
         // register listeners and commands
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
@@ -249,7 +256,10 @@ public final class Trivia extends JavaPlugin {
 
     // save question as object
     public void readQuestions() {
+
         questionHolder.clear();
+
+        // legacy storage method
         if (getConfig().contains("Questions and Answers")) {
             Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old question data to new data...");
             List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
