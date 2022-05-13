@@ -20,8 +20,7 @@
 '1':
   Money: 1000.0
   Experience: 1500
-  Message: '&b&lCongratulations! &eYou finished in &6First Place&e! Received &bx3
-    diamonds&e and &b1500 experience&e.'
+  Message: '&b&lCongratulations! &eYou finished in &6First Place&e! Received &b%items%&e and &b%experience% experience&e.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
       v: 2580
@@ -33,7 +32,7 @@
 '2':
   Money: 500.0
   Experience: 1000
-  Message: '&lSo Close! &eYou finished in &6Second Place&e! Received &bx3 gold ingots&e and &b1000 experience&e.'
+  Message: '&lSo Close! &eYou finished in &6Second Place&e! Received &b%items%&e and &b%experience% experience&e.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
       v: 2580
@@ -45,7 +44,7 @@
 '3':
   Money: 200.0
   Experience: 500
-  Message: 'Nice! &eYou finished in &6Third Place&e! Received &bx3 iron ingots&e and &b500 experience&e.'
+  Message: 'Nice! &eYou finished in &6Third Place&e! Received &b%items%&e and &b%experience% experience&e.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
       v: 2580
