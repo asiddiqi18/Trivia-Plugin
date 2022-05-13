@@ -58,7 +58,7 @@ public class ConversationPrompt extends StringPrompt {
     public Prompt acceptInput(ConversationContext context, String input) {
         Player player = ((Player) context.getForWhom()).getPlayer();
         if (input == null || input.equalsIgnoreCase("back") || player == null) {
-            context.getForWhom().sendRawMessage("have exited the prompt.");
+            context.getForWhom().sendRawMessage("You have exited the prompt.");
             return Prompt.END_OF_CONVERSATION;
         }
         try {
