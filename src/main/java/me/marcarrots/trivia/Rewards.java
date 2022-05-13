@@ -6,7 +6,6 @@ package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
-import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -82,6 +81,7 @@ public class Rewards {
         trivia.getRewardsFile().getData().set(place + ".Items", items);
     }
 
+    @SuppressWarnings("unchecked")
     private void getValuesFromRewardsFile() {
         money = trivia.getRewardsFile().getData().getDouble(place + ".Money");
         experience = trivia.getRewardsFile().getData().getInt(place + ".Experience");
@@ -119,8 +119,9 @@ public class Rewards {
             BukkitScheduler scheduler = getServer().getScheduler();
             String formattedMessage = getMessage();
             int itemsIndex = formattedMessage.indexOf("%items%");
-            String itemsColor = ChatColor.getLastColors(formattedMessage.substring(0, itemsIndex));
-            formattedMessage = formattedMessage.replace("%items%", itemsToString(items, itemsColor));
+            if (itemsIndex != -1) {
+                formattedMessage = formattedMessage.replace("%items%", itemsToString(items));
+            }
             String moneyFormatted = NumberFormat.getIntegerInstance().format(money);
             formattedMessage = formattedMessage.replace("%money%", moneyFormatted);
             String experienceFormatted = NumberFormat.getIntegerInstance().format(experience);
@@ -148,7 +149,7 @@ public class Rewards {
         }
     }
 
-    public static String itemsToString(List<ItemStack> items, String chatColor) {
+    public static String itemsToString(List<ItemStack> items) {
 
         if (items == null || items.size() == 0) {
             return "";
@@ -167,22 +168,19 @@ public class Rewards {
                 name = itemStack.getType().toString().toLowerCase().replace("_", " ");
             }
 
-            str.append(chatColor);
-
-            str.append(amount).append(" ").append(name);
+            str.append(ChatColor.RESET).append(amount).append(" ").append(name);
 
             if (amount > 1) {
                 str.append("s");
             }
-
 
             if (items.size() == 1) {
                 break;
             }
 
             if (i == items.size() - 2) { // on 2nd to last iteration, add an "and"
-                str.append(" and ");
                 str.append(ChatColor.RESET);
+                str.append(" and ");
             } else if (i != items.size() - 1) { // on the last iteration, don't add another comma
                 str.append(ChatColor.RESET);
                 str.append(", ");
