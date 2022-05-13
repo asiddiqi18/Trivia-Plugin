@@ -16,7 +16,6 @@ public abstract class PaginatedMenu extends Menu {
 
     public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
         super(playerMenuUtility, trivia, questionHolder);
-
     }
 
     @Override

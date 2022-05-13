@@ -6,17 +6,16 @@ public class PlayerScore implements Comparable<PlayerScore> {
 
     private Player player;
     private int points;
-
-    public int getRoundLastScored() {
-        return roundLastScored;
-    }
-
     private int roundLastScored;
 
     public PlayerScore(Player player) {
         this.player = player;
         points = 0;
         roundLastScored = 0;
+    }
+
+    public int getRoundLastScored() {
+        return roundLastScored;
     }
 
     public void incrementScore(int round) {

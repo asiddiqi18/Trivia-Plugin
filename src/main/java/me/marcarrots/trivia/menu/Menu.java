@@ -14,7 +14,10 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 public abstract class Menu implements InventoryHolder {
@@ -63,7 +66,6 @@ public abstract class Menu implements InventoryHolder {
     public void open() {
         inventory = Bukkit.createInventory(this, getSlots(), getMenuName());
         this.setMenuItems();
-
         playerMenuUtility.getOwner().openInventory(inventory);
     }
 
@@ -113,7 +115,7 @@ public abstract class Menu implements InventoryHolder {
                     String[] changeableArray = Lang.MENU_CHANGE.format_multiple(null);
                     List<String> changeableList = Arrays.asList(changeableArray);
                     lore.addAll(changeableList);
-                    }
+                }
                 meta.setLore(lore);
             }
         }
@@ -125,6 +127,7 @@ public abstract class Menu implements InventoryHolder {
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected List<String> WordWrapLore(String string, String color, int wrapLength) {
         StringBuilder sb = new StringBuilder(color + string);
         int i = 0;

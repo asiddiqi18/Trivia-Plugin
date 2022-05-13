@@ -105,9 +105,9 @@ public final class Trivia extends JavaPlugin {
 
         // register listeners and commands
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
-        getServer().getPluginManager().registerEvents(new ChatEvent(this),this);
-        getServer().getPluginManager().registerEvents(new PlayerJoin(this),this);
-        getServer().getPluginManager().registerEvents(new EntityDamage(),this);
+        getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
+        getServer().getPluginManager().registerEvents(new EntityDamage(), this);
         getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder));
 
         // check for soft-dependencies

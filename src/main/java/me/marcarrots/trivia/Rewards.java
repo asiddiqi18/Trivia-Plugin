@@ -29,21 +29,62 @@ public class Rewards {
     double money;
 
 
-
     boolean summonFireworks;
     String message;
     List<ItemStack> items;
     List<String> commands;
 
-    public boolean isSummonFireworks() {
-        return summonFireworks;
-    }
     public Rewards(Trivia trivia, int place) {
         items = new ArrayList<>();
         this.trivia = trivia;
         this.place = place;
         experience = 0;
         getValuesFromRewardsFile();
+    }
+
+    public static String itemsToString(List<ItemStack> items) {
+
+        if (items == null || items.size() == 0) {
+            return "";
+        }
+
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack itemStack = items.get(i);
+            int amount = itemStack.getAmount();
+
+            String name;
+
+            if (itemStack.getItemMeta().hasDisplayName()) {
+                name = itemStack.getItemMeta().getDisplayName();
+            } else {
+                name = itemStack.getType().toString().toLowerCase().replace("_", " ");
+            }
+
+            str.append(ChatColor.RESET).append(amount).append(" ").append(name);
+
+            if (amount > 1) {
+                str.append("s");
+            }
+
+            if (items.size() == 1) {
+                break;
+            }
+
+            if (i == items.size() - 2) { // on 2nd to last iteration, add an "and"
+                str.append(ChatColor.RESET);
+                str.append(" and ");
+            } else if (i != items.size() - 1) { // on the last iteration, don't add another comma
+                str.append(ChatColor.RESET);
+                str.append(", ");
+            }
+
+        }
+        return str.toString();
+    }
+
+    public boolean isSummonFireworks() {
+        return summonFireworks;
     }
 
     public int getExperience() {
@@ -60,15 +101,15 @@ public class Rewards {
         return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
     }
 
-    public void flipSummonFireworks() {
-        this.summonFireworks = !this.summonFireworks;
-        trivia.getRewardsFile().getData().set(place + ".Summon Fireworks", this.summonFireworks);
-        trivia.getRewardsFile().saveData();
-    }
-
     public void setMessage(String message) {
         this.message = message;
         trivia.getRewardsFile().getData().set(place + ".Message", message);
+        trivia.getRewardsFile().saveData();
+    }
+
+    public void flipSummonFireworks() {
+        this.summonFireworks = !this.summonFireworks;
+        trivia.getRewardsFile().getData().set(place + ".Summon Fireworks", this.summonFireworks);
         trivia.getRewardsFile().saveData();
     }
 
@@ -165,47 +206,6 @@ public class Rewards {
                 player.updateInventory();
             }
         }
-    }
-
-    public static String itemsToString(List<ItemStack> items) {
-
-        if (items == null || items.size() == 0) {
-            return "";
-        }
-
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < items.size(); i++) {
-            ItemStack itemStack = items.get(i);
-            int amount = itemStack.getAmount();
-
-            String name;
-
-            if (itemStack.getItemMeta().hasDisplayName()) {
-                name = itemStack.getItemMeta().getDisplayName();
-            } else {
-                name = itemStack.getType().toString().toLowerCase().replace("_", " ");
-            }
-
-            str.append(ChatColor.RESET).append(amount).append(" ").append(name);
-
-            if (amount > 1) {
-                str.append("s");
-            }
-
-            if (items.size() == 1) {
-                break;
-            }
-
-            if (i == items.size() - 2) { // on 2nd to last iteration, add an "and"
-                str.append(ChatColor.RESET);
-                str.append(" and ");
-            } else if (i != items.size() - 1) { // on the last iteration, don't add another comma
-                str.append(ChatColor.RESET);
-                str.append(", ");
-            }
-
-        }
-        return str.toString();
     }
 
 }
