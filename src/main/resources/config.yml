@@ -26,9 +26,6 @@ Scheduled games minimum players: 6
 # Enabling boss bar will display a progress bar on the top of the screen as the game goes on.
 Enable boss bar: true
 
-# Summon fireworks, If true, will summon a random firework at the location of the trivia winners.
-Summon fireworks: true
-
 # Answer correct sound will be played after a player answers the question correctly. Enter 'none' to play no sound.
 # Use sound values found at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
 Answer correct sound: BLOCK_NOTE_BLOCK_PLING
