@@ -17,13 +17,13 @@ public class InventoryClick implements Listener {
             return;
         }
 
-        if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.DOUBLE_CLICK || event.getClick() == ClickType.DROP) {
-            return;
-        }
-
         InventoryHolder holder = event.getClickedInventory().getHolder();
 
         if (holder instanceof Menu) {
+
+            if (event.isShiftClick()) {
+                event.setCancelled(true);
+            }
 
             Menu menu = (Menu) holder;
             menu.handleMenuClick(event);
