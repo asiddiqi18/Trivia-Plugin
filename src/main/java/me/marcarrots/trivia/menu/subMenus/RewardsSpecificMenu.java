@@ -53,24 +53,27 @@ public class RewardsSpecificMenu extends Menu {
         ConversationFactory conversationFactory = new ConversationFactory(trivia);
         Conversation conversation;
         switch (event.getSlot()) {
-            case 38:
+            case 38: // change money
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY
-                        , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY, playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
-            case 42:
+            case 42: // change experience
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE
-                        , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE, playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
-            case 44:
+            case 43: // set fireworks
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE
-                        , playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                Rewards reward = trivia.getRewards()[place];
+                reward.flipSummonFireworks();
+                placeFireworks(reward);
+                break;
+            case 44: // change win message
+                event.setCancelled(true);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE, playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
@@ -107,6 +110,8 @@ public class RewardsSpecificMenu extends Menu {
 
     @Override
     public void setMenuItems() {
+
+        // get rewards at nth place
         Rewards reward = null;
         try {
             reward = trivia.getRewards()[place];
@@ -118,6 +123,7 @@ public class RewardsSpecificMenu extends Menu {
             return;
         }
 
+        // populate inventory with rewarded items
         if (reward.getItems() != null) {
             int index = 0;
             for (int i = 10; i < 36; i++) {
@@ -132,29 +138,40 @@ public class RewardsSpecificMenu extends Menu {
             }
         }
 
-        for (int i = 1; i < 8; i++) {
+        // add filler glass to edges
+        for (int i = 1; i <= 7; i++) {
             inventory.setItem(i, FILLER_GLASS);
+            inventory.setItem(36 + i, FILLER_GLASS);
         }
-
-        for (int i = 0; i <= 27; i += 9) {
+        for (int i = 0; i <= 36; i += 9) {
             inventory.setItem(i, FILLER_GLASS);
             inventory.setItem(i + 8, FILLER_GLASS);
         }
 
-        for (int i = 37; i < 45; i++) {
-            inventory.setItem(i, FILLER_GLASS);
-        }
-
         if (trivia.vaultEnabled()) {
-            insertItem(38, Material.EMERALD, Lang.REWARDS_SPECIFIC_MONEY.format_single(), Collections.singletonList("$" + reward.getMoney()), true, false);
+            insertItem(38, Material.EMERALD, Lang.REWARDS_SPECIFIC_MONEY.format_single(), "$" + reward.getMoney(), true, false);
         } else {
-            insertItem(38, Material.EMERALD, ChatColor.DARK_RED + "Rewarded Money", Collections.singletonList(ChatColor.RED + "Vault required to give money rewards!"), false, false);
+            insertItem(38, Material.EMERALD, ChatColor.DARK_RED + "Rewarded Money", ChatColor.RED + "Vault required to give money rewards!", false, false);
         }
-        insertItem(42, Material.EXPERIENCE_BOTTLE, Lang.REWARDS_SPECIFIC_EXP.format_single(), Collections.singletonList(String.valueOf(reward.getExperience())), true, false);
 
-        insertItem(44, Material.WRITABLE_BOOK, Lang.REWARDS_SPECIFIC_MESSAGE.format_single(), Arrays.asList(ChatColor.DARK_PURPLE + "The message here will be shown to this winner.", ChatColor.STRIKETHROUGH + "--------------------", ChatColor.WHITE + "Placeholders:", ChatColor.WHITE + "%items% - writes out a list of items won", ChatColor.WHITE + "%money% - writes out the money reward", ChatColor.WHITE + "%experience% - writes out the experience reward", ChatColor.STRIKETHROUGH + "--------------------", reward.getMessage() != null ? ChatColor.GREEN + reward.getMessage() : ChatColor.DARK_PURPLE + "No message is set."), true, true);
+
+        insertItem(42, Material.EXPERIENCE_BOTTLE, Lang.REWARDS_SPECIFIC_EXP.format_single(), String.valueOf(reward.getExperience()), true, false);
+        placeFireworks(reward);
+        insertItem(44, Material.WRITABLE_BOOK, Lang.REWARDS_SPECIFIC_MESSAGE.format_single(), Arrays.asList(ChatColor.DARK_PURPLE + "The message below will be shown to this winner.", ChatColor.STRIKETHROUGH + "--------------------", ChatColor.WHITE + "Placeholders:", ChatColor.WHITE + "%items% - writes out a list of items won", ChatColor.WHITE + "%money% - writes out the money reward", ChatColor.WHITE + "%experience% - writes out the experience reward", ChatColor.STRIKETHROUGH + "--------------------", reward.getMessage() != null ? ChatColor.GREEN + reward.getMessage() : ChatColor.DARK_PURPLE + "No message is set."), true, true);
         inventory.setItem(36, BACK);
         inventory.setItem(40, CLOSE);
+    }
+
+    private void placeFireworks(Rewards reward) {
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.DARK_PURPLE + "Set to true to spawn fireworks on this winning player after the game.");
+        if (reward.isSummonFireworks()) {
+            lore.add(ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_GREEN + "True");
+            insertItem(43, Material.FIREWORK_ROCKET, Lang.REWARDS_SPECIFIC_FIREWORKS.format_single(), lore, true, true);
+        } else {
+            lore.add(ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_RED + "False");
+            insertItem(43, Material.FIREWORK_ROCKET, Lang.REWARDS_SPECIFIC_FIREWORKS.format_single(), lore, true, true);
+        }
     }
 
 }

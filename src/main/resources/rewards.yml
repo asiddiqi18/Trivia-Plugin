@@ -20,6 +20,7 @@
 '1':
   Money: 1000.0
   Experience: 1500
+  Summon Fireworks: true
   Message: '&b&lCongratulations! &eYou finished in &6First Place&e! Received &b%items%&e and &b%experience% experience&e.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
@@ -32,6 +33,7 @@
 '2':
   Money: 500.0
   Experience: 1000
+  Summon Fireworks: true
   Message: '&lSo Close! &eYou finished in &6Second Place&e! Received &b%items%&e and &b%experience% experience&e.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
@@ -44,6 +46,7 @@
 '3':
   Money: 200.0
   Experience: 500
+  Summon Fireworks: true
   Message: 'Nice! &eYou finished in &6Third Place&e! Received &b%items%&e and &b%experience% experience&e.'
   Items:
     - ==: org.bukkit.inventory.ItemStack

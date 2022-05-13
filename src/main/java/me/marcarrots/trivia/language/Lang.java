@@ -55,6 +55,7 @@ public enum Lang {
     REWARDS_GENERAL_THIRD("Rewards General Third", "Third Place"),
     REWARDS_SPECIFIC_MONEY("Rewards Specific Money", "Rewarded Money"),
     REWARDS_SPECIFIC_EXP("Rewards Specific Exp", "Rewarded Experience Points"),
+    REWARDS_SPECIFIC_FIREWORKS("Rewards Specific Firework", "Summon Fireworks on Victory"),
     REWARDS_SPECIFIC_MESSAGE("Rewards Specific Message", "Rewarded Message");
 
     private static FileConfiguration LANG;

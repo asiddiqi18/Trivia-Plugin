@@ -27,10 +27,17 @@ public class Rewards {
     int place;
     int experience;
     double money;
+
+
+
+    boolean summonFireworks;
     String message;
     List<ItemStack> items;
     List<String> commands;
 
+    public boolean isSummonFireworks() {
+        return summonFireworks;
+    }
     public Rewards(Trivia trivia, int place) {
         items = new ArrayList<>();
         this.trivia = trivia;
@@ -51,6 +58,12 @@ public class Rewards {
 
     public String getMessage() {
         return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
+    }
+
+    public void flipSummonFireworks() {
+        this.summonFireworks = !this.summonFireworks;
+        trivia.getRewardsFile().getData().set(place + ".Summon Fireworks", this.summonFireworks);
+        trivia.getRewardsFile().saveData();
     }
 
     public void setMessage(String message) {
@@ -86,6 +99,7 @@ public class Rewards {
         money = trivia.getRewardsFile().getData().getDouble(place + ".Money");
         experience = trivia.getRewardsFile().getData().getInt(place + ".Experience");
         message = trivia.getRewardsFile().getData().getString(place + ".Message");
+        summonFireworks = trivia.getRewardsFile().getData().getBoolean(place + ".Summon Fireworks");
         items = (List<ItemStack>) trivia.getRewardsFile().getData().get(place + ".Items");
         commands = (List<String>) trivia.getRewardsFile().getData().get(place + ".Commands");
     }
@@ -107,6 +121,10 @@ public class Rewards {
                     Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
                 }
             }
+        }
+
+        if (summonFireworks) {
+            Effects.summonFireWork(player);
         }
 
         // send experience to player

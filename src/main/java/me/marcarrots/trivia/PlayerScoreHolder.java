@@ -65,10 +65,6 @@ public class PlayerScoreHolder {
                         .build()
                 ));
 
-                if (trivia.getConfig().getBoolean("Summon fireworks", true)) {
-                    Effects.summonFireWork(player);
-                }
-
                 if (i < 3) {
                     rewards[i + 1].giveReward(player);
                 }
