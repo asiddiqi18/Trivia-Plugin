@@ -63,7 +63,7 @@ public class Game {
     }
 
     private void setRandomQuestion() {
-        this.currentQuestion = this.questionHolder.getRandomQuestion().getQuestionObj();
+        this.currentQuestion = this.questionHolder.getRandomQuestion();
     }
 
     public void start() {

@@ -4,6 +4,18 @@ import java.util.List;
 import java.util.Objects;
 
 public class Question {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question1 = (Question) o;
+        return id == question1.id && Objects.equals(question, question1.question) && Objects.equals(answer, question1.answer) && Objects.equals(author, question1.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(question, id, answer, author);
+    }
 
     private String question;
     private int id;
@@ -27,10 +39,6 @@ public class Question {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public Question getQuestionObj() {
-        return this;
     }
 
     public String getQuestionString() {

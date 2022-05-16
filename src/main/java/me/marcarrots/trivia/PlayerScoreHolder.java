@@ -53,6 +53,7 @@ public class PlayerScoreHolder {
 
         for (int i = 0; i < displayAmount; i++) {
             final PlayerScore score = scoreValues.get(i);
+
             if (score != null) {
                 if (score.getPoints() == 0) { // don't show winners if they didn't score at all.
                     break;

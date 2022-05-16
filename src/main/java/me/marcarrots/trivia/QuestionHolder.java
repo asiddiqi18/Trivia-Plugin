@@ -68,23 +68,41 @@ public class QuestionHolder {
     }
 
     public Question getQuestion(int id) {
-        for (Question q : triviaQuestionList) {
-            if (q.getId() == id)
-                return q;
+        int questionIndex = findQuestionIndexByID(id);
+        if (questionIndex != -1) {
+            return triviaQuestionList.get(questionIndex);
+        } else {
+            return null;
         }
-        return null;
+    }
+
+    private int findQuestionIndexByID(int id) {
+        for (int i = 0; i < triviaQuestionList.size(); i++) {
+            Question q = triviaQuestionList.get(i);
+            if (q.getId() == id) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void updateQuestionToFile(Trivia trivia, Question question, String newString, PromptType promptType) {
+        int questionIndex = findQuestionIndexByID(question.getId());
         switch (promptType) {
             case EDIT_QUESTION:
                 trivia.getQuestionsFile().getData().set(question.getId() + ".question", newString);
+                question.setQuestion(newString);
+                triviaQuestionList.set(questionIndex, question);
                 break;
             case EDIT_ANSWER:
-                trivia.getQuestionsFile().getData().set(question.getId() + ".answer", Arrays.asList(newString.split("\\s*,\\s*")));
+                List<String> strings = Arrays.asList(newString.split("\\s*,\\s*"));
+                trivia.getQuestionsFile().getData().set(question.getId() + ".answer", strings);
+                question.setAnswer(strings);
+                triviaQuestionList.set(questionIndex, question);
                 break;
             case DELETE:
                 trivia.getQuestionsFile().getData().set(String.valueOf(question.getId()), null);
+                triviaQuestionList.remove(questionIndex);
                 break;
         }
         trivia.getQuestionsFile().saveData();

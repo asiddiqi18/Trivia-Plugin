@@ -265,20 +265,6 @@ public final class Trivia extends JavaPlugin {
 
         questionHolder.clear();
 
-        // legacy storage method
-        if (getConfig().contains("Questions and Answers")) {
-            Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old question data to new data...");
-            List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
-            if (unparsedQuestions.size() != 0) for (String item : unparsedQuestions) {
-                int posBefore = item.indexOf("/$/");
-                if (posBefore == -1) continue;
-                int posAfter = posBefore + 3;
-                writeQuestions(item.substring(0, posBefore).trim(), Collections.singletonList(item.substring(posAfter).trim()), null);
-            }
-            getConfig().set("Questions and Answers", null);
-            saveConfig();
-        }
-
         questionsFile.reloadFiles();
         for (String key : questionsFile.getData().getKeys(false)) {
             try {
@@ -293,18 +279,30 @@ public final class Trivia extends JavaPlugin {
                 Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));
             }
         }
+
     }
 
     // write question to questions.yml
-    public void writeQuestions(String question, List<String> answer, String author) {
+    public void writeQuestions(String questionString, List<String> answerStrings, String author) {
         HashMap<String, Object> questionMap = new HashMap<>();
-        questionMap.put("question", question);
-        questionMap.put("answer", answer);
+        questionMap.put("question", questionString);
+        questionMap.put("answer", answerStrings);
         if (author != null) {
             questionMap.put("author", author);
         }
-        questionsFile.getData().createSection(String.valueOf(++largestQuestionNum), questionMap);
+
+        largestQuestionNum++;
+
+        questionsFile.getData().createSection(String.valueOf(largestQuestionNum), questionMap);
         questionsFile.saveData();
+
+        Question question = new Question();
+        question.setQuestion(questionString);
+        question.setAnswer(answerStrings);
+        question.setAuthor(author);
+        question.setId(largestQuestionNum);
+        questionHolder.add(question);
+
     }
 
 
