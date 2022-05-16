@@ -4,7 +4,6 @@
 
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Rewards;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
@@ -29,8 +28,8 @@ public class RewardsSpecificMenu extends Menu {
 
     private final int place;
 
-    public RewardsSpecificMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, int place) {
-        super(playerMenuUtility, trivia, questionHolder);
+    public RewardsSpecificMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, int place) {
+        super(playerMenuUtility, trivia);
         this.place = place;
     }
 
@@ -54,13 +53,13 @@ public class RewardsSpecificMenu extends Menu {
         switch (event.getSlot()) {
             case 38: // change money
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY, playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY, playerMenuUtility, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
             case 42: // change experience
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE, playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE, playerMenuUtility, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
@@ -72,7 +71,7 @@ public class RewardsSpecificMenu extends Menu {
                 break;
             case 44: // change win message
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE, playerMenuUtility, trivia, questionHolder).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE, playerMenuUtility, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
@@ -82,7 +81,7 @@ public class RewardsSpecificMenu extends Menu {
             event.setCancelled(true);
         } else if (type == Material.ARROW) {
             event.setCancelled(true);
-            new RewardsMainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
+            new RewardsMainMenu(trivia.getPlayerMenuUtility(player), trivia).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             event.setCancelled(true);
             player.closeInventory();

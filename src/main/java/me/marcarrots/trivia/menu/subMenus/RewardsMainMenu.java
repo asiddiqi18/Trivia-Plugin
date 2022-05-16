@@ -4,7 +4,6 @@
 
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.Menu;
@@ -16,8 +15,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class RewardsMainMenu extends Menu {
-    public RewardsMainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
-        super(playerMenuUtility, trivia, questionHolder);
+    public RewardsMainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
+        super(playerMenuUtility, trivia);
     }
 
     @Override
@@ -39,21 +38,21 @@ public class RewardsMainMenu extends Menu {
 
         switch (event.getSlot()) {
             case 11:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 1).open();
+                new RewardsSpecificMenu(playerMenuUtility, trivia, 1).open();
                 break;
             case 13:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 2).open();
+                new RewardsSpecificMenu(playerMenuUtility, trivia, 2).open();
                 break;
             case 15:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 3).open();
+                new RewardsSpecificMenu(playerMenuUtility, trivia, 3).open();
                 break;
             case 35:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 0).open();
+                new RewardsSpecificMenu(playerMenuUtility, trivia, 0).open();
                 break;
         }
 
         if (type == Material.ARROW) {
-            new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
+            new MainMenu(trivia.getPlayerMenuUtility(player), trivia).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }

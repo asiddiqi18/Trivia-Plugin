@@ -1,26 +1,19 @@
 package me.marcarrots.trivia.menu;
 
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public abstract class PaginatedMenu extends Menu {
 
     protected int page = 0;
-    protected int maxItemsPerPage = 28;
+    protected final int maxItemsPerPage = 28;
     protected int index = 0;
 
-    public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
-        super(playerMenuUtility, trivia, questionHolder);
-    }
-
-    @Override
-    public void handleMenuClose(InventoryCloseEvent event) {
-
+    public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
+        super(playerMenuUtility, trivia);
     }
 
     //Set the border and menu buttons for the menu

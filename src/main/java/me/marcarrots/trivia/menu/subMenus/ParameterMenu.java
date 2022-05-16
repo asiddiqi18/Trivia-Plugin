@@ -1,7 +1,6 @@
 package me.marcarrots.trivia.menu.subMenus;
 
 import me.marcarrots.trivia.Game;
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.*;
@@ -19,8 +18,8 @@ import java.util.Arrays;
 public class ParameterMenu extends Menu {
 
 
-    public ParameterMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
-        super(playerMenuUtility, trivia, questionHolder);
+    public ParameterMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
+        super(playerMenuUtility, trivia);
     }
 
 
@@ -53,7 +52,7 @@ public class ParameterMenu extends Menu {
                 int amountOfRounds = playerMenuUtility.getTotalRounds();
                 boolean doRepetition = playerMenuUtility.isRepeatEnabled();
                 CommandSender commandSender = playerMenuUtility.getOwner();
-                Game game = new Game(trivia, questionHolder, timePerQuestion, amountOfRounds, doRepetition, commandSender);
+                Game game = new Game(trivia, timePerQuestion, amountOfRounds, doRepetition, commandSender);
                 trivia.setGame(game);
                 trivia.getGame().start();
             } catch (IllegalAccessException e) {
@@ -62,19 +61,19 @@ public class ParameterMenu extends Menu {
             player.closeInventory();
         } else if (type == Material.OAK_SIGN) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_ROUNDS
-                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , playerMenuUtility, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.CLOCK) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_TIME
-                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , playerMenuUtility, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.RED_DYE || type == Material.LIME_DYE) {
             playerMenuUtility.setRepeatEnabled();
             setMenuItems();
         } else if (type == Material.ARROW) {
-            new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
+            new MainMenu(trivia.getPlayerMenuUtility(player), trivia).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }

@@ -27,9 +27,8 @@ import java.util.logging.Level;
 public final class Trivia extends JavaPlugin {
 
     private static Economy econ = null;
-    private final QuestionHolder questionHolder = new QuestionHolder();
+    private QuestionContainer questionContainer;
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
-    private int largestQuestionNum = 0;
     private Rewards[] rewards;
     private Game game = null;
     private FileManager questionsFile;
@@ -102,14 +101,12 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
+    public QuestionContainer getQuestionHolder() {
+        return questionContainer;
+    }
+
     @Override
     public void onEnable() {
-
-        // load stuff from files
-        loadConfigFile();
-        loadQuestions();
-        loadMessages();
-        loadRewards();
 
         // bStats
         try {
@@ -119,12 +116,20 @@ public final class Trivia extends JavaPlugin {
             e.printStackTrace();
         }
 
+        questionContainer = new QuestionContainer();
+
+        // load stuff from files
+        loadConfigFile();
+        loadQuestions();
+        loadMessages();
+        loadRewards();
+
         // register listeners and commands
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
         getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
         getServer().getPluginManager().registerEvents(new EntityDamage(), this);
-        getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder));
+        getCommand("trivia").setExecutor(new TriviaCommand(this));
 
         // check for soft-dependencies
         if (!setupEconomy()) {
@@ -170,24 +175,13 @@ public final class Trivia extends JavaPlugin {
 
     public void loadQuestions() {
         questionsFile = new FileManager(this, "questions.yml");
-        readQuestions();
+        questionContainer.readQuestions(questionsFile);
     }
 
 
     public void loadMessages() {
         if (messagesFile == null) {
             messagesFile = new FileManager(this, "messages.yml");
-        }
-        // migrate old way of storing messages to new way
-        if (getConfig().contains("Messages")) {
-            Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old message data to new data...");
-            List<String> messageKeys = Arrays.asList("Trivia Start", "Trivia Over", "Winner Line", "Winner List", "No Winners", "Solved Message", "Question Time Up", "Question Display", "Question Skipped");
-
-            for (String key : messageKeys) {
-                messagesFile.getData().set(key, getConfig().getString("Messages." + key, ""));
-            }
-            getConfig().set("Messages", null);
-            saveConfig();
         }
 
         messagesFile.reloadFiles();
@@ -260,59 +254,6 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
-    // save question as object
-    public void readQuestions() {
-
-        questionHolder.clear();
-
-        questionsFile.reloadFiles();
-        for (String key : questionsFile.getData().getKeys(false)) {
-            try {
-                Question triviaQuestion = new Question();
-                triviaQuestion.setId(Integer.parseInt(key));
-                extractLargestQuestionNum(key);
-                triviaQuestion.setQuestion(questionsFile.getData().getString(key + ".question"));
-                triviaQuestion.setAnswer(questionsFile.getData().getStringList(key + ".answer"));
-                triviaQuestion.setAuthor(questionsFile.getData().getString(key + ".author"));
-                questionHolder.add(triviaQuestion);
-            } catch (NumberFormatException | NullPointerException e) {
-                Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));
-            }
-        }
-
-    }
-
-    // write question to questions.yml
-    public void writeQuestions(String questionString, List<String> answerStrings, String author) {
-        HashMap<String, Object> questionMap = new HashMap<>();
-        questionMap.put("question", questionString);
-        questionMap.put("answer", answerStrings);
-        if (author != null) {
-            questionMap.put("author", author);
-        }
-
-        largestQuestionNum++;
-
-        questionsFile.getData().createSection(String.valueOf(largestQuestionNum), questionMap);
-        questionsFile.saveData();
-
-        Question question = new Question();
-        question.setQuestion(questionString);
-        question.setAnswer(answerStrings);
-        question.setAuthor(author);
-        question.setId(largestQuestionNum);
-        questionHolder.add(question);
-
-    }
-
-
-    private void extractLargestQuestionNum(String questionNum) {
-        try {
-            if (Integer.parseInt(questionNum) > largestQuestionNum) largestQuestionNum = Integer.parseInt(questionNum);
-        } catch (NumberFormatException e) {
-            Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
-        }
-    }
 
 
     private boolean setupEconomy() {

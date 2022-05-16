@@ -15,12 +15,9 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class TriviaCommand implements CommandExecutor {
 
-    Trivia trivia;
-    QuestionHolder questionHolder;
-
-    public TriviaCommand(Trivia trivia, QuestionHolder questionHolder) {
+    final Trivia trivia;
+    public TriviaCommand(Trivia trivia) {
         this.trivia = trivia;
-        this.questionHolder = questionHolder;
     }
 
     private String helpFormat(String commandName, String commandDescription) {
@@ -32,7 +29,7 @@ public class TriviaCommand implements CommandExecutor {
         String border = Lang.BORDER.format_single();
         if (strings.length == 0) {
             if (commandSender instanceof Player) {
-                MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility((Player) commandSender), trivia, questionHolder);
+                MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility((Player) commandSender), trivia);
                 menu.open();
             }
         } else {
@@ -47,7 +44,7 @@ public class TriviaCommand implements CommandExecutor {
                         commandSender.sendMessage(border);
                         trivia.reloadConfig();
                         commandSender.sendMessage(ChatColor.YELLOW + "- Config file reloaded.");
-                        trivia.readQuestions();
+                        trivia.getQuestionHolder().readQuestions(trivia.getQuestionsFile());
                         commandSender.sendMessage(ChatColor.YELLOW + "- Questions file reloaded.");
                         trivia.loadConfigFile();
                         trivia.loadMessages();
@@ -82,7 +79,7 @@ public class TriviaCommand implements CommandExecutor {
                     try {
                         long timePerQuestion = trivia.getConfig().getLong("Default time per round", 10L);
                         boolean doRepetition = false;
-                        Game game = new Game(trivia, questionHolder, timePerQuestion, setRounds, doRepetition, commandSender);
+                        Game game = new Game(trivia, timePerQuestion, setRounds, doRepetition, commandSender);
                         trivia.setGame(game);
                         trivia.getGame().start();
                     } catch (IllegalAccessException e) {

@@ -19,7 +19,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.util.Collections;
 
 public class Game {
-    private final QuestionHolder questionHolder;
+    private final QuestionContainer questionContainer;
     private final Trivia trivia;
     private final BukkitScheduler scheduler;
     private final double similarityScore;
@@ -39,8 +39,8 @@ public class Game {
     private Player roundWinner;
     private String userRightAnswer;
 
-    public Game(Trivia trivia, QuestionHolder questionHolder, long timePerQuestion, int amountOfRounds, boolean doRepetition, CommandSender commandSender) throws IllegalAccessException {
-        if (questionHolder.getSize() == 0) {
+    public Game(Trivia trivia, long timePerQuestion, int amountOfRounds, boolean doRepetition, CommandSender commandSender) throws IllegalAccessException {
+        if (trivia.getQuestionHolder().getSize() == 0) {
             throw new IllegalAccessException("There are no Trivia questions loaded. Create some questions before hosting a game!");
         }
         this.trivia = trivia;
@@ -49,7 +49,7 @@ public class Game {
         this.doRepetition = doRepetition;
         this.commandSender = commandSender;
 
-        this.questionHolder = new QuestionHolder(questionHolder);
+        this.questionContainer = new QuestionContainer(trivia.getQuestionHolder());
         this.scores = new PlayerScoreHolder(trivia);
         this.roundResult = RoundResult.IN_BETWEEN;
         this.scheduler = Bukkit.getServer().getScheduler();
@@ -63,17 +63,17 @@ public class Game {
     }
 
     private void setRandomQuestion() {
-        this.currentQuestion = this.questionHolder.getRandomQuestion();
+        this.currentQuestion = this.questionContainer.getRandomQuestion();
     }
 
     public void start() {
         if (doRepetition) {
-            questionHolder.setUniqueQuestions(false);
-        } else if (questionHolder.getSize() < amountOfRounds) {
+            questionContainer.setUniqueQuestions(false);
+        } else if (questionContainer.getSize() < amountOfRounds) {
             commandSender.sendMessage("There are more rounds than questions, so questions will repeat.");
-            questionHolder.setUniqueQuestions(false);
+            questionContainer.setUniqueQuestions(false);
         } else {
-            questionHolder.setUniqueQuestions(true);
+            questionContainer.setUniqueQuestions(true);
         }
 
         String border = Lang.BORDER.format_single();

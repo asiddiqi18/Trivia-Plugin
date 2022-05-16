@@ -1,6 +1,5 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
@@ -17,8 +16,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class ViewMenu extends Menu {
-    public ViewMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
-        super(playerMenuUtility, trivia, questionHolder);
+    public ViewMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
+        super(playerMenuUtility, trivia);
     }
 
     @Override
@@ -45,20 +44,20 @@ public class ViewMenu extends Menu {
 
         if (type == Material.GREEN_TERRACOTTA) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_QUESTION
-                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , playerMenuUtility, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.YELLOW_TERRACOTTA) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_ANSWER
-                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , playerMenuUtility, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.RED_TERRACOTTA) {
-            questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), null, PromptType.DELETE);
+            trivia.getQuestionHolder().updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), null, PromptType.DELETE);
             player.sendMessage(ChatColor.GREEN + "This trivia question has been been removed.");
-            new ListMenu(playerMenuUtility, trivia, questionHolder).open();
+            new ListMenu(playerMenuUtility, trivia).open();
         } else if (type == Material.ARROW) {
-            new ListMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
+            new ListMenu(trivia.getPlayerMenuUtility(player), trivia).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }

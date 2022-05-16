@@ -1,7 +1,6 @@
 package me.marcarrots.trivia.menu;
 
 
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import org.bukkit.Bukkit;
@@ -23,20 +22,18 @@ import java.util.List;
 public abstract class Menu implements InventoryHolder {
 
     protected final Trivia trivia;
-    protected final QuestionHolder questionHolder;
     protected Inventory inventory;
-    protected PlayerMenuUtility playerMenuUtility;
-    protected ItemStack FILLER_GLASS;
+    protected final PlayerMenuUtility playerMenuUtility;
+    protected final ItemStack FILLER_GLASS;
 
-    protected ItemStack BACK;
+    protected final ItemStack BACK;
 
-    protected ItemStack CLOSE;
+    protected final ItemStack CLOSE;
 
-    public Menu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
+    public Menu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
 
         this.playerMenuUtility = playerMenuUtility;
         this.trivia = trivia;
-        this.questionHolder = questionHolder;
         FILLER_GLASS = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta FILLER_GLASS_META = FILLER_GLASS.getItemMeta();
         FILLER_GLASS_META.setDisplayName(" ");

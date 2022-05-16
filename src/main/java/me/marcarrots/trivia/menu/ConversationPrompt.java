@@ -1,7 +1,6 @@
 package me.marcarrots.trivia.menu;
 
 import me.marcarrots.trivia.Question;
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -17,24 +16,21 @@ public class ConversationPrompt extends StringPrompt {
     private final PromptType promptType;
     private final PlayerMenuUtility playerMenuUtility;
     private final Trivia trivia;
-    private final QuestionHolder questionHolder;
     private final Question question;
 
     private int place;
 
-    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
+    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia) {
         this.promptType = promptType;
         this.playerMenuUtility = playerMenuUtility;
         this.trivia = trivia;
-        this.questionHolder = questionHolder;
         question = null;
     }
 
-    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, Question question) {
+    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, Question question) {
         this.promptType = promptType;
         this.playerMenuUtility = playerMenuUtility;
         this.trivia = trivia;
-        this.questionHolder = questionHolder;
         this.question = question;
     }
 
@@ -74,21 +70,21 @@ public class ConversationPrompt extends StringPrompt {
                         return Prompt.END_OF_CONVERSATION;
                     if (question.getQuestionString() == null) {
                         question.setQuestion(input);
-                        return new ConversationPrompt(PromptType.NEW_QUESTION, playerMenuUtility, trivia, questionHolder, question);
+                        return new ConversationPrompt(PromptType.NEW_QUESTION, playerMenuUtility, trivia, question);
                     }
                     if (question.getAnswerList() == null) {
                         question.setAnswer(Arrays.asList(input.split("\\s*,\\s*")));
-                        trivia.writeQuestions(question.getQuestionString(), question.getAnswerList(), player.getName());
+                        trivia.getQuestionHolder().writeQuestions(trivia.getQuestionsFile(), question.getQuestionString(), question.getAnswerList(), player.getName());
                         player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been added to the pool."));
-                        promptType.openNewMenu(playerMenuUtility, trivia, questionHolder, place);
+                        promptType.openNewMenu(playerMenuUtility, trivia, place);
                         return Prompt.END_OF_CONVERSATION;
                     }
                 case EDIT_QUESTION:
-                    questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
+                    trivia.getQuestionHolder().updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
                     playerMenuUtility.setQuestionString(input);
                     break;
                 case EDIT_ANSWER:
-                    questionHolder.updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
+                    trivia.getQuestionHolder().updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
                     playerMenuUtility.setAnswerString(Arrays.asList(input.split("\\s*,\\s*")));
                     break;
                 case SET_MONEY:
@@ -107,7 +103,7 @@ public class ConversationPrompt extends StringPrompt {
         if (promptType.getSuccess() != null) {
             player.spigot().sendMessage(new TextComponent(promptType.getSuccess()));
         }
-        promptType.openNewMenu(playerMenuUtility, trivia, questionHolder, place);
+        promptType.openNewMenu(playerMenuUtility, trivia, place);
         return Prompt.END_OF_CONVERSATION;
     }
 

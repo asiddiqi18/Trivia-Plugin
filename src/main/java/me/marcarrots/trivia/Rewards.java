@@ -24,8 +24,8 @@ import static org.bukkit.Bukkit.getServer;
 
 public class Rewards {
 
-    Trivia trivia;
-    int place;
+    final Trivia trivia;
+    final int place;
     int experience;
     double money;
 

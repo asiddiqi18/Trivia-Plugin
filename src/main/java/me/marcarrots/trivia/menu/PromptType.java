@@ -1,6 +1,5 @@
 package me.marcarrots.trivia.menu;
 
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.menu.subMenus.ListMenu;
 import me.marcarrots.trivia.menu.subMenus.ParameterMenu;
@@ -39,21 +38,21 @@ public enum PromptType {
         return success;
     }
 
-    public void openNewMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder, int place) {
+    public void openNewMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, int place) {
         switch (menu) {
             case MAIN_MENU:
                 break;
             case LIST_MENU:
-                new ListMenu(playerMenuUtility, trivia, questionHolder).open();
+                new ListMenu(playerMenuUtility, trivia).open();
                 break;
             case VIEW_MENU:
-                new ViewMenu(playerMenuUtility, trivia, questionHolder).open();
+                new ViewMenu(playerMenuUtility, trivia).open();
                 break;
             case PARAMETER_MENU:
-                new ParameterMenu(playerMenuUtility, trivia, questionHolder).open();
+                new ParameterMenu(playerMenuUtility, trivia).open();
                 break;
             case REWARDS_MENU:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, place).open();
+                new RewardsSpecificMenu(playerMenuUtility, trivia, place).open();
                 break;
         }
     }

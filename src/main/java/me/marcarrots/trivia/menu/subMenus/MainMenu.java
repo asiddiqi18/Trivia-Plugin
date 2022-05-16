@@ -1,7 +1,6 @@
 package me.marcarrots.trivia.menu.subMenus;
 
 import me.marcarrots.trivia.Elapsed;
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.Menu;
@@ -23,8 +22,8 @@ public class MainMenu extends Menu {
 
     private int taskID = 0;
 
-    public MainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
-        super(playerMenuUtility, trivia, questionHolder);
+    public MainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
+        super(playerMenuUtility, trivia);
     }
 
     @Override
@@ -46,14 +45,14 @@ public class MainMenu extends Menu {
 
         playerMenuUtility.setPreviousMenu(MenuType.MAIN_MENU);
         if (type == Material.GREEN_TERRACOTTA) {
-            new ParameterMenu(playerMenuUtility, trivia, questionHolder).open();
+            new ParameterMenu(playerMenuUtility, trivia).open();
         } else if (type == Material.RED_TERRACOTTA) {
             player.performCommand("trivia stop");
             player.closeInventory();
         } else if (type == Material.PAPER) {
-            new ListMenu(playerMenuUtility, trivia, questionHolder).open();
+            new ListMenu(playerMenuUtility, trivia).open();
         } else if (type == Material.EMERALD) {
-            new RewardsMainMenu(playerMenuUtility, trivia, questionHolder).open();
+            new RewardsMainMenu(playerMenuUtility, trivia).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }
