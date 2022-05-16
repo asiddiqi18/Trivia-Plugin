@@ -16,6 +16,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,6 +37,23 @@ public final class Trivia extends JavaPlugin {
     private FileManager rewardsFile;
     private String updateNotice = null;
     private AutomatedGameManager automatedGameManager;
+
+    private NamespacedKey namespacedWinsKey;
+    private NamespacedKey namespacedQuestionKey;
+
+    public NamespacedKey getNamespacedAnsweredKey() {
+        return namespacedAnsweredKey;
+    }
+
+    private NamespacedKey namespacedAnsweredKey;
+
+    public NamespacedKey getNamespacedWinsKey() {
+        return namespacedWinsKey;
+    }
+
+    public NamespacedKey getNamespacedQuestionKey() {
+        return namespacedQuestionKey;
+    }
 
     public static Economy getEcon() {
         return econ;
@@ -94,10 +112,8 @@ public final class Trivia extends JavaPlugin {
         loadRewards();
 
         // bStats
-
         try {
             new Metrics(this, 7912);
-            Bukkit.getLogger().info("bStats successfully loaded");
         } catch (NoClassDefFoundError e) {
             Bukkit.getLogger().warning("bStats failed to load.");
             e.printStackTrace();
@@ -115,15 +131,15 @@ public final class Trivia extends JavaPlugin {
             Bukkit.getLogger().info("[Trivia!] No vault has been detected, disabling vault features...");
         }
 
+        namespacedQuestionKey = new NamespacedKey(this, "trivia_question_id");
+        namespacedWinsKey = new NamespacedKey(this, "trivia_wins");
+        namespacedAnsweredKey = new NamespacedKey(this, "trivia_answered");
+
         // check for updates
         new UpdateChecker(this, 80401).getVersion(newVersion -> {
             String currentVersion = getDescription().getVersion();
             if (Integer.parseInt(newVersion.substring(2)) > Integer.parseInt(currentVersion.substring(2))) {
-                updateNotice = String.format("%s - There is a new version available for Trivia (new version: %s, current version: %s)! Get it at: %s.",
-                        ChatColor.AQUA + "[Trivia!]" + ChatColor.YELLOW,
-                        ChatColor.GREEN + newVersion + ChatColor.YELLOW,
-                        ChatColor.GREEN + currentVersion + ChatColor.YELLOW,
-                        ChatColor.WHITE + "https://www.spigotmc.org/resources/trivia-easy-to-setup-game-%C2%BB-custom-rewards-%C2%BB-in-game-gui-menus-more.80401/" + ChatColor.YELLOW);
+                updateNotice = String.format("%s - There is a new version available for Trivia (new version: %s, current version: %s)! Get it at: %s.", ChatColor.AQUA + "[Trivia!]" + ChatColor.YELLOW, ChatColor.GREEN + newVersion + ChatColor.YELLOW, ChatColor.GREEN + currentVersion + ChatColor.YELLOW, ChatColor.WHITE + "https://www.spigotmc.org/resources/trivia-easy-to-setup-game-%C2%BB-custom-rewards-%C2%BB-in-game-gui-menus-more.80401/" + ChatColor.YELLOW);
                 Bukkit.getLogger().info(ChatColor.stripColor(updateNotice));
             }
         });
@@ -165,17 +181,7 @@ public final class Trivia extends JavaPlugin {
         // migrate old way of storing messages to new way
         if (getConfig().contains("Messages")) {
             Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old message data to new data...");
-            List<String> messageKeys = Arrays.asList(
-                    "Trivia Start",
-                    "Trivia Over",
-                    "Winner Line",
-                    "Winner List",
-                    "No Winners",
-                    "Solved Message",
-                    "Question Time Up",
-                    "Question Display",
-                    "Question Skipped"
-            );
+            List<String> messageKeys = Arrays.asList("Trivia Start", "Trivia Over", "Winner Line", "Winner List", "No Winners", "Solved Message", "Question Time Up", "Question Display", "Question Skipped");
 
             for (String key : messageKeys) {
                 messagesFile.getData().set(key, getConfig().getString("Messages." + key, ""));
@@ -263,14 +269,12 @@ public final class Trivia extends JavaPlugin {
         if (getConfig().contains("Questions and Answers")) {
             Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old question data to new data...");
             List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
-            if (unparsedQuestions.size() != 0)
-                for (String item : unparsedQuestions) {
-                    int posBefore = item.indexOf("/$/");
-                    if (posBefore == -1)
-                        continue;
-                    int posAfter = posBefore + 3;
-                    writeQuestions(item.substring(0, posBefore).trim(), Collections.singletonList(item.substring(posAfter).trim()), null);
-                }
+            if (unparsedQuestions.size() != 0) for (String item : unparsedQuestions) {
+                int posBefore = item.indexOf("/$/");
+                if (posBefore == -1) continue;
+                int posAfter = posBefore + 3;
+                writeQuestions(item.substring(0, posBefore).trim(), Collections.singletonList(item.substring(posAfter).trim()), null);
+            }
             getConfig().set("Questions and Answers", null);
             saveConfig();
         }
@@ -306,8 +310,7 @@ public final class Trivia extends JavaPlugin {
 
     private void extractLargestQuestionNum(String questionNum) {
         try {
-            if (Integer.parseInt(questionNum) > largestQuestionNum)
-                largestQuestionNum = Integer.parseInt(questionNum);
+            if (Integer.parseInt(questionNum) > largestQuestionNum) largestQuestionNum = Integer.parseInt(questionNum);
         } catch (NumberFormatException e) {
             Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
         }

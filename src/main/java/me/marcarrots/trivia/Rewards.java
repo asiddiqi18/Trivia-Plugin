@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.text.NumberFormat;
@@ -173,6 +174,11 @@ public class Rewards {
             player.giveExp(getExperience());
         }
 
+        if (place == 1) {
+            int newWins = player.getPersistentDataContainer().getOrDefault(trivia.getNamespacedWinsKey(), PersistentDataType.INTEGER, 0) + 1;
+            player.getPersistentDataContainer().set(trivia.getNamespacedWinsKey(), PersistentDataType.INTEGER, newWins);
+        }
+
         // send reward message to player if there is one
         if (message != null && !message.equalsIgnoreCase("none")) {
             BukkitScheduler scheduler = getServer().getScheduler();
@@ -194,7 +200,6 @@ public class Rewards {
         if (items == null || items.size() == 0) {
             return;
         }
-
 
         // otherwise, iterate through all items and give to player
         // drop item to ground if inventory full

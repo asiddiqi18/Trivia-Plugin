@@ -12,6 +12,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -191,6 +192,10 @@ public class Game {
             String correctAnswerStripped = ChatColor.stripColor(MessageUtil.HexColorMessage(correctAnswer));
             if (StringSimilarity.similarity(userAnswerStripped.toLowerCase(), correctAnswerStripped.toLowerCase()) >= similarityScore) {
                 roundResult = RoundResult.ANSWERED;
+
+                int newRoundWins = player.getPersistentDataContainer().getOrDefault(trivia.getNamespacedAnsweredKey(), PersistentDataType.INTEGER, 0) + 1;
+                player.getPersistentDataContainer().set(trivia.getNamespacedAnsweredKey(), PersistentDataType.INTEGER, newRoundWins);
+
                 Bukkit.getScheduler().scheduleSyncDelayedTask(trivia, () -> {
                     roundWinner = player;
                     userRightAnswer = correctAnswer;

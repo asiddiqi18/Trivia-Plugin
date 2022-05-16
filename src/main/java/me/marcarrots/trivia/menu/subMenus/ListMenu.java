@@ -40,7 +40,6 @@ public class ListMenu extends PaginatedMenu {
         return 54;
     }
 
-    @SuppressWarnings("UnnecessaryUnboxing")
     public void handleMenuClick(InventoryClickEvent event) {
         event.setCancelled(true);
 
@@ -56,7 +55,7 @@ public class ListMenu extends PaginatedMenu {
             player.closeInventory();
         } else if (type == Material.PAPER) {
             playerMenuUtility.setPreviousMenu(MenuType.LIST_MENU);
-            playerMenuUtility.setQuestion(questionHolder.getQuestion(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(trivia, "trivia_question_id"), PersistentDataType.INTEGER).intValue()));
+            playerMenuUtility.setQuestion(questionHolder.getQuestion(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(trivia.getNamespacedQuestionKey(), PersistentDataType.INTEGER)));
             (new ViewMenu(playerMenuUtility, trivia, questionHolder)).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
@@ -119,8 +118,7 @@ public class ListMenu extends PaginatedMenu {
                     loreWrapped.add(ChatColor.RED + "Click to modify this question.");
 
                     ItemMeta questionMeta = questionItem.getItemMeta();
-                    questionMeta.getPersistentDataContainer().set(new NamespacedKey(trivia, "trivia_question_id"), PersistentDataType.INTEGER,
-                            question.getId());
+                    questionMeta.getPersistentDataContainer().set(trivia.getNamespacedQuestionKey(), PersistentDataType.INTEGER, question.getId());
                     questionItem.setItemMeta(questionMeta);
 
                     insertItem(-1, questionItem, Lang.LIST_MENU_QUESTION.format_single(new Placeholder.PlaceholderBuilder()

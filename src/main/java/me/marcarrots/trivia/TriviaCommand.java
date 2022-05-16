@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 
 public class TriviaCommand implements CommandExecutor {
 
@@ -99,6 +100,18 @@ public class TriviaCommand implements CommandExecutor {
                     return false;
                 case "version":
                     commandSender.sendMessage("Trivia version: " + trivia.getDescription().getVersion());
+                    return false;
+                case "stats":
+                    if (commandSender instanceof Player) {
+                        Player player = (Player) commandSender;
+                        player.sendMessage(ChatColor.GREEN + "Trivia Stats for " + player.getName());
+                        int playerWins = player.getPersistentDataContainer().getOrDefault(trivia.getNamespacedWinsKey(), PersistentDataType.INTEGER, 0) ;
+                        player.sendMessage(ChatColor.GOLD + " - Number of games won: " + ChatColor.YELLOW + playerWins);
+                        int playerAnswers = player.getPersistentDataContainer().getOrDefault(trivia.getNamespacedAnsweredKey(), PersistentDataType.INTEGER, 0) ;
+                        player.sendMessage(ChatColor.GOLD + " - Number of questions answered: " + ChatColor.YELLOW + playerAnswers);
+                    } else {
+                        commandSender.sendMessage("This command is for players only.");
+                    }
                     return false;
                 default:
                     commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&m------------&e[ &6Trivia &e]&m------------"));
