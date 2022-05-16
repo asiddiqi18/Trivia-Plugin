@@ -1,7 +1,7 @@
 name: Trivia
-version: "1.12"
+version: "1.14"
 main: me.marcarrots.trivia.Trivia
-api-version: 1.16
+api-version: 1.18
 authors: [ MarCarrot ]
 description: Trivia plugin for Minecraft Spigot
 softdepend:
