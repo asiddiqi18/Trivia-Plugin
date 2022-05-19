@@ -177,7 +177,9 @@ public class Rewards {
             trivia.getStats().addGameWon(player);
         }
 
-        trivia.getStats().addMoneyWon(player, money);
+        if (trivia.vaultEnabled()) {
+            trivia.getStats().addMoneyWon(player, money);
+        }
 
         // send reward message to player if there is one
         if (message != null && !message.equalsIgnoreCase("none")) {

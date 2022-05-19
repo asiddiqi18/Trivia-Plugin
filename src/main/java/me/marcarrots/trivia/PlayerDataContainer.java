@@ -8,14 +8,14 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
-public class Stats {
+public class PlayerDataContainer {
 
     private final NamespacedKey participatedKey;
     private final NamespacedKey roundsWonKey;
     private final NamespacedKey gamesWonKey;
     private final NamespacedKey moneyWonKey;
 
-    public Stats(Trivia trivia) {
+    public PlayerDataContainer(Trivia trivia) {
         gamesWonKey = new NamespacedKey(trivia, "trivia_wins");
         roundsWonKey = new NamespacedKey(trivia, "trivia_answered");
         moneyWonKey = new NamespacedKey(trivia, "trivia_money");

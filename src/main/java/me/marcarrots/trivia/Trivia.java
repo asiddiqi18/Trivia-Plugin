@@ -5,6 +5,7 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.api.UpdateChecker;
+import me.marcarrots.trivia.commands.CommandManager;
 import me.marcarrots.trivia.data.FileManager;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.listeners.ChatEvent;
@@ -37,7 +38,7 @@ public final class Trivia extends JavaPlugin {
     private String updateNotice = null;
     private AutomatedGameManager automatedGameManager;
     private NamespacedKey namespacedQuestionKey;
-    private Stats stats;
+    private PlayerDataContainer stats;
 
     public static Economy getEcon() {
         return econ;
@@ -118,7 +119,7 @@ public final class Trivia extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
         getServer().getPluginManager().registerEvents(new EntityDamage(), this);
-        getCommand("trivia").setExecutor(new TriviaCommand(this));
+        getCommand("trivia").setExecutor(new CommandManager(this));
 
         // check for soft-dependencies
         if (!setupEconomy()) {
@@ -127,7 +128,7 @@ public final class Trivia extends JavaPlugin {
 
         namespacedQuestionKey = new NamespacedKey(this, "trivia_question_id");
 
-        stats = new Stats(this);
+        stats = new PlayerDataContainer(this);
 
         // check for updates
         new UpdateChecker(this, 80401).getVersion(newVersion -> {
@@ -318,7 +319,7 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
-    public Stats getStats() {
+    public PlayerDataContainer getStats() {
         return stats;
     }
 }
