@@ -175,9 +175,10 @@ public class Rewards {
         }
 
         if (place == 1) {
-            int newWins = player.getPersistentDataContainer().getOrDefault(trivia.getNamespacedWinsKey(), PersistentDataType.INTEGER, 0) + 1;
-            player.getPersistentDataContainer().set(trivia.getNamespacedWinsKey(), PersistentDataType.INTEGER, newWins);
+            trivia.getStats().addGameWon(player);
         }
+
+        trivia.getStats().addMoneyWon(player, money);
 
         // send reward message to player if there is one
         if (message != null && !message.equalsIgnoreCase("none")) {

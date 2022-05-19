@@ -53,7 +53,7 @@ public class Game {
         this.scores = new PlayerScoreHolder(trivia);
         this.roundResult = RoundResult.IN_BETWEEN;
         this.scheduler = Bukkit.getServer().getScheduler();
-        this.similarityScore = trivia.getConfig().getDouble("Similarity score");
+        this.similarityScore = trivia.getConfig().getDouble("Similarity score", 1);
         this.timeBetween = trivia.getConfig().getInt("Time between rounds", 2);
         this.bossBarEnabled = trivia.getConfig().getBoolean("Enable boss bar", true);
     }
@@ -91,18 +91,18 @@ public class Game {
         Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
         startBossBar();
         timer = new Timer(trivia, amountOfRounds, timePerQuestion, bossBar,
-                () -> { // after game
-                    handleRoundOutcome();
-                    Effects.playSoundToAll("Game over sound", trivia.getConfig(), "Game over pitch");
-                    scores.broadcastLargestScores();
-                    scores = null;
-                    trivia.clearGame();
-                    gameOverBossBar();
-                },
                 (t) -> { // after each round
                     roundTimeStart = System.currentTimeMillis();
                     handleRoundOutcome();
                     handleNextQuestion(t);
+                },
+                () -> { // after game
+                    handleRoundOutcome();
+                    Effects.playSoundToAll("Game over sound", trivia.getConfig(), "Game over pitch");
+                    scores.deliverRewardsToWinners();
+                    scores = null;
+                    trivia.clearGame();
+                    gameOverBossBar();
                 }
         );
         timer.handleNextRound();
@@ -110,43 +110,50 @@ public class Game {
 
 
     private void handleRoundOutcome() {
-        if (roundResult == RoundResult.UNANSWERED) { // if time ran out
-            Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new Placeholder.PlaceholderBuilder()
-                    .question(currentQuestion.getQuestionString())
-                    .answer(currentQuestion.getAnswerList())
-                    .questionNum(getQuestionNum())
-                    .totalQuestionNum(amountOfRounds)
-                    .build()
-            ));
-            Effects.playSoundToAll("Time up sound", trivia.getConfig(), "Time up pitch");
-        } else if (roundResult == RoundResult.SKIPPED) { // if round was skipped
-            afterAnswerFillBossBar(BarColor.YELLOW);
-            Lang.broadcastMessage(Lang.SKIP.format_multiple(new Placeholder.PlaceholderBuilder()
-                    .question(currentQuestion.getQuestionString())
-                    .answer(currentQuestion.getAnswerList())
-                    .questionNum(getQuestionNum())
-                    .build()
-            ));
-        } else if (roundResult == RoundResult.ANSWERED) { // if question was answered
-            String timeToAnswer = Elapsed.millisToElapsedTime(roundTimeStart).getElapsedFormattedString();
-            afterAnswerFillBossBar(BarColor.GREEN);
-            Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
-                    .player(roundWinner)
-                    .question(currentQuestion.getQuestionString())
-                    .answer(Collections.singletonList(userRightAnswer))
-                    .questionNum(getQuestionNum())
-                    .totalQuestionNum(amountOfRounds)
-                    .elapsedTime(timeToAnswer)
-                    .build()
-            ));
-            if (roundWinner != null) {
-                Effects.playSound(roundWinner, trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
-                scores.addScore(roundWinner, getQuestionNum());
-                trivia.getRewards()[0].giveReward(roundWinner);
-                roundWinner = null;
-            }
-            userRightAnswer = null;
+        switch (roundResult) {
+            case ANSWERED:
+                String timeToAnswer = Elapsed.millisToElapsedTime(roundTimeStart).getElapsedFormattedString();
+                afterAnswerFillBossBar(BarColor.GREEN);
+                Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
+                        .player(roundWinner)
+                        .question(currentQuestion.getQuestionString())
+                        .answer(Collections.singletonList(userRightAnswer))
+                        .questionNum(getQuestionNum())
+                        .totalQuestionNum(amountOfRounds)
+                        .elapsedTime(timeToAnswer)
+                        .build()
+                ));
+                if (roundWinner != null) {
+                    Effects.playSound(roundWinner, trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
+                    scores.addScore(roundWinner, getQuestionNum());
+                    trivia.getRewards()[0].giveReward(roundWinner);
+                    roundWinner = null;
+                }
+                userRightAnswer = null;
+                break;
+
+            case SKIPPED:
+                afterAnswerFillBossBar(BarColor.YELLOW);
+                Lang.broadcastMessage(Lang.SKIP.format_multiple(new Placeholder.PlaceholderBuilder()
+                        .question(currentQuestion.getQuestionString())
+                        .answer(currentQuestion.getAnswerList())
+                        .questionNum(getQuestionNum())
+                        .build()
+                ));
+                break;
+
+            case UNANSWERED:
+                Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new Placeholder.PlaceholderBuilder()
+                        .question(currentQuestion.getQuestionString())
+                        .answer(currentQuestion.getAnswerList())
+                        .questionNum(getQuestionNum())
+                        .totalQuestionNum(amountOfRounds)
+                        .build()
+                ));
+                Effects.playSoundToAll("Time up sound", trivia.getConfig(), "Time up pitch");
+                break;
         }
+
         roundResult = RoundResult.IN_BETWEEN;
     }
 
@@ -180,7 +187,6 @@ public class Game {
 
     public void playerAnswer(AsyncPlayerChatEvent e) {
 
-
         if (currentQuestion == null || roundResult != RoundResult.UNANSWERED) {
             return;
         }
@@ -193,8 +199,7 @@ public class Game {
             if (StringSimilarity.similarity(userAnswerStripped.toLowerCase(), correctAnswerStripped.toLowerCase()) >= similarityScore) {
                 roundResult = RoundResult.ANSWERED;
 
-                int newRoundWins = player.getPersistentDataContainer().getOrDefault(trivia.getNamespacedAnsweredKey(), PersistentDataType.INTEGER, 0) + 1;
-                player.getPersistentDataContainer().set(trivia.getNamespacedAnsweredKey(), PersistentDataType.INTEGER, newRoundWins);
+                trivia.getStats().addRoundWon(player);
 
                 Bukkit.getScheduler().scheduleSyncDelayedTask(trivia, () -> {
                     roundWinner = player;

@@ -21,6 +21,7 @@ public class PlayerScoreHolder {
         scores.clear();
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
         for (Player player : onlinePlayers) {
+            trivia.getStats().addGameParticipated(player);
             scores.put(player.getName(), new PlayerScore((player)));
         }
     }
@@ -37,7 +38,7 @@ public class PlayerScoreHolder {
         scores.put(player.getName(), score);
     }
 
-    public void broadcastLargestScores() {
+    public void deliverRewardsToWinners() {
         int displayAmount = Math.min(scores.size(), trivia.getConfig().getInt("Top winner amount", 3));
 
         List<PlayerScore> scoreValues = new ArrayList<>(scores.values());

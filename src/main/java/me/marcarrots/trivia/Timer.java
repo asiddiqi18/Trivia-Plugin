@@ -26,13 +26,13 @@ public class Timer implements Runnable {
     private int roundsLeft;
 
 
-    public Timer(Trivia trivia, int rounds, long secondsPer, BossBar bossBar, Runnable afterTimer, Consumer<Timer> everyRound) {
+    public Timer(Trivia trivia, int rounds, long secondsPer, BossBar bossBar, Consumer<Timer> afterRound, Runnable afterGame) {
         this.trivia = trivia;
         this.rounds = rounds;
         this.roundsLeft = rounds;
         this.secondsPer = secondsPer;
-        this.afterTimer = afterTimer;
-        this.everyRound = everyRound;
+        this.afterTimer = afterGame;
+        this.everyRound = afterRound;
         this.bossBar = bossBar;
     }
 

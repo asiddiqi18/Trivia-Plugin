@@ -36,48 +36,30 @@ public final class Trivia extends JavaPlugin {
     private FileManager rewardsFile;
     private String updateNotice = null;
     private AutomatedGameManager automatedGameManager;
-
-    private NamespacedKey namespacedWinsKey;
     private NamespacedKey namespacedQuestionKey;
-
-    public NamespacedKey getNamespacedAnsweredKey() {
-        return namespacedAnsweredKey;
-    }
-
-    private NamespacedKey namespacedAnsweredKey;
-
-    public NamespacedKey getNamespacedWinsKey() {
-        return namespacedWinsKey;
-    }
+    private Stats stats;
 
     public NamespacedKey getNamespacedQuestionKey() {
         return namespacedQuestionKey;
     }
-
     public static Economy getEcon() {
         return econ;
     }
-
     public FileManager getQuestionsFile() {
         return questionsFile;
     }
-
     public FileManager getRewardsFile() {
         return rewardsFile;
     }
-
     public Rewards[] getRewards() {
         return rewards;
     }
-
     public Game getGame() {
         return game;
     }
-
     public void setGame(Game game) {
         this.game = game;
     }
-
     public void clearGame() {
         game = null;
     }
@@ -137,8 +119,8 @@ public final class Trivia extends JavaPlugin {
         }
 
         namespacedQuestionKey = new NamespacedKey(this, "trivia_question_id");
-        namespacedWinsKey = new NamespacedKey(this, "trivia_wins");
-        namespacedAnsweredKey = new NamespacedKey(this, "trivia_answered");
+
+        stats = new Stats( this);
 
         // check for updates
         new UpdateChecker(this, 80401).getVersion(newVersion -> {
@@ -330,4 +312,7 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
+    public Stats getStats() {
+        return stats;
+    }
 }

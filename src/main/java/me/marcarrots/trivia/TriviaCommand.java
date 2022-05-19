@@ -7,6 +7,7 @@ package me.marcarrots.trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.subMenus.MainMenu;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -101,11 +102,12 @@ public class TriviaCommand implements CommandExecutor {
                 case "stats":
                     if (commandSender instanceof Player) {
                         Player player = (Player) commandSender;
-                        player.sendMessage(ChatColor.GREEN + "Trivia Stats for " + player.getName());
-                        int playerWins = player.getPersistentDataContainer().getOrDefault(trivia.getNamespacedWinsKey(), PersistentDataType.INTEGER, 0) ;
-                        player.sendMessage(ChatColor.GOLD + " - Number of games won: " + ChatColor.YELLOW + playerWins);
-                        int playerAnswers = player.getPersistentDataContainer().getOrDefault(trivia.getNamespacedAnsweredKey(), PersistentDataType.INTEGER, 0) ;
-                        player.sendMessage(ChatColor.GOLD + " - Number of questions answered: " + ChatColor.YELLOW + playerAnswers);
+                        Stats stats = trivia.getStats();
+                        player.sendMessage(ChatColor.GREEN + "Trivia Stats for " + player.getName() + ":");
+                        player.sendMessage(ChatColor.GOLD + " - Number of games participated in: " + ChatColor.YELLOW + stats.getGamesParticipated(player));
+                        player.sendMessage(ChatColor.GOLD + " - Number of questions answered: " + ChatColor.YELLOW + stats.getRoundsWon(player));
+                        player.sendMessage(ChatColor.GOLD + " - Number of games finished in first place: " + ChatColor.YELLOW + stats.getGamesWon(player));
+                        player.sendMessage(ChatColor.GOLD + " - Money earned from winning: " + ChatColor.YELLOW + stats.getMoneyWon(player));
                     } else {
                         commandSender.sendMessage("This command is for players only.");
                     }
