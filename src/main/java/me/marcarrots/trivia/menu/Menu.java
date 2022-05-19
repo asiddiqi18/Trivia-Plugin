@@ -22,13 +22,11 @@ import java.util.List;
 public abstract class Menu implements InventoryHolder {
 
     protected final Trivia trivia;
-    protected Inventory inventory;
     protected final PlayerMenuUtility playerMenuUtility;
     protected final ItemStack FILLER_GLASS;
-
     protected final ItemStack BACK;
-
     protected final ItemStack CLOSE;
+    protected Inventory inventory;
 
     public Menu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
 

@@ -27,8 +27,8 @@ import java.util.logging.Level;
 public final class Trivia extends JavaPlugin {
 
     private static Economy econ = null;
-    private QuestionContainer questionContainer;
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
+    private QuestionContainer questionContainer;
     private Rewards[] rewards;
     private Game game = null;
     private FileManager questionsFile;
@@ -39,27 +39,34 @@ public final class Trivia extends JavaPlugin {
     private NamespacedKey namespacedQuestionKey;
     private Stats stats;
 
-    public NamespacedKey getNamespacedQuestionKey() {
-        return namespacedQuestionKey;
-    }
     public static Economy getEcon() {
         return econ;
     }
+
+    public NamespacedKey getNamespacedQuestionKey() {
+        return namespacedQuestionKey;
+    }
+
     public FileManager getQuestionsFile() {
         return questionsFile;
     }
+
     public FileManager getRewardsFile() {
         return rewardsFile;
     }
+
     public Rewards[] getRewards() {
         return rewards;
     }
+
     public Game getGame() {
         return game;
     }
+
     public void setGame(Game game) {
         this.game = game;
     }
+
     public void clearGame() {
         game = null;
     }
@@ -120,7 +127,7 @@ public final class Trivia extends JavaPlugin {
 
         namespacedQuestionKey = new NamespacedKey(this, "trivia_question_id");
 
-        stats = new Stats( this);
+        stats = new Stats(this);
 
         // check for updates
         new UpdateChecker(this, 80401).getVersion(newVersion -> {
@@ -235,7 +242,6 @@ public final class Trivia extends JavaPlugin {
             rewards[i] = new Rewards(this, i);
         }
     }
-
 
 
     private boolean setupEconomy() {

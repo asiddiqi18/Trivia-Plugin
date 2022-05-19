@@ -4,6 +4,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class Question {
+    private String question;
+    private int id;
+    private List<String> answer = null;
+    private String author;
+    public Question() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -15,14 +22,6 @@ public class Question {
     @Override
     public int hashCode() {
         return Objects.hash(question, id, answer, author);
-    }
-
-    private String question;
-    private int id;
-    private List<String> answer = null;
-    private String author;
-
-    public Question() {
     }
 
     public int getId() {

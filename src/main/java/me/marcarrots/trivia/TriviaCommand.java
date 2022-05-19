@@ -7,16 +7,15 @@ package me.marcarrots.trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.subMenus.MainMenu;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
 
 public class TriviaCommand implements CommandExecutor {
 
     final Trivia trivia;
+
     public TriviaCommand(Trivia trivia) {
         this.trivia = trivia;
     }

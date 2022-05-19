@@ -8,8 +8,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public abstract class PaginatedMenu extends Menu {
 
-    protected int page = 0;
     protected final int maxItemsPerPage = 28;
+    protected int page = 0;
     protected int index = 0;
 
     public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
