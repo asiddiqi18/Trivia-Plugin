@@ -23,6 +23,7 @@ public enum Lang {
     BOSS_BAR_INFO("Boss Bar Game Info", "Trivia Match (%questionNumber%/%totalQuestions%)"),
     BOSS_BAR_GAME_OVER("Boss Bar Game Over", "Trivia is over!"),
     BOSS_BAR_THANKS("Boss Bar Thanks", "Thanks for playing!"),
+    BOSS_BAR_HALTED("Boss Bar Halted", "Trivia has been stopped!"),
     GAME_HALTED("Game Halted", "&cTrivia has been forcibly halted!"),
     MENU_CHANGE("Menu Change", "&aGo back"),
     MENU_BACK("Menu Back", "&cClick here to change"),

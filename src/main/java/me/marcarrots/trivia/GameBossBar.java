@@ -115,12 +115,12 @@ public class GameBossBar {
         bossBar.removeAll();
     }
 
-    public void gameOverBossBar() {
+    public void gameOverBossBar(BarColor barColor, String initialTitle) {
         if (!bossBarEnabled) {
             return;
         }
-        bossBar.setTitle(Lang.BOSS_BAR_GAME_OVER.format_single());
-        bossBar.setColor(BarColor.GREEN);
+        bossBar.setTitle(initialTitle);
+        bossBar.setColor(barColor);
         new BukkitRunnable() {
             boolean turn = false;
 

@@ -9,6 +9,7 @@ public enum RoundResult {
     ANSWERED,
     SKIPPED,
     UNANSWERED,
-    IN_BETWEEN
+    IN_BETWEEN,
+    HALTED
 
 }

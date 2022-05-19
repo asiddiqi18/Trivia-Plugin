@@ -31,6 +31,7 @@ Question Display: "&6(%questionNumber%) &e%question%"
 Question Skipped: "&cQuestion skipped! On to the next question... "
 Boss Bar Game Info: "Trivia Match (%questionNumber%/%totalQuestions%)"
 Boss Bar Game Over: "Trivia is over!"
+Boss Bar Halted: "Trivia has been stopped!"
 Boss Bar Thanks: "Thanks for playing!"
 Game Halted: "&cTrivia has been forcibly halted!"
 #

@@ -24,11 +24,6 @@ public class Game {
     private final int amountOfRounds;
     private final boolean doRepetition;
     private final CommandSender commandSender;
-
-    public GameBossBar getGameBossBar() {
-        return gameBossBar;
-    }
-
     private final GameBossBar gameBossBar;
     private long roundTimeStart;
     private PlayerScoreHolder scores;
@@ -48,18 +43,18 @@ public class Game {
         this.amountOfRounds = amountOfRounds;
         this.doRepetition = doRepetition;
         this.commandSender = commandSender;
-
         this.questionContainer = new QuestionContainer(trivia.getQuestionHolder());
         this.scores = new PlayerScoreHolder(trivia);
         this.roundResult = RoundResult.IN_BETWEEN;
         this.scheduler = Bukkit.getServer().getScheduler();
         this.similarityScore = trivia.getConfig().getDouble("Similarity score", 1);
         this.timeBetween = trivia.getConfig().getInt("Time between rounds", 2);
-
         boolean bossBarEnabled = trivia.getConfig().getBoolean("Enable boss bar", true);
-
         gameBossBar = new GameBossBar(trivia, bossBarEnabled);
+    }
 
+    public GameBossBar getGameBossBar() {
+        return gameBossBar;
     }
 
     public PlayerScoreHolder getScores() {
@@ -74,7 +69,7 @@ public class Game {
         if (doRepetition) {
             questionContainer.setUniqueQuestions(false);
         } else if (questionContainer.getSize() < amountOfRounds) {
-            commandSender.sendMessage("There are more rounds than questions, so questions will repeat.");
+            commandSender.sendMessage(ChatColor.RED + "There are more rounds than questions, so questions will repeat.");
             questionContainer.setUniqueQuestions(false);
         } else {
             questionContainer.setUniqueQuestions(true);
@@ -106,7 +101,11 @@ public class Game {
                     scores.deliverRewardsToWinners();
                     scores = null;
                     trivia.clearGame();
-                    gameBossBar.gameOverBossBar();
+                    if (roundResult == RoundResult.HALTED) {
+                        gameBossBar.gameOverBossBar(BarColor.RED, Lang.BOSS_BAR_HALTED.format_single());
+                    } else {
+                        gameBossBar.gameOverBossBar(BarColor.GREEN, Lang.BOSS_BAR_GAME_OVER.format_single());
+                    }
                 }
         );
         timer.handleNextRound();
@@ -156,6 +155,9 @@ public class Game {
                 ));
                 Effects.playSoundToAll("Time up sound", trivia.getConfig(), "Time up pitch");
                 break;
+
+            case HALTED:
+                return;
         }
 
         roundResult = RoundResult.IN_BETWEEN;
@@ -182,6 +184,7 @@ public class Game {
     public void stop() {
         gameBossBar.fillAfterStop();
         scheduler.cancelTask(task);
+        roundResult = RoundResult.HALTED;
         timer.endTimer();
     }
 
