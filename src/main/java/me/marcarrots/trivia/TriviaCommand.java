@@ -104,7 +104,7 @@ public class TriviaCommand implements CommandExecutor {
                         Stats stats = trivia.getStats();
                         player.sendMessage(ChatColor.GREEN + "Trivia Stats for " + player.getName() + ":");
                         player.sendMessage(ChatColor.GOLD + " - Number of games participated in: " + ChatColor.YELLOW + stats.getGamesParticipated(player));
-                        player.sendMessage(ChatColor.GOLD + " - Number of questions answered: " + ChatColor.YELLOW + stats.getRoundsWon(player));
+                        player.sendMessage(ChatColor.GOLD + " - Number of rounds won: " + ChatColor.YELLOW + stats.getRoundsWon(player));
                         player.sendMessage(ChatColor.GOLD + " - Number of games finished in first place: " + ChatColor.YELLOW + stats.getGamesWon(player));
                         player.sendMessage(ChatColor.GOLD + " - Money earned from winning: " + ChatColor.YELLOW + stats.getMoneyWon(player));
                     } else {

@@ -7,12 +7,9 @@ import me.marcarrots.trivia.language.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Collections;
@@ -22,19 +19,23 @@ public class Game {
     private final Trivia trivia;
     private final BukkitScheduler scheduler;
     private final double similarityScore;
-    private final boolean bossBarEnabled;
     private final int timeBetween;
     private final long timePerQuestion;
     private final int amountOfRounds;
     private final boolean doRepetition;
     private final CommandSender commandSender;
+
+    public GameBossBar getGameBossBar() {
+        return gameBossBar;
+    }
+
+    private final GameBossBar gameBossBar;
     private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
     private Timer timer;
     private RoundResult roundResult;
     private int task;
-    private BossBar bossBar;
     private Player roundWinner;
     private String userRightAnswer;
 
@@ -54,7 +55,11 @@ public class Game {
         this.scheduler = Bukkit.getServer().getScheduler();
         this.similarityScore = trivia.getConfig().getDouble("Similarity score", 1);
         this.timeBetween = trivia.getConfig().getInt("Time between rounds", 2);
-        this.bossBarEnabled = trivia.getConfig().getBoolean("Enable boss bar", true);
+
+        boolean bossBarEnabled = trivia.getConfig().getBoolean("Enable boss bar", true);
+
+        gameBossBar = new GameBossBar(trivia, bossBarEnabled);
+
     }
 
     public PlayerScoreHolder getScores() {
@@ -88,8 +93,8 @@ public class Game {
         scores.addOnlinePlayersToGame();
         Lang.broadcastMessage(Lang.TRIVIA_START.format_multiple(null));
         Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
-        startBossBar();
-        timer = new Timer(trivia, amountOfRounds, timePerQuestion, bossBar,
+        gameBossBar.startBossBar(amountOfRounds);
+        timer = new Timer(trivia, amountOfRounds, timePerQuestion, gameBossBar,
                 (t) -> { // after each round
                     roundTimeStart = System.currentTimeMillis();
                     handleRoundOutcome();
@@ -101,7 +106,7 @@ public class Game {
                     scores.deliverRewardsToWinners();
                     scores = null;
                     trivia.clearGame();
-                    gameOverBossBar();
+                    gameBossBar.gameOverBossBar();
                 }
         );
         timer.handleNextRound();
@@ -112,7 +117,7 @@ public class Game {
         switch (roundResult) {
             case ANSWERED:
                 String timeToAnswer = Elapsed.millisToElapsedTime(roundTimeStart).getElapsedFormattedString();
-                afterAnswerFillBossBar(BarColor.GREEN);
+                gameBossBar.fillAfterAnswer(BarColor.GREEN, getQuestionNum(), amountOfRounds);
                 Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
                         .player(roundWinner)
                         .question(currentQuestion.getQuestionString())
@@ -132,7 +137,7 @@ public class Game {
                 break;
 
             case SKIPPED:
-                afterAnswerFillBossBar(BarColor.YELLOW);
+                gameBossBar.fillAfterAnswer(BarColor.YELLOW, getQuestionNum(), amountOfRounds);
                 Lang.broadcastMessage(Lang.SKIP.format_multiple(new Placeholder.PlaceholderBuilder()
                         .question(currentQuestion.getQuestionString())
                         .answer(currentQuestion.getAnswerList())
@@ -163,7 +168,7 @@ public class Game {
             roundResult = RoundResult.UNANSWERED;
             setRandomQuestion();
             t.startTimer();
-            perRoundBossBarUpdate();
+            gameBossBar.perRoundBossBarUpdate(getQuestionNum(), amountOfRounds);
             Lang.broadcastMessage(Lang.QUESTION.format_multiple(new Placeholder.PlaceholderBuilder()
                     .question(currentQuestion.getQuestionString())
                     .answer(currentQuestion.getAnswerList())
@@ -175,7 +180,7 @@ public class Game {
     }
 
     public void stop() {
-        hideBossBar();
+        gameBossBar.fillAfterStop();
         scheduler.cancelTask(task);
         timer.endTimer();
     }
@@ -217,104 +222,6 @@ public class Game {
         roundResult = RoundResult.SKIPPED;
         timer.handleNextRound();
         return true;
-    }
-
-    private void startBossBar() {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar = Bukkit.createBossBar(Lang.TRIVIA_START.format_single(), BarColor.YELLOW, BarStyle.SOLID);
-        bossBar.setProgress(0);
-        if (amountOfRounds % 10 == 0) {
-            if (amountOfRounds % 20 == 0) {
-                bossBar.setStyle(BarStyle.SEGMENTED_20);
-            } else {
-                bossBar.setStyle(BarStyle.SEGMENTED_10);
-            }
-        } else if (amountOfRounds % 6 == 0) {
-            if (amountOfRounds % 12 == 0) {
-                bossBar.setStyle(BarStyle.SEGMENTED_12);
-            } else {
-                bossBar.setStyle(BarStyle.SEGMENTED_6);
-            }
-        }
-        bossBar.setVisible(true);
-        Bukkit.getOnlinePlayers().forEach((p) -> bossBar.addPlayer(p));
-    }
-
-    private void perRoundBossBarUpdate() {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar.setTitle(Lang.BOSS_BAR_INFO.format_single(new Placeholder.PlaceholderBuilder()
-                .questionNum(getQuestionNum())
-                .totalQuestionNum(amountOfRounds)
-                .build()
-        ));
-        bossBar.setColor(BarColor.RED);
-        bossBar.setProgress(((float) getQuestionNum() - 1) / amountOfRounds);
-    }
-
-    private void afterAnswerFillBossBar(BarColor color) {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar.setColor(color);
-        double incrementAmt = 1 / ((double) amountOfRounds * 20);
-        double goal = ((float) getQuestionNum() - 1) / amountOfRounds;
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                double currentProgress = bossBar.getProgress();
-                double amtToSet = currentProgress + incrementAmt;
-                if (currentProgress < goal) {
-                    if (amtToSet >= 1) {
-                        bossBar.setProgress(1);
-                        this.cancel();
-                    } else if (amtToSet >= goal) {
-                        bossBar.setProgress(goal);
-                    } else {
-                        currentProgress = amtToSet;
-                        bossBar.setProgress(currentProgress);
-                    }
-                } else {
-                    this.cancel();
-                }
-            }
-        }.runTaskTimer(trivia, 0, 1);
-    }
-
-    public void hideBossBar() {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar.setVisible(true);
-        bossBar.removeAll();
-    }
-
-    public void gameOverBossBar() {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar.setTitle(Lang.BOSS_BAR_GAME_OVER.format_single());
-        bossBar.setColor(BarColor.GREEN);
-        new BukkitRunnable() {
-            boolean turn = false;
-
-            @Override
-            public void run() {
-                if (turn) {
-                    hideBossBar();
-                    this.cancel();
-                }
-                bossBar.setTitle(Lang.BOSS_BAR_THANKS.format_single());
-                turn = true;
-            }
-        }.runTaskTimer(trivia, 100, 100);
-    }
-
-    public void showBarToPlayer(Player player) {
-        bossBar.addPlayer(player);
     }
 
 }
