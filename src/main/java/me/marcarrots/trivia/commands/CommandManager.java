@@ -12,6 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +38,13 @@ public class CommandManager implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
 
         if (args.length == 0) {
             if (commandSender instanceof Player) {
+                if (!commandSender.hasPermission("trivia.admin")) {
+                    help.perform(commandSender, args);
+                }
                 MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility((Player) commandSender), trivia);
                 menu.open();
             } else {
@@ -51,7 +55,11 @@ public class CommandManager implements CommandExecutor {
 
         for (SubCommand subCommand : subCommands) {
             if (args[0].equalsIgnoreCase(subCommand.getName())) {
-                return subCommand.perform(commandSender, args);
+                if (subCommand.hasPermission(commandSender)) {
+                    return subCommand.perform(commandSender, args);
+                } else {
+                    commandSender.sendMessage("You do not have permission to use this command");
+                }
             }
         }
 
