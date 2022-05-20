@@ -24,7 +24,7 @@ import static org.bukkit.Bukkit.getServer;
 public class Rewards {
 
     final Trivia trivia;
-    final int place;
+    final int place; // place = 0 -> per round reward
     int experience;
     double money;
 
@@ -148,7 +148,7 @@ public class Rewards {
     public void giveReward(Player player) {
 
         // send money to player if vault is enabled
-        if (trivia.vaultEnabled() && money > 0) {
+        if (trivia.isVaultEnabled() && money > 0) {
             EconomyResponse r = Trivia.getEcon().depositPlayer(player, getMoney());
             if (!r.transactionSuccess()) {
                 player.sendMessage(String.format("An error occurred: %s", r.errorMessage));
@@ -177,7 +177,7 @@ public class Rewards {
             trivia.getStats().addGameWon(player);
         }
 
-        if (trivia.vaultEnabled()) {
+        if (trivia.isVaultEnabled()) {
             trivia.getStats().addMoneyWon(player, money);
         }
 

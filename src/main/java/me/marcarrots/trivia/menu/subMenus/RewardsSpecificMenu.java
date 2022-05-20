@@ -146,7 +146,7 @@ public class RewardsSpecificMenu extends Menu {
             inventory.setItem(i + 8, FILLER_GLASS);
         }
 
-        if (trivia.vaultEnabled()) {
+        if (trivia.isVaultEnabled()) {
             insertItem(38, Material.EMERALD, Lang.REWARDS_SPECIFIC_MONEY.format_single(), "$" + reward.getMoney(), true, false);
         } else {
             insertItem(38, Material.EMERALD, ChatColor.DARK_RED + "Rewarded Money", ChatColor.RED + "Vault required to give money rewards!", false, false);
