@@ -4,9 +4,13 @@
 
 package me.marcarrots.trivia;
 
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PlayerDataContainer {
 
@@ -30,8 +34,8 @@ public class PlayerDataContainer {
         addIntegerType(player, roundsWonKey, 1);
     }
 
-    public void addGameWon(Player player) {
-        addIntegerType(player, gamesWonKey, 1);
+    public void addGamesWon(Player player, int position) {
+        addArrayType(player, gamesWonKey, 1, position - 1, 3);
     }
 
     public void addMoneyWon(Player player, double amount) {
@@ -46,8 +50,8 @@ public class PlayerDataContainer {
         return getIntegerType(player, roundsWonKey);
     }
 
-    public int getGamesWon(Player player) {
-        return getIntegerType(player, gamesWonKey);
+    public int[] getGamesWon(Player player) {
+        return getArrayType(player, gamesWonKey, 3);
     }
 
     public double getMoneyWon(Player player) {
@@ -63,12 +67,23 @@ public class PlayerDataContainer {
         player.getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, getDoubleType(player, key) + amount);
     }
 
+    private void addArrayType(Player player, NamespacedKey key, int amount, int index, int size) {
+        int[] arr = getArrayType(player, key, size);
+        arr[index] += amount;
+        player.getPersistentDataContainer().set(key, PersistentDataType.INTEGER_ARRAY, arr);
+    }
+
     private int getIntegerType(Player player, NamespacedKey key) {
         return player.getPersistentDataContainer().getOrDefault(key, PersistentDataType.INTEGER, 0);
     }
 
     private double getDoubleType(Player player, NamespacedKey key) {
         return player.getPersistentDataContainer().getOrDefault(key, PersistentDataType.DOUBLE, 0d);
+    }
+
+    private int[] getArrayType(Player player, NamespacedKey key, int size) {
+        int[] arr = new int[size];
+        return player.getPersistentDataContainer().getOrDefault(key, PersistentDataType.INTEGER_ARRAY, arr);
     }
 
 

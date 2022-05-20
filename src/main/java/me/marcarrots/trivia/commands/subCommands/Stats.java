@@ -44,11 +44,15 @@ public class Stats extends SubCommand {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             PlayerDataContainer stats = trivia.getStats();
-            player.sendMessage(ChatColor.GREEN + "Trivia PlayerDataContainer for " + player.getName() + ":");
+            int[] gamesWon = trivia.getStats().getGamesWon(player);
+            player.sendMessage(ChatColor.GREEN + "Trivia stats for " + player.getName() + ":");
             player.sendMessage(ChatColor.GOLD + " - Number of games participated in: " + ChatColor.YELLOW + stats.getGamesParticipated(player));
             player.sendMessage(ChatColor.GOLD + " - Number of rounds won: " + ChatColor.YELLOW + stats.getRoundsWon(player));
-            player.sendMessage(ChatColor.GOLD + " - Number of games finished in first place: " + ChatColor.YELLOW + stats.getGamesWon(player));
-            if (trivia.vaultEnabled()) {
+            player.sendMessage(ChatColor.GOLD + " - Victories: ");
+            player.sendMessage(ChatColor.GOLD + "   - 1st place: " + ChatColor.YELLOW + gamesWon[0]);
+            player.sendMessage(ChatColor.GOLD + "   - 2nd place: " + ChatColor.YELLOW + gamesWon[1]);
+            player.sendMessage(ChatColor.GOLD + "   - 3rd place: " + ChatColor.YELLOW + gamesWon[2]);
+            if (trivia.isVaultEnabled()) {
                 player.sendMessage(ChatColor.GOLD + " - Money earned from winning: " + ChatColor.YELLOW + NumberFormat.getCurrencyInstance().format(stats.getMoneyWon(player)));
             }
         } else {
