@@ -6,6 +6,7 @@ package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.api.UpdateChecker;
 import me.marcarrots.trivia.commands.CommandManager;
+import me.marcarrots.trivia.commands.subCommands.TriviaPlaceholder;
 import me.marcarrots.trivia.data.FileManager;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.listeners.ChatEvent;
@@ -98,13 +99,6 @@ public final class Trivia extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        // bStats
-        try {
-            new Metrics(this, 7912);
-        } catch (NoClassDefFoundError e) {
-            Bukkit.getLogger().warning("bStats failed to load.");
-            e.printStackTrace();
-        }
 
         questionContainer = new QuestionContainer();
 
@@ -121,9 +115,28 @@ public final class Trivia extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EntityDamage(), this);
         getCommand("trivia").setExecutor(new CommandManager(this));
 
-        // check for soft-dependencies
-        if (!setupEconomy()) {
-            Bukkit.getLogger().info("[Trivia!] No vault has been detected, disabling vault features...");
+        // bStats
+        try {
+            new Metrics(this, 7912);
+            getLogger().info("bStats has been loaded.");
+        } catch (NoClassDefFoundError e) {
+            getLogger().warning("bStats failed to load.");
+            e.printStackTrace();
+        }
+
+        // vault
+        if (setupEconomy()) {
+            getLogger().info("Optional dependency 'vault' has been loaded");
+        } else {
+            getLogger().info("No vault has been detected, disabling vault features...");
+        }
+
+        // placeholder API
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new TriviaPlaceholder(this).register();
+            getLogger().info("Optional dependency 'PlaceholderAPI' has been loaded");
+        } else {
+            getLogger().info("No PlaceholderAPI has been detected, disabling placeholder features...");
         }
 
         namespacedQuestionKey = new NamespacedKey(this, "trivia_question_id");
@@ -135,7 +148,7 @@ public final class Trivia extends JavaPlugin {
             String currentVersion = getDescription().getVersion();
             if (Integer.parseInt(newVersion.substring(2)) > Integer.parseInt(currentVersion.substring(2))) {
                 updateNotice = String.format("%s - There is a new version available for Trivia (new version: %s, current version: %s)! Get it at: %s.", ChatColor.AQUA + "[Trivia!]" + ChatColor.YELLOW, ChatColor.GREEN + newVersion + ChatColor.YELLOW, ChatColor.GREEN + currentVersion + ChatColor.YELLOW, ChatColor.WHITE + "https://www.spigotmc.org/resources/trivia-easy-to-setup-game-%C2%BB-custom-rewards-%C2%BB-in-game-gui-menus-more.80401/" + ChatColor.YELLOW);
-                Bukkit.getLogger().info(ChatColor.stripColor(updateNotice));
+                getLogger().info(ChatColor.stripColor(updateNotice));
             }
         });
 
@@ -207,11 +220,11 @@ public final class Trivia extends JavaPlugin {
 
 
         if (addedKeys.size() > 0) {
-            Bukkit.getLogger().info("[Trivia!] The following keys were added to messages.yml: " + addedKeys);
+            getLogger().info("[Trivia!] The following keys were added to messages.yml: " + addedKeys);
             messagesFile.saveData();
         }
         if (removedKeys.size() > 0) {
-            Bukkit.getLogger().info("[Trivia!] The following keys were removed from messages.yml: " + removedKeys);
+            getLogger().info("[Trivia!] The following keys were removed from messages.yml: " + removedKeys);
             messagesFile.saveData();
         }
 
@@ -225,7 +238,7 @@ public final class Trivia extends JavaPlugin {
         if (getConfig().contains("Rewards")) {
             for (int i = 0; i < 4; i++) {
                 if (getConfig().contains("Rewards." + i)) {
-                    Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old rewards data to new data...");
+                    getLogger().log(Level.INFO, "[Trivia] Migrating old rewards data to new data...");
                     rewardsFile.getData().set(i + ".Money", getConfig().getDouble("Rewards." + i + ".Money"));
                     rewardsFile.getData().set(i + ".Experience", getConfig().getDouble("Rewards." + i + ".Experience"));
                     rewardsFile.getData().set(i + ".Message", getConfig().getString("Rewards." + i + ".Message"));
@@ -246,7 +259,7 @@ public final class Trivia extends JavaPlugin {
 
 
     private boolean setupEconomy() {
-        if (!vaultEnabled()) {
+        if (!isVaultEnabled()) {
             return false;
         }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
@@ -258,7 +271,7 @@ public final class Trivia extends JavaPlugin {
     }
 
 
-    public boolean vaultEnabled() {
+    public boolean isVaultEnabled() {
         return getServer().getPluginManager().getPlugin("Vault") != null;
     }
 

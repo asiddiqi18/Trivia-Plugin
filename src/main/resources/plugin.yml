@@ -8,12 +8,15 @@ website: https://github.com/asiddiqi18/Trivia-Plugin
 prefix: Trivia
 softdepend:
   - Vault
+  - PlaceholderAPI
 permissions:
   trivia.admin:
+    description: "Allows for full administrative control of Trivia"
     default: op
   trivia.player:
-    default: not op
+    description: "Allows for participation in trivia as well as seeing personal stats."
+    default: true
 commands:
   trivia:
     description: Main trivia command.
-    permission: trivia.admin
+    permission: trivia.player
