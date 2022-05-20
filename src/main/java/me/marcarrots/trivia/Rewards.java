@@ -173,8 +173,8 @@ public class Rewards {
             player.giveExp(getExperience());
         }
 
-        if (place == 1) {
-            trivia.getStats().addGameWon(player);
+        if (place != 0) {
+            trivia.getStats().addGamesWon(player, place);
         }
 
         if (trivia.isVaultEnabled()) {
@@ -191,7 +191,7 @@ public class Rewards {
             }
             String moneyFormatted = NumberFormat.getIntegerInstance().format(money);
             formattedMessage = formattedMessage.replace("%money%", moneyFormatted);
-            String experienceFormatted = NumberFormat.getIntegerInstance().format(experience);
+            String experienceFormatted = NumberFormat.getCurrencyInstance().format(experience);
             formattedMessage = formattedMessage.replace("%experience%", experienceFormatted);
 
             String finalFormattedMessage = formattedMessage;
