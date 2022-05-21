@@ -4,7 +4,6 @@
 
 package me.marcarrots.trivia.language;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Objects;
@@ -103,19 +102,6 @@ public enum Lang {
         }
 
         return MessageUtil.HexGradient(message);
-    }
-
-    public static void broadcastMessage(String[] message) {
-        for (String s : message) {
-            broadcastMessage(s);
-        }
-    }
-
-    public static void broadcastMessage(String message) {
-        if (message.equals("")) {
-            return;
-        }
-        Bukkit.broadcastMessage(message);
     }
 
     public String getPath() {

@@ -1,5 +1,6 @@
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.api.Broadcaster;
 import me.marcarrots.trivia.api.StringSimilarity;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.MessageUtil;
@@ -86,7 +87,7 @@ public class Game {
         commandSender.sendMessage(border);
 
         scores.addOnlinePlayersToGame();
-        Lang.broadcastMessage(Lang.TRIVIA_START.format_multiple(null));
+        Broadcaster.broadcastMessage(Lang.TRIVIA_START.format_multiple(null));
         Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
         gameBossBar.startBossBar(amountOfRounds);
         timer = new Timer(trivia, amountOfRounds, timePerQuestion, gameBossBar,
@@ -117,7 +118,7 @@ public class Game {
             case ANSWERED:
                 String timeToAnswer = Elapsed.millisToElapsedTime(roundTimeStart).getElapsedFormattedString();
                 gameBossBar.fillAfterAnswer(BarColor.GREEN, getQuestionNum(), amountOfRounds);
-                Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
+                Broadcaster.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
                         .player(roundWinner)
                         .question(currentQuestion.getQuestionString())
                         .answer(Collections.singletonList(userRightAnswer))
@@ -137,7 +138,7 @@ public class Game {
 
             case SKIPPED:
                 gameBossBar.fillAfterAnswer(BarColor.YELLOW, getQuestionNum(), amountOfRounds);
-                Lang.broadcastMessage(Lang.SKIP.format_multiple(new Placeholder.PlaceholderBuilder()
+                Broadcaster.broadcastMessage(Lang.SKIP.format_multiple(new Placeholder.PlaceholderBuilder()
                         .question(currentQuestion.getQuestionString())
                         .answer(currentQuestion.getAnswerList())
                         .questionNum(getQuestionNum())
@@ -146,7 +147,7 @@ public class Game {
                 break;
 
             case UNANSWERED:
-                Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new Placeholder.PlaceholderBuilder()
+                Broadcaster.broadcastMessage(Lang.TIME_UP.format_multiple(new Placeholder.PlaceholderBuilder()
                         .question(currentQuestion.getQuestionString())
                         .answer(currentQuestion.getAnswerList())
                         .questionNum(getQuestionNum())
@@ -171,7 +172,7 @@ public class Game {
             setRandomQuestion();
             t.startTimer();
             gameBossBar.perRoundBossBarUpdate(getQuestionNum(), amountOfRounds);
-            Lang.broadcastMessage(Lang.QUESTION.format_multiple(new Placeholder.PlaceholderBuilder()
+            Broadcaster.broadcastMessage(Lang.QUESTION.format_multiple(new Placeholder.PlaceholderBuilder()
                     .question(currentQuestion.getQuestionString())
                     .answer(currentQuestion.getAnswerList())
                     .questionNum(getQuestionNum())

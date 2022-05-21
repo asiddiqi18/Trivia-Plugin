@@ -1,5 +1,6 @@
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.api.Broadcaster;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
 import org.bukkit.Bukkit;
@@ -48,7 +49,7 @@ public class PlayerScoreHolder {
         List<String> winnerList = new ArrayList<>();
 
         if (scoreValues.size() == 0 || scoreValues.get(0).getPoints() == 0) {
-            Lang.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format_multiple(null));
+            Broadcaster.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format_multiple(null));
             return;
         }
 
@@ -86,7 +87,7 @@ public class PlayerScoreHolder {
         }
 
         String[] resultArray = new String[result.size()];
-        Lang.broadcastMessage(result.toArray(resultArray));
+        Broadcaster.broadcastMessage(result.toArray(resultArray));
 
 
     }
