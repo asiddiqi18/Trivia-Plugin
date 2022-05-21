@@ -9,7 +9,6 @@ import me.marcarrots.trivia.menu.MenuType;
 import me.marcarrots.trivia.menu.PromptType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
@@ -63,12 +62,12 @@ public class ParameterMenu extends Menu {
             player.closeInventory();
         } else if (type == Material.OAK_SIGN) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_ROUNDS
-                    , player, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.CLOCK) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_TIME
-                    , player, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.RED_DYE || type == Material.LIME_DYE) {

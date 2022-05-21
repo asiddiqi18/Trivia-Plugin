@@ -48,10 +48,8 @@ public class ListMenu extends PaginatedMenu {
         Player player = (Player) event.getWhoClicked();
 
         List<Question> questionList = trivia.getQuestionHolder().getTriviaQuestionList();
-        ConversationFactory conversationFactory = new ConversationFactory(trivia);
         if (type == Material.EMERALD) {
-            Question question = new Question();
-            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.NEW_QUESTION, player, trivia, question)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+            Conversation conversation = new ConversationFactory(trivia).withFirstPrompt(new ConversationPrompt(PromptType.NEW_ENTRY_QUESTION, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.PAPER) {

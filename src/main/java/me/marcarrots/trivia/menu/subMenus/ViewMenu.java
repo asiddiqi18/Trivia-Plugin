@@ -43,12 +43,12 @@ public class ViewMenu extends Menu {
 
         if (type == Material.GREEN_TERRACOTTA) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_QUESTION
-                    , player, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.YELLOW_TERRACOTTA) {
             Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_ANSWER
-                    , player, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                    , trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.RED_TERRACOTTA) {

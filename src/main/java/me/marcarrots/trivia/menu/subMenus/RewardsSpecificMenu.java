@@ -54,13 +54,13 @@ public class RewardsSpecificMenu extends Menu {
         switch (event.getSlot()) {
             case 38: // change money
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY, player, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
             case 42: // change experience
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE, player, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
@@ -72,7 +72,7 @@ public class RewardsSpecificMenu extends Menu {
                 break;
             case 44: // change win message
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE, player, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;

@@ -124,7 +124,7 @@ public class QuestionContainer {
 
     }
 
-    public void writeQuestions(FileManager questionsFile, String questionString, List<String> answerStrings, String author) {
+    public void writeQuestions(Trivia trivia, String questionString, List<String> answerStrings, String author) {
         HashMap<String, Object> questionMap = new HashMap<>();
         questionMap.put("question", questionString);
         questionMap.put("answer", answerStrings);
@@ -134,8 +134,8 @@ public class QuestionContainer {
 
         largestQuestionNum++;
 
-        questionsFile.getData().createSection(String.valueOf(largestQuestionNum), questionMap);
-        questionsFile.saveData();
+        trivia.getQuestionsFile().getData().createSection(String.valueOf(largestQuestionNum), questionMap);
+        trivia.getQuestionsFile().saveData();
 
         Question question = new Question();
         question.setQuestion(questionString);
@@ -143,6 +143,9 @@ public class QuestionContainer {
         question.setAuthor(author);
         question.setId(largestQuestionNum);
         triviaQuestionList.add(question);
+
+        trivia.getLogger().info(String.format("New question created by %s with question as '%s' and answer(s) as '%s'.", author, questionString, answerStrings));
+
     }
 
     private void extractLargestQuestionNum(String questionNum) {

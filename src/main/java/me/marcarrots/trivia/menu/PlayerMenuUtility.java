@@ -19,6 +19,7 @@ public class PlayerMenuUtility {
     public PlayerMenuUtility(FileConfiguration config) {
         totalRounds = config.getInt("Default rounds", 10);
         timePer = config.getLong("Default time per round", 10L);
+        question = new Question();
     }
 
     public Question getQuestion() {

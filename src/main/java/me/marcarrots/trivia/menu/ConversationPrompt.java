@@ -1,38 +1,27 @@
 package me.marcarrots.trivia.menu;
 
-import me.marcarrots.trivia.Question;
 import me.marcarrots.trivia.Trivia;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ConversationPrompt extends StringPrompt {
 
     private final PromptType promptType;
-    private final Player player;
     private final Trivia trivia;
-    private final Question question;
 
     private int place;
 
-    public ConversationPrompt(PromptType promptType, Player player, Trivia trivia) {
+    public ConversationPrompt(PromptType promptType, Trivia trivia) {
         this.promptType = promptType;
-        this.player = player;
         this.trivia = trivia;
-        question = null;
-    }
-
-    public ConversationPrompt(PromptType promptType, Player player, Trivia trivia, Question question) {
-        this.promptType = promptType;
-        this.player = player;
-        this.trivia = trivia;
-        this.question = question;
     }
 
     public ConversationPrompt setPlace(int place) {
@@ -42,16 +31,11 @@ public class ConversationPrompt extends StringPrompt {
 
     @Override
     public @NotNull String getPromptText(@NotNull ConversationContext context) {
-        if (promptType == PromptType.NEW_QUESTION) {
-            if (question.getQuestionString() == null)
-                return ChatColor.DARK_AQUA + "Enter the question you'd like to use. Type" + ChatColor.RED + " 'back' " + ChatColor.DARK_AQUA + "to return.";
-            if (question.getAnswerList() == null)
-                return ChatColor.DARK_AQUA + "Enter the answers you'd like to use for this question. For multiple answers, separate by comma.";
-            return "An error has occurred";
-        }
         return promptType.getPrompt();
     }
 
+    @Nullable
+    @Override
     public Prompt acceptInput(ConversationContext context, String input) {
         Player player = ((Player) context.getForWhom()).getPlayer();
         if (input == null || input.equalsIgnoreCase("back") || player == null) {
@@ -66,20 +50,12 @@ public class ConversationPrompt extends StringPrompt {
                 case SET_TIME:
                     trivia.getPlayerMenuUtility(player).setTimePer(Integer.parseInt(input));
                     break;
-                case NEW_QUESTION:
-                    if (question == null)
-                        return Prompt.END_OF_CONVERSATION;
-                    if (question.getQuestionString() == null) {
-                        question.setQuestion(input);
-                        return new ConversationPrompt(PromptType.NEW_QUESTION, player, trivia, question);
-                    }
-                    if (question.getAnswerList() == null) {
-                        question.setAnswer(Arrays.asList(input.split("\\s*,\\s*")));
-                        trivia.getQuestionHolder().writeQuestions(trivia.getQuestionsFile(), question.getQuestionString(), question.getAnswerList(), player.getName());
-                        player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been added to the pool."));
-                        promptType.openNewMenu(trivia, player, place);
-                        return Prompt.END_OF_CONVERSATION;
-                    }
+                case NEW_ENTRY_QUESTION:
+                    context.setSessionData("new_question", input);
+                    return new ConversationPrompt(PromptType.NEW_ENTRY_ANSWER, trivia);
+                case NEW_ENTRY_ANSWER:
+                    List<String> answers = Arrays.asList(input.split("\\s*,\\s*"));
+                    trivia.getQuestionHolder().writeQuestions(trivia, (String) context.getSessionData("new_question"), answers, player.getName());
                 case EDIT_QUESTION:
                     trivia.getQuestionHolder().updateQuestionToFile(trivia, trivia.getPlayerMenuUtility(player).getQuestion(), input, promptType);
                     trivia.getPlayerMenuUtility(player).setQuestionString(input);
@@ -101,6 +77,7 @@ public class ConversationPrompt extends StringPrompt {
         } catch (NumberFormatException e) {
             player.spigot().sendMessage(new TextComponent("Please enter a valid number."));
         }
+
         if (promptType.getSuccess() != null) {
             player.spigot().sendMessage(new TextComponent(promptType.getSuccess()));
         }
