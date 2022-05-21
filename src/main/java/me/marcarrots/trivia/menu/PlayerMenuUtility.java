@@ -1,25 +1,22 @@
 package me.marcarrots.trivia.menu;
 
 import me.marcarrots.trivia.Question;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerMenuUtility {
 
-    private final Player owner;
-
     private int totalRounds;
-
     private long timePer;
-
     private boolean repeatEnabled;
     private Question question;
     private MenuType previousMenu = null;
 
-    public PlayerMenuUtility(FileConfiguration config, Player owner) {
-        this.owner = owner;
+    public PlayerMenuUtility(FileConfiguration config) {
         totalRounds = config.getInt("Default rounds", 10);
         timePer = config.getLong("Default time per round", 10L);
     }
@@ -66,10 +63,6 @@ public class PlayerMenuUtility {
         } else {
             this.timePer = timePer;
         }
-    }
-
-    public Player getOwner() {
-        return owner;
     }
 
     public MenuType getPreviousMenu() {

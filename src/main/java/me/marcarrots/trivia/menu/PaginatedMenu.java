@@ -3,6 +3,7 @@ package me.marcarrots.trivia.menu;
 import me.marcarrots.trivia.Trivia;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -12,8 +13,8 @@ public abstract class PaginatedMenu extends Menu {
     protected int page = 0;
     protected int index = 0;
 
-    public PaginatedMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
-        super(playerMenuUtility, trivia);
+    public PaginatedMenu(Trivia trivia, Player player) {
+        super(trivia, player);
     }
 
     //Set the border and menu buttons for the menu

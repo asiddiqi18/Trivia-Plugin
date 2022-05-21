@@ -24,7 +24,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public final class Trivia extends JavaPlugin {
 
@@ -86,7 +85,7 @@ public final class Trivia extends JavaPlugin {
         if (playerMenuUtilityMap.containsKey(player)) {
             return playerMenuUtilityMap.get(player);
         } else {
-            playerMenuUtility = new PlayerMenuUtility(getConfig(), player);
+            playerMenuUtility = new PlayerMenuUtility(getConfig());
             playerMenuUtilityMap.put(player, playerMenuUtility);
             return playerMenuUtility;
         }
@@ -234,20 +233,6 @@ public final class Trivia extends JavaPlugin {
     public void loadRewards() {
         if (rewardsFile == null) {
             rewardsFile = new FileManager(this, "rewards.yml");
-        }
-        if (getConfig().contains("Rewards")) {
-            for (int i = 0; i < 4; i++) {
-                if (getConfig().contains("Rewards." + i)) {
-                    getLogger().log(Level.INFO, "[Trivia] Migrating old rewards data to new data...");
-                    rewardsFile.getData().set(i + ".Money", getConfig().getDouble("Rewards." + i + ".Money"));
-                    rewardsFile.getData().set(i + ".Experience", getConfig().getDouble("Rewards." + i + ".Experience"));
-                    rewardsFile.getData().set(i + ".Message", getConfig().getString("Rewards." + i + ".Message"));
-                    rewardsFile.getData().set(i + ".Items", getConfig().getList("Rewards." + i + ".Items"));
-                    rewardsFile.saveData();
-                }
-            }
-            getConfig().set("Rewards", null);
-            saveConfig();
         }
         int rewardAmt = 4;
         rewardsFile.reloadFiles();

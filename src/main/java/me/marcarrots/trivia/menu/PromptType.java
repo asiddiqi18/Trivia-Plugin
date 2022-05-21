@@ -6,6 +6,7 @@ import me.marcarrots.trivia.menu.subMenus.ParameterMenu;
 import me.marcarrots.trivia.menu.subMenus.RewardsSpecificMenu;
 import me.marcarrots.trivia.menu.subMenus.ViewMenu;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public enum PromptType {
 
@@ -38,21 +39,21 @@ public enum PromptType {
         return success;
     }
 
-    public void openNewMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, int place) {
+    public void openNewMenu(Trivia trivia, Player player, int place) {
         switch (menu) {
             case MAIN_MENU:
                 break;
             case LIST_MENU:
-                new ListMenu(playerMenuUtility, trivia).open();
+                new ListMenu(trivia, player).open();
                 break;
             case VIEW_MENU:
-                new ViewMenu(playerMenuUtility, trivia).open();
+                new ViewMenu(trivia, player).open();
                 break;
             case PARAMETER_MENU:
-                new ParameterMenu(playerMenuUtility, trivia).open();
+                new ParameterMenu(trivia, player).open();
                 break;
             case REWARDS_MENU:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, place).open();
+                new RewardsSpecificMenu(trivia, player, place).open();
                 break;
         }
     }

@@ -9,7 +9,6 @@ import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.ConversationPrompt;
 import me.marcarrots.trivia.menu.Menu;
-import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import me.marcarrots.trivia.menu.PromptType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,18 +17,20 @@ import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class RewardsSpecificMenu extends Menu {
 
     private final int place;
 
-    public RewardsSpecificMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, int place) {
-        super(playerMenuUtility, trivia);
+    public RewardsSpecificMenu(Trivia trivia, Player player, int place) {
+        super(trivia, player);
         this.place = place;
     }
 
@@ -53,13 +54,13 @@ public class RewardsSpecificMenu extends Menu {
         switch (event.getSlot()) {
             case 38: // change money
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY, playerMenuUtility, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_MONEY, player, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
             case 42: // change experience
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE, playerMenuUtility, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_EXPERIENCE, player, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
@@ -71,7 +72,7 @@ public class RewardsSpecificMenu extends Menu {
                 break;
             case 44: // change win message
                 event.setCancelled(true);
-                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE, playerMenuUtility, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+                conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_WIN_MESSAGE, player, trivia).setPlace(place)).withLocalEcho(false).withTimeout(60).buildConversation(player);
                 conversation.begin();
                 player.closeInventory();
                 break;
@@ -81,7 +82,7 @@ public class RewardsSpecificMenu extends Menu {
             event.setCancelled(true);
         } else if (type == Material.ARROW) {
             event.setCancelled(true);
-            new RewardsMainMenu(trivia.getPlayerMenuUtility(player), trivia).open();
+            new RewardsMainMenu(trivia, player).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             event.setCancelled(true);
             player.closeInventory();
@@ -92,16 +93,16 @@ public class RewardsSpecificMenu extends Menu {
     @Override
     public void handleMenuClose(InventoryCloseEvent event) {
         List<ItemStack> items = new ArrayList<>();
+        Inventory topInventory = event.getView().getTopInventory();
         for (int i = 10; i < 36; i++) {
-
-            ItemStack item = event.getView().getTopInventory().getItem(i);
-
+            ItemStack item = topInventory.getItem(i);
             if (item == null || item.equals(FILLER_GLASS)) {
                 continue;
             }
-
             items.add(item);
         }
+
+        trivia.getLogger().log(Level.INFO, String.format("%s has modified the rewards settings for place %d.", event.getPlayer().getName(), place));
         trivia.getRewards()[place].setItems(items);
         trivia.getRewardsFile().saveData();
     }

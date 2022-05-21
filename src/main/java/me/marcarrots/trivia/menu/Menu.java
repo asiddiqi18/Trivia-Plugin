@@ -6,12 +6,14 @@ import me.marcarrots.trivia.language.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,16 +24,16 @@ import java.util.List;
 public abstract class Menu implements InventoryHolder {
 
     protected final Trivia trivia;
-    protected final PlayerMenuUtility playerMenuUtility;
     protected final ItemStack FILLER_GLASS;
     protected final ItemStack BACK;
     protected final ItemStack CLOSE;
+    protected final Player player;
     protected Inventory inventory;
 
-    public Menu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
+    public Menu(Trivia trivia, Player player) {
 
-        this.playerMenuUtility = playerMenuUtility;
         this.trivia = trivia;
+        this.player = player;
         FILLER_GLASS = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta FILLER_GLASS_META = FILLER_GLASS.getItemMeta();
         FILLER_GLASS_META.setDisplayName(" ");
@@ -61,11 +63,11 @@ public abstract class Menu implements InventoryHolder {
     public void open() {
         inventory = Bukkit.createInventory(this, getSlots(), getMenuName());
         this.setMenuItems();
-        playerMenuUtility.getOwner().openInventory(inventory);
+        player.openInventory(inventory);
     }
 
     @Override
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return inventory;
     }
 

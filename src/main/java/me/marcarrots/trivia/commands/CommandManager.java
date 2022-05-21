@@ -45,7 +45,7 @@ public class CommandManager implements CommandExecutor {
                 if (!commandSender.hasPermission("trivia.admin")) {
                     help.perform(commandSender, args);
                 }
-                MainMenu menu = new MainMenu(trivia.getPlayerMenuUtility((Player) commandSender), trivia);
+                MainMenu menu = new MainMenu(trivia, (Player) commandSender);
                 menu.open();
             } else {
                 commandSender.sendMessage("This command is meant for players. Use '/trivia help' for assistance.");

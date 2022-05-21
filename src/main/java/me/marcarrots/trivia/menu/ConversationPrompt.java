@@ -8,28 +8,29 @@ import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class ConversationPrompt extends StringPrompt {
 
     private final PromptType promptType;
-    private final PlayerMenuUtility playerMenuUtility;
+    private final Player player;
     private final Trivia trivia;
     private final Question question;
 
     private int place;
 
-    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia) {
+    public ConversationPrompt(PromptType promptType, Player player, Trivia trivia) {
         this.promptType = promptType;
-        this.playerMenuUtility = playerMenuUtility;
+        this.player = player;
         this.trivia = trivia;
         question = null;
     }
 
-    public ConversationPrompt(PromptType promptType, PlayerMenuUtility playerMenuUtility, Trivia trivia, Question question) {
+    public ConversationPrompt(PromptType promptType, Player player, Trivia trivia, Question question) {
         this.promptType = promptType;
-        this.playerMenuUtility = playerMenuUtility;
+        this.player = player;
         this.trivia = trivia;
         this.question = question;
     }
@@ -40,7 +41,7 @@ public class ConversationPrompt extends StringPrompt {
     }
 
     @Override
-    public String getPromptText(ConversationContext context) {
+    public @NotNull String getPromptText(@NotNull ConversationContext context) {
         if (promptType == PromptType.NEW_QUESTION) {
             if (question.getQuestionString() == null)
                 return ChatColor.DARK_AQUA + "Enter the question you'd like to use. Type" + ChatColor.RED + " 'back' " + ChatColor.DARK_AQUA + "to return.";
@@ -60,32 +61,32 @@ public class ConversationPrompt extends StringPrompt {
         try {
             switch (promptType) {
                 case SET_ROUNDS:
-                    playerMenuUtility.setTotalRounds(Integer.parseInt(input));
+                    trivia.getPlayerMenuUtility(player).setTotalRounds(Integer.parseInt(input));
                     break;
                 case SET_TIME:
-                    playerMenuUtility.setTimePer(Integer.parseInt(input));
+                    trivia.getPlayerMenuUtility(player).setTimePer(Integer.parseInt(input));
                     break;
                 case NEW_QUESTION:
                     if (question == null)
                         return Prompt.END_OF_CONVERSATION;
                     if (question.getQuestionString() == null) {
                         question.setQuestion(input);
-                        return new ConversationPrompt(PromptType.NEW_QUESTION, playerMenuUtility, trivia, question);
+                        return new ConversationPrompt(PromptType.NEW_QUESTION, player, trivia, question);
                     }
                     if (question.getAnswerList() == null) {
                         question.setAnswer(Arrays.asList(input.split("\\s*,\\s*")));
                         trivia.getQuestionHolder().writeQuestions(trivia.getQuestionsFile(), question.getQuestionString(), question.getAnswerList(), player.getName());
                         player.spigot().sendMessage(new TextComponent(ChatColor.GREEN + "This question has been added to the pool."));
-                        promptType.openNewMenu(playerMenuUtility, trivia, place);
+                        promptType.openNewMenu(trivia, player, place);
                         return Prompt.END_OF_CONVERSATION;
                     }
                 case EDIT_QUESTION:
-                    trivia.getQuestionHolder().updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
-                    playerMenuUtility.setQuestionString(input);
+                    trivia.getQuestionHolder().updateQuestionToFile(trivia, trivia.getPlayerMenuUtility(player).getQuestion(), input, promptType);
+                    trivia.getPlayerMenuUtility(player).setQuestionString(input);
                     break;
                 case EDIT_ANSWER:
-                    trivia.getQuestionHolder().updateQuestionToFile(trivia, playerMenuUtility.getQuestion(), input, promptType);
-                    playerMenuUtility.setAnswerString(Arrays.asList(input.split("\\s*,\\s*")));
+                    trivia.getQuestionHolder().updateQuestionToFile(trivia, trivia.getPlayerMenuUtility(player).getQuestion(), input, promptType);
+                    trivia.getPlayerMenuUtility(player).setAnswerString(Arrays.asList(input.split("\\s*,\\s*")));
                     break;
                 case SET_MONEY:
                     trivia.getRewards()[place].setMoney(Double.parseDouble(input));
@@ -103,7 +104,7 @@ public class ConversationPrompt extends StringPrompt {
         if (promptType.getSuccess() != null) {
             player.spigot().sendMessage(new TextComponent(promptType.getSuccess()));
         }
-        promptType.openNewMenu(playerMenuUtility, trivia, place);
+        promptType.openNewMenu(trivia, player, place);
         return Prompt.END_OF_CONVERSATION;
     }
 

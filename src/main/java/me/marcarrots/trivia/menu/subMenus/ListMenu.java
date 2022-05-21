@@ -4,7 +4,10 @@ import me.marcarrots.trivia.Question;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
-import me.marcarrots.trivia.menu.*;
+import me.marcarrots.trivia.menu.ConversationPrompt;
+import me.marcarrots.trivia.menu.MenuType;
+import me.marcarrots.trivia.menu.PaginatedMenu;
+import me.marcarrots.trivia.menu.PromptType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversation;
@@ -22,8 +25,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class ListMenu extends PaginatedMenu {
-    public ListMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia) {
-        super(playerMenuUtility, trivia);
+    public ListMenu(Trivia trivia, Player player) {
+        super(trivia, player);
     }
 
     public String getMenuName() {
@@ -48,13 +51,13 @@ public class ListMenu extends PaginatedMenu {
         ConversationFactory conversationFactory = new ConversationFactory(trivia);
         if (type == Material.EMERALD) {
             Question question = new Question();
-            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.NEW_QUESTION, playerMenuUtility, trivia, question)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.NEW_QUESTION, player, trivia, question)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.PAPER) {
-            playerMenuUtility.setPreviousMenu(MenuType.LIST_MENU);
-            playerMenuUtility.setQuestion(trivia.getQuestionHolder().getQuestion(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(trivia.getNamespacedQuestionKey(), PersistentDataType.INTEGER)));
-            (new ViewMenu(playerMenuUtility, trivia)).open();
+            trivia.getPlayerMenuUtility(player).setPreviousMenu(MenuType.LIST_MENU);
+            trivia.getPlayerMenuUtility(player).setQuestion(trivia.getQuestionHolder().getQuestion(event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(trivia.getNamespacedQuestionKey(), PersistentDataType.INTEGER)));
+            (new ViewMenu(trivia, player)).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         } else if (type == Material.DARK_OAK_BUTTON) {
@@ -74,8 +77,8 @@ public class ListMenu extends PaginatedMenu {
                 }
             }
         } else if (type == Material.ARROW) {
-            playerMenuUtility.setPreviousMenu(MenuType.LIST_MENU);
-            (new MainMenu(playerMenuUtility, trivia)).open();
+            trivia.getPlayerMenuUtility(player).setPreviousMenu(MenuType.LIST_MENU);
+            (new MainMenu(trivia, player)).open();
         }
     }
 
@@ -126,10 +129,10 @@ public class ListMenu extends PaginatedMenu {
                 }
             }
         insertItem(53, Material.EMERALD, Lang.LIST_MENU_NEW_QUESTION.format_single(), "", false, false);
-        if (playerMenuUtility.getPreviousMenu() != null) {
+        if (trivia.getPlayerMenuUtility(player).getPreviousMenu() != null) {
             ItemStack previousMenuItem = BACK;
             ItemMeta previousMenuMeta = previousMenuItem.getItemMeta();
-            if (playerMenuUtility.getPreviousMenu() == MenuType.MAIN_MENU)
+            if (trivia.getPlayerMenuUtility(player).getPreviousMenu() == MenuType.MAIN_MENU)
                 previousMenuMeta.setLore(Collections.singletonList("to main menu."));
             previousMenuItem.setItemMeta(previousMenuMeta);
             inventory.setItem(45, previousMenuItem);
