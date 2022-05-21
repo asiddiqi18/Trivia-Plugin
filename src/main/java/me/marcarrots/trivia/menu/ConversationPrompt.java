@@ -19,9 +19,9 @@ public class ConversationPrompt extends StringPrompt {
 
     private int place;
 
-    public ConversationPrompt(PromptType promptType, Trivia trivia) {
-        this.promptType = promptType;
+    public ConversationPrompt(Trivia trivia, PromptType promptType) {
         this.trivia = trivia;
+        this.promptType = promptType;
     }
 
     public ConversationPrompt setPlace(int place) {
@@ -52,7 +52,7 @@ public class ConversationPrompt extends StringPrompt {
                     break;
                 case NEW_ENTRY_QUESTION:
                     context.setSessionData("new_question", input);
-                    return new ConversationPrompt(PromptType.NEW_ENTRY_ANSWER, trivia);
+                    return new ConversationPrompt(trivia, PromptType.NEW_ENTRY_ANSWER);
                 case NEW_ENTRY_ANSWER:
                     List<String> answers = Arrays.asList(input.split("\\s*,\\s*"));
                     trivia.getQuestionHolder().writeQuestions(trivia, (String) context.getSessionData("new_question"), answers, player.getName());

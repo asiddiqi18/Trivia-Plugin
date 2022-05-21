@@ -49,7 +49,7 @@ public class ListMenu extends PaginatedMenu {
 
         List<Question> questionList = trivia.getQuestionHolder().getTriviaQuestionList();
         if (type == Material.EMERALD) {
-            Conversation conversation = new ConversationFactory(trivia).withFirstPrompt(new ConversationPrompt(PromptType.NEW_ENTRY_QUESTION, trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+            Conversation conversation = new ConversationFactory(trivia).withFirstPrompt(new ConversationPrompt(trivia, PromptType.NEW_ENTRY_QUESTION)).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.PAPER) {

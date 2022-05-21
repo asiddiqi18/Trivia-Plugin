@@ -42,13 +42,13 @@ public class ViewMenu extends Menu {
         ConversationFactory conversationFactory = new ConversationFactory(trivia);
 
         if (type == Material.GREEN_TERRACOTTA) {
-            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_QUESTION
-                    , trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(trivia, PromptType.EDIT_QUESTION
+            )).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.YELLOW_TERRACOTTA) {
-            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.EDIT_ANSWER
-                    , trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(trivia, PromptType.EDIT_ANSWER
+            )).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.RED_TERRACOTTA) {

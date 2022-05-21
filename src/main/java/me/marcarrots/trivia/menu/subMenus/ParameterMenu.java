@@ -61,13 +61,13 @@ public class ParameterMenu extends Menu {
             }
             player.closeInventory();
         } else if (type == Material.OAK_SIGN) {
-            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_ROUNDS
-                    , trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(trivia, PromptType.SET_ROUNDS
+            )).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.CLOCK) {
-            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_TIME
-                    , trivia)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(trivia, PromptType.SET_TIME
+            )).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.RED_DYE || type == Material.LIME_DYE) {
