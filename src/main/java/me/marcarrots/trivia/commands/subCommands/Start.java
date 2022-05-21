@@ -57,7 +57,7 @@ public class Start extends SubCommand {
         try {
             long timePerQuestion = trivia.getConfig().getLong("Default time per round", 10L);
             boolean doRepetition = false;
-            Game game = new Game(trivia, timePerQuestion, setRounds, doRepetition, commandSender);
+            Game game = new Game(trivia, commandSender, timePerQuestion, setRounds, doRepetition);
             trivia.setGame(game);
             trivia.getGame().start();
         } catch (IllegalAccessException e) {

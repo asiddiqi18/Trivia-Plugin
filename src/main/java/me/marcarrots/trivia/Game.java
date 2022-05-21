@@ -35,7 +35,7 @@ public class Game {
     private Player roundWinner;
     private String userRightAnswer;
 
-    public Game(Trivia trivia, long timePerQuestion, int amountOfRounds, boolean doRepetition, CommandSender commandSender) throws IllegalAccessException {
+    public Game(Trivia trivia, CommandSender commandSender, long timePerQuestion, int amountOfRounds, boolean doRepetition) throws IllegalAccessException {
         if (trivia.getQuestionHolder().getSize() == 0) {
             throw new IllegalAccessException("There are no Trivia questions loaded. Create some questions before hosting a game!");
         }

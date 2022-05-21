@@ -53,7 +53,7 @@ public class ParameterMenu extends Menu {
                 long timePerQuestion = trivia.getPlayerMenuUtility(player).getTimePer();
                 int amountOfRounds = trivia.getPlayerMenuUtility(player).getTotalRounds();
                 boolean doRepetition = trivia.getPlayerMenuUtility(player).isRepeatEnabled();
-                Game game = new Game(trivia, timePerQuestion, amountOfRounds, doRepetition, player);
+                Game game = new Game(trivia, player, timePerQuestion, amountOfRounds, doRepetition);
                 trivia.setGame(game);
                 trivia.getGame().start();
             } catch (IllegalAccessException e) {
