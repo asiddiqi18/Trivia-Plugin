@@ -19,6 +19,7 @@ public enum Lang {
     TIME_UP("Question Time Up", "&cTime is up! Next question..."),
     QUESTION("Question Display", "&6(%questionNumber%) &e%question%"),
     SKIP("Question Skipped", "&cQuestion skipped! On to the next question..."),
+    BOSS_BAR_START("Boss Bar Start", "Trivia is commencing. Get ready!"),
     BOSS_BAR_INFO("Boss Bar Game Info", "Trivia Match (%questionNumber%/%totalQuestions%)"),
     BOSS_BAR_GAME_OVER("Boss Bar Game Over", "Trivia is over!"),
     BOSS_BAR_THANKS("Boss Bar Thanks", "Thanks for playing!"),
