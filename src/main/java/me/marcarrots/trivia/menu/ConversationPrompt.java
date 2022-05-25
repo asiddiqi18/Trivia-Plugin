@@ -1,6 +1,7 @@
 package me.marcarrots.trivia.menu;
 
 import me.marcarrots.trivia.Trivia;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
@@ -74,13 +75,15 @@ public class ConversationPrompt extends StringPrompt {
                     trivia.getRewards()[place].setMessage(input);
                     break;
             }
+
+            if (promptType.getSuccess() != null) {
+                player.spigot().sendMessage(new TextComponent(promptType.getSuccess()));
+            }
+
         } catch (NumberFormatException e) {
-            player.spigot().sendMessage(new TextComponent("Please enter a valid number."));
+            player.spigot().sendMessage(new TextComponent(ChatColor.RED + "Please enter a valid number."));
         }
 
-        if (promptType.getSuccess() != null) {
-            player.spigot().sendMessage(new TextComponent(promptType.getSuccess()));
-        }
         promptType.openNewMenu(trivia, player, place);
         return Prompt.END_OF_CONVERSATION;
     }

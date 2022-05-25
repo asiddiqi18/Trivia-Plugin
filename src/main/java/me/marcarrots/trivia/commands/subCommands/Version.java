@@ -36,7 +36,10 @@ public class Version extends SubCommand {
 
     @Override
     public boolean perform(CommandSender commandSender, String[] args) {
-        commandSender.sendMessage(ChatColor.GOLD + "Trivia version: " + ChatColor.YELLOW + trivia.getDescription().getVersion());
+        commandSender.sendMessage(ChatColor.GOLD + trivia.getDescription().getName() + " version: " + ChatColor.YELLOW + trivia.getDescription().getVersion());
+        commandSender.sendMessage(ChatColor.GOLD + "Author: " + ChatColor.YELLOW + trivia.getDescription().getAuthors().get(0));
+        commandSender.sendMessage(ChatColor.GOLD + "Website: " + ChatColor.YELLOW + trivia.getDescription().getWebsite());
+        commandSender.sendMessage(ChatColor.GOLD + "API Version: " + ChatColor.YELLOW + trivia.getDescription().getAPIVersion());
         return false;
     }
 

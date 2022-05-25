@@ -21,7 +21,7 @@ public class Skip extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Skips a trivia question during a game.";
+        return "Skips the current question during a game.";
     }
 
     @Override

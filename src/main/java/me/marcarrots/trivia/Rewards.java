@@ -64,7 +64,7 @@ public class Rewards {
 
             str.append(ChatColor.RESET).append(amount).append(" ").append(name);
 
-            if (amount > 1) {
+            if (amount > 1 && !name.endsWith("s")) {
                 str.append("s");
             }
 

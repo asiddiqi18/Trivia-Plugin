@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
+import java.text.MessageFormat;
+
 public class RewardsMainMenu extends Menu {
     public RewardsMainMenu(Trivia trivia, Player player) {
         super(trivia, player);
@@ -31,6 +33,10 @@ public class RewardsMainMenu extends Menu {
     @Override
     public void handleMenuClick(InventoryClickEvent event) {
         event.setCancelled(true);
+
+        if (event.getCurrentItem() == null) {
+            return;
+        }
 
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
@@ -66,13 +72,13 @@ public class RewardsMainMenu extends Menu {
     @Override
     public void setMenuItems() {
 
-        String lore = "View and modify rewards given to the %s place winner at the end of a trivia game.";
+        String lore = "{0}View and modify rewards given to the {1}{2}{0} place winner at the end of a trivia game.";
 
-        insertItem(11, Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format_single(), String.format(ChatColor.DARK_PURPLE + lore, "first"), true, true);
+        insertItem(11, Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format_single(), MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "first"), true, true);
 
-        insertItem(13, Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(), String.format(ChatColor.DARK_PURPLE + lore, "second"), true, true);
+        insertItem(13, Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(),  MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "second"), true, true);
 
-        insertItem(15, Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(), String.format(ChatColor.DARK_PURPLE + lore, "third"), true, true);
+        insertItem(15, Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(),  MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "third"), true, true);
 
         insertItem(35, Material.ENDER_CHEST, ChatColor.LIGHT_PURPLE + "Per-Round Reward", ChatColor.DARK_PURPLE + "View and modify rewards given per round basis to the first answerer.", true, true);
 

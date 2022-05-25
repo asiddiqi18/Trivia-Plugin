@@ -49,7 +49,7 @@ public class CommandManager implements CommandExecutor {
                 MainMenu menu = new MainMenu(trivia, (Player) commandSender);
                 menu.open();
             } else {
-                commandSender.sendMessage("This command is meant for players. Use '/trivia help' for assistance.");
+                commandSender.sendMessage(ChatColor.RED + "This command is meant for players. Use '/trivia help' for assistance.");
             }
             return false;
         }
@@ -59,7 +59,8 @@ public class CommandManager implements CommandExecutor {
                 if (subCommand.hasPermission(commandSender)) {
                     return subCommand.perform(commandSender, args);
                 } else {
-                    commandSender.sendMessage("You do not have permission to use this command");
+                    commandSender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    return false;
                 }
             }
         }
