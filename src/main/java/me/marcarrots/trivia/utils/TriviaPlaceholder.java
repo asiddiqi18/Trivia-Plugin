@@ -2,7 +2,7 @@
  * Trivia by MarCarrot, 2020
  */
 
-package me.marcarrots.trivia.commands.subCommands;
+package me.marcarrots.trivia.utils;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.marcarrots.trivia.PlayerDataContainer;

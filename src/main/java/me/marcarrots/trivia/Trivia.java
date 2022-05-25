@@ -5,7 +5,7 @@
 package me.marcarrots.trivia;
 
 import me.marcarrots.trivia.commands.CommandManager;
-import me.marcarrots.trivia.commands.subCommands.TriviaPlaceholder;
+import me.marcarrots.trivia.utils.TriviaPlaceholder;
 import me.marcarrots.trivia.data.FileManager;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.listeners.ChatEvent;
