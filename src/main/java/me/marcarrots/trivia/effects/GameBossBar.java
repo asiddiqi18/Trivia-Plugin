@@ -2,8 +2,13 @@
  * Trivia by MarCarrot, 2020
  */
 
-package me.marcarrots.trivia;
+/*
+ * Trivia by MarCarrot, 2020
+ */
 
+package me.marcarrots.trivia.effects;
+
+import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
 import org.bukkit.Bukkit;
@@ -32,7 +37,7 @@ public class GameBossBar {
         if (!bossBarEnabled) {
             return;
         }
-        bossBar = Bukkit.createBossBar(Lang.TRIVIA_START.format_single(), BarColor.YELLOW, BarStyle.SOLID);
+        bossBar = Bukkit.createBossBar(Lang.BOSS_BAR_START.format_single(), BarColor.YELLOW, BarStyle.SOLID);
         bossBar.setProgress(0);
         if (totalQuestions % 10 == 0) {
             if (totalQuestions % 20 == 0) {

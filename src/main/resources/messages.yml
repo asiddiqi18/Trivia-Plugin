@@ -29,6 +29,7 @@ Solved Message: "&b%player% [#86fe4c]has answered the question correctly! The an
 Question Time Up: "&cTime is up! Next question..."
 Question Display: "&6(%questionNumber%) &e%question%"
 Question Skipped: "&cQuestion skipped! On to the next question... "
+Boss Bar Start: "Trivia is commencing. Get ready!"
 Boss Bar Game Info: "Trivia Match (%questionNumber%/%totalQuestions%)"
 Boss Bar Game Over: "Trivia is over!"
 Boss Bar Halted: "Trivia has been stopped!"
