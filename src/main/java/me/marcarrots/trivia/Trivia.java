@@ -112,7 +112,7 @@ public final class Trivia extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
         getServer().getPluginManager().registerEvents(new EntityDamage(), this);
-        getCommand("trivia").setExecutor(new CommandManager(this));
+        Objects.requireNonNull(getCommand("trivia")).setExecutor(new CommandManager(this));
 
         // bStats
         try {
