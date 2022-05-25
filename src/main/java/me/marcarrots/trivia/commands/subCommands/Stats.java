@@ -7,6 +7,7 @@ package me.marcarrots.trivia.commands.subCommands;
 import me.marcarrots.trivia.PlayerDataContainer;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.commands.SubCommand;
+import me.marcarrots.trivia.language.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,6 +46,8 @@ public class Stats extends SubCommand {
             Player player = (Player) commandSender;
             PlayerDataContainer stats = trivia.getStats();
             int[] gamesWon = trivia.getStats().getGamesWon(player);
+            String border = Lang.BORDER.format_single();
+            player.sendMessage(border);
             player.sendMessage(ChatColor.GREEN + "Trivia stats for " + player.getName() + ":");
             player.sendMessage(ChatColor.GOLD + " - Number of games participated in: " + ChatColor.YELLOW + stats.getGamesParticipated(player));
             player.sendMessage(ChatColor.GOLD + " - Number of rounds won: " + ChatColor.YELLOW + stats.getRoundsWon(player));
@@ -52,6 +55,7 @@ public class Stats extends SubCommand {
             player.sendMessage(ChatColor.GOLD + "   - 1st place: " + ChatColor.YELLOW + gamesWon[0]);
             player.sendMessage(ChatColor.GOLD + "   - 2nd place: " + ChatColor.YELLOW + gamesWon[1]);
             player.sendMessage(ChatColor.GOLD + "   - 3rd place: " + ChatColor.YELLOW + gamesWon[2]);
+            player.sendMessage(border);
             if (trivia.isVaultEnabled()) {
                 player.sendMessage(ChatColor.GOLD + " - Money earned from winning: " + ChatColor.YELLOW + NumberFormat.getCurrencyInstance().format(stats.getMoneyWon(player)));
             }
