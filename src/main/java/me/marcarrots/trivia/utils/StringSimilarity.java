@@ -1,4 +1,4 @@
-package me.marcarrots.trivia.api;
+package me.marcarrots.trivia.utils;
 
 import org.apache.commons.lang.StringUtils;
 

@@ -2,7 +2,7 @@
  * Trivia by MarCarrot, 2020
  */
 
-package me.marcarrots.trivia.api;
+package me.marcarrots.trivia.utils;
 
 import org.bukkit.Bukkit;
 
