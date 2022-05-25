@@ -4,6 +4,7 @@
 
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.effects.Fireworks;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -55,7 +56,7 @@ public class Rewards {
 
             String name;
 
-            if (itemStack.getItemMeta().hasDisplayName()) {
+            if (itemStack.getItemMeta() != null && itemStack.getItemMeta().hasDisplayName()) {
                 name = itemStack.getItemMeta().getDisplayName();
             } else {
                 name = itemStack.getType().toString().toLowerCase().replace("_", " ");
@@ -165,7 +166,7 @@ public class Rewards {
         }
 
         if (summonFireworks) {
-            Effects.summonFireWork(player);
+            Fireworks.summonFireWork(player);
         }
 
         // send experience to player
