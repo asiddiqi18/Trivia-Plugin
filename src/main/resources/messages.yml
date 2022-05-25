@@ -21,7 +21,7 @@
 
 Plugin Prefix: "&6[Trivia]&r"
 Border: "&e&m------------------------------"
-Trivia Start: "%prefix% &eTrivia is commencing. Get ready!"
+Trivia Start: "%prefix% &eTrivia is commencing. First player to answer the question wins the round! Get ready!"
 Winner Message: "%border% ; &eTrivia is over! ; &6Winners: ; %winner_list% ; %border%"
 Winner List: "&0- &3%player%: &b%points%"
 No Winners: "%prefix% &6There are no winners of this trivia event!"
