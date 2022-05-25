@@ -4,7 +4,6 @@
 
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.api.UpdateChecker;
 import me.marcarrots.trivia.commands.CommandManager;
 import me.marcarrots.trivia.commands.subCommands.TriviaPlaceholder;
 import me.marcarrots.trivia.data.FileManager;
@@ -14,6 +13,7 @@ import me.marcarrots.trivia.listeners.EntityDamage;
 import me.marcarrots.trivia.listeners.InventoryClick;
 import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
+import me.marcarrots.trivia.utils.UpdateChecker;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -219,11 +219,11 @@ public final class Trivia extends JavaPlugin {
 
 
         if (addedKeys.size() > 0) {
-            getLogger().info("[Trivia!] The following keys were added to messages.yml: " + addedKeys);
+            getLogger().info("[Trivia] The following keys were added to messages.yml: " + addedKeys);
             messagesFile.saveData();
         }
         if (removedKeys.size() > 0) {
-            getLogger().info("[Trivia!] The following keys were removed from messages.yml: " + removedKeys);
+            getLogger().info("[Trivia] The following keys were removed from messages.yml: " + removedKeys);
             messagesFile.saveData();
         }
 
@@ -255,40 +255,42 @@ public final class Trivia extends JavaPlugin {
         return true;
     }
 
-
     public boolean isVaultEnabled() {
         return getServer().getPluginManager().getPlugin("Vault") != null;
     }
 
+    public void removeOldSoundKeys(HashMap<String, Object> newConfigKeys, String path, String defaultSound, double defaultPitch) {
+        newConfigKeys.put(path + ".sound", getConfig().getString(path + " sound", defaultSound));
+        getConfig().set(path + " sound", null);
+        newConfigKeys.put(path + ".pitch", getConfig().getDouble(path + " pitch", defaultPitch));
+        getConfig().set(path + " pitch", null);
+        newConfigKeys.put(path + ".volume", 0.6d);
+        getLogger().info("Removed old keys for " + path);
+    }
 
     // transform old config to new config
     private void configUpdater() {
         HashMap<String, Object> newConfigKeys = new HashMap<>();
         HashMap<String, Object> newLangKeys = new HashMap<>();
         int currentConfigVersion = getConfig().getInt("Config Version");
-        // if they have version 1 of the config...
-        if (currentConfigVersion <= 1) {
-            newConfigKeys.put("Scheduled games", false);
-            newConfigKeys.put("Scheduled games interval", 60);
-            newConfigKeys.put("Scheduled games minimum players", 6);
-            newConfigKeys.put("Time between rounds", 2);
-            currentConfigVersion = 2;
-        }
 
-        if (currentConfigVersion == 2) {
-            newConfigKeys.put(Lang.SKIP.getPath(), Lang.SKIP.getDefault());
-        }
+        if (currentConfigVersion == 5) {
 
-        if (currentConfigVersion == 3) {
-            newConfigKeys.put("Enable boss bar", true);
-            newLangKeys.put("Boss Bar Game Info", "Trivia Match (%questionNumber%/%totalQuestions%)");
-            newLangKeys.put("Boss Bar Game Over", "Trivia is over!");
-            newLangKeys.put("Boss Bar Thanks", "Thanks for playing!");
+            removeOldSoundKeys(newConfigKeys, "Answer correct", "BLOCK_NOTE_BLOCK_PLING", 1.5);
+            removeOldSoundKeys(newConfigKeys, "Time up", "ENTITY_VILLAGER_NO", 0.9);
+            removeOldSoundKeys(newConfigKeys, "Game start", "ENTITY_PLAYER_LEVELUP", 1.0);
+            removeOldSoundKeys(newConfigKeys, "Game over", "ENTITY_PLAYER_LEVELUP", 0.9);
+
+            newConfigKeys.put("Question skipped.sound", "BLOCK_NOTE_BLOCK_PLING");
+            newConfigKeys.put("Question skipped.pitch", 1.5d);
+            newConfigKeys.put("Question skipped.volume", 0.6d);
+
+            currentConfigVersion = 6;
         }
 
         if (!newConfigKeys.isEmpty()) {
             // iterate through all the new keys
-            getConfig().set("Config Version", 5);
+            getConfig().set("Config Version", currentConfigVersion);
             for (Map.Entry<String, Object> entry : newConfigKeys.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();

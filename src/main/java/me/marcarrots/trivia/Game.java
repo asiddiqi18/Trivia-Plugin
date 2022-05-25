@@ -1,7 +1,11 @@
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.api.Broadcaster;
-import me.marcarrots.trivia.api.StringSimilarity;
+import me.marcarrots.trivia.effects.GameBossBar;
+import me.marcarrots.trivia.effects.GameSound;
+import me.marcarrots.trivia.effects.SoundType;
+import me.marcarrots.trivia.utils.Broadcaster;
+import me.marcarrots.trivia.utils.Elapsed;
+import me.marcarrots.trivia.utils.StringSimilarity;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.MessageUtil;
 import me.marcarrots.trivia.language.Placeholder;
@@ -26,6 +30,7 @@ public class Game {
     private final boolean doRepetition;
     private final CommandSender commandSender;
     private final GameBossBar gameBossBar;
+    private final GameSound gameSound;
     private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
@@ -52,6 +57,7 @@ public class Game {
         this.timeBetween = trivia.getConfig().getInt("Time between rounds", 2);
         boolean bossBarEnabled = trivia.getConfig().getBoolean("Enable boss bar", true);
         gameBossBar = new GameBossBar(trivia, bossBarEnabled);
+        gameSound = new GameSound(trivia);
     }
 
     public GameBossBar getGameBossBar() {
@@ -88,7 +94,7 @@ public class Game {
 
         scores.addOnlinePlayersToGame();
         Broadcaster.broadcastMessage(Lang.TRIVIA_START.format_multiple(null));
-        Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
+        gameSound.playSoundToAll(SoundType.GAME_START);
         gameBossBar.startBossBar(amountOfRounds);
         timer = new Timer(trivia, amountOfRounds, timePerQuestion, gameBossBar,
                 (t) -> { // after each round
@@ -98,7 +104,7 @@ public class Game {
                 },
                 () -> { // after game
                     handleRoundOutcome();
-                    Effects.playSoundToAll("Game over sound", trivia.getConfig(), "Game over pitch");
+                    gameSound.playSoundToAll(SoundType.GAME_OVER);
                     scores.deliverRewardsToWinners();
                     scores = null;
                     trivia.clearGame();
@@ -128,7 +134,7 @@ public class Game {
                         .build()
                 ));
                 if (roundWinner != null) {
-                    Effects.playSound(roundWinner, trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
+                    gameSound.playSound(roundWinner, SoundType.CORRECT);
                     scores.addScore(roundWinner, getQuestionNum());
                     trivia.getRewards()[0].giveReward(roundWinner);
                     roundWinner = null;
@@ -138,6 +144,7 @@ public class Game {
 
             case SKIPPED:
                 gameBossBar.fillAfterAnswer(BarColor.YELLOW, getQuestionNum(), amountOfRounds);
+                gameSound.playSoundToAll(SoundType.QUESTION_SKIPPED);
                 Broadcaster.broadcastMessage(Lang.SKIP.format_multiple(new Placeholder.PlaceholderBuilder()
                         .question(currentQuestion.getQuestionString())
                         .answer(currentQuestion.getAnswerList())
@@ -154,7 +161,7 @@ public class Game {
                         .totalQuestionNum(amountOfRounds)
                         .build()
                 ));
-                Effects.playSoundToAll("Time up sound", trivia.getConfig(), "Time up pitch");
+                gameSound.playSoundToAll(SoundType.TIME_UP);
                 break;
 
             case HALTED:
