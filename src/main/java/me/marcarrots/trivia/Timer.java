@@ -5,6 +5,7 @@
 package me.marcarrots.trivia;
 
 
+import me.marcarrots.trivia.effects.GameBossBar;
 import org.bukkit.Bukkit;
 
 import java.util.function.Consumer;

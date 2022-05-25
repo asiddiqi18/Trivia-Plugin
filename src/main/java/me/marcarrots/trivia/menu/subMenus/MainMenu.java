@@ -1,6 +1,6 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.Elapsed;
+import me.marcarrots.trivia.utils.Elapsed;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.Menu;

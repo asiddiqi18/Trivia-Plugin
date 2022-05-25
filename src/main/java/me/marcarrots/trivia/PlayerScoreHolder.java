@@ -1,6 +1,6 @@
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.api.Broadcaster;
+import me.marcarrots.trivia.utils.Broadcaster;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
 import org.bukkit.Bukkit;
