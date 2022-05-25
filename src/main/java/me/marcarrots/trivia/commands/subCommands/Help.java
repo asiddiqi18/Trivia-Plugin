@@ -60,8 +60,4 @@ public class Help extends SubCommand {
         return false;
     }
 
-    @Override
-    public List<String> getTabSuggester(CommandSender commandSender, int argsLength) {
-        return null;
-    }
 }

@@ -10,8 +10,6 @@ import me.marcarrots.trivia.language.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.List;
-
 public class Stop extends SubCommand {
     public Stop(Trivia plugin) {
         super(plugin);
@@ -48,8 +46,4 @@ public class Stop extends SubCommand {
         return false;
     }
 
-    @Override
-    public List<String> getTabSuggester(CommandSender commandSender, int argsLength) {
-        return null;
-    }
 }

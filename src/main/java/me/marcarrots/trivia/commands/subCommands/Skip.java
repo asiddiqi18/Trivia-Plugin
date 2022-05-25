@@ -9,8 +9,6 @@ import me.marcarrots.trivia.commands.SubCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.List;
-
 public class Skip extends SubCommand {
     public Skip(Trivia plugin) {
         super(plugin);
@@ -48,8 +46,4 @@ public class Skip extends SubCommand {
         return false;
     }
 
-    @Override
-    public List<String> getTabSuggester(CommandSender commandSender, int argsLength) {
-        return null;
-    }
 }

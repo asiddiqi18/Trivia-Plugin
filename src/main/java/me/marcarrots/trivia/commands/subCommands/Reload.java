@@ -10,8 +10,6 @@ import me.marcarrots.trivia.language.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.List;
-
 public class Reload extends SubCommand {
     public Reload(Trivia trivia) {
         super(trivia);
@@ -61,8 +59,4 @@ public class Reload extends SubCommand {
         return false;
     }
 
-    @Override
-    public List<String> getTabSuggester(CommandSender commandSender, int argsLength) {
-        return null;
-    }
 }

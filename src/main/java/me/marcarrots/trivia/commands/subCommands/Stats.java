@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.text.NumberFormat;
-import java.util.List;
 
 public class Stats extends SubCommand {
     public Stats(Trivia plugin) {
@@ -66,8 +65,4 @@ public class Stats extends SubCommand {
         return false;
     }
 
-    @Override
-    public List<String> getTabSuggester(CommandSender commandSender, int argsLength) {
-        return null;
-    }
 }

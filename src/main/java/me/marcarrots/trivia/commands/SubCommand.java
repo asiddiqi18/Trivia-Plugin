@@ -8,8 +8,6 @@ import me.marcarrots.trivia.Trivia;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permissible;
 
-import java.util.List;
-
 public abstract class SubCommand {
 
     protected Trivia trivia;
@@ -27,8 +25,6 @@ public abstract class SubCommand {
     public abstract String getPermission();
 
     public abstract boolean perform(CommandSender commandSender, String[] args);
-
-    public abstract List<String> getTabSuggester(CommandSender commandSender, int argsLength);
 
     public boolean hasPermission(Permissible permissible) {
         return permissible.hasPermission(getPermission());
