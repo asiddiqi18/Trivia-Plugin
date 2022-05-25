@@ -20,6 +20,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class GameBossBar {
 
+    public boolean isBossBarEnabled() {
+        return bossBarEnabled;
+    }
+
     private final boolean bossBarEnabled;
     private final Trivia trivia;
     private BossBar bossBar;

@@ -50,7 +50,7 @@ public class Timer implements Runnable {
     @Override
     public void run() {
         counter += 1; // 100 ms
-        if (counter % 5 == 0 && gameBossBar != null) {
+        if (counter % 5 == 0 && gameBossBar.isBossBarEnabled()) {
             gameBossBar.getBossBar().setProgress(((rounds - roundsLeft - 1) + ((float) counter / (secondsPer * 10))) / rounds);
         }
         if (counter >= secondsPer * 10) {
