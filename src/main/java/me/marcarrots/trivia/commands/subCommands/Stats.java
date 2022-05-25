@@ -55,10 +55,11 @@ public class Stats extends SubCommand {
             player.sendMessage(ChatColor.GOLD + "   - 1st place: " + ChatColor.YELLOW + gamesWon[0]);
             player.sendMessage(ChatColor.GOLD + "   - 2nd place: " + ChatColor.YELLOW + gamesWon[1]);
             player.sendMessage(ChatColor.GOLD + "   - 3rd place: " + ChatColor.YELLOW + gamesWon[2]);
-            player.sendMessage(border);
+            player.sendMessage(ChatColor.GOLD + " - Enchanting exp earned from wins: " + ChatColor.YELLOW + NumberFormat.getIntegerInstance().format(stats.getExperienceWon(player)));
             if (trivia.isVaultEnabled()) {
-                player.sendMessage(ChatColor.GOLD + " - Money earned from winning: " + ChatColor.YELLOW + NumberFormat.getCurrencyInstance().format(stats.getMoneyWon(player)));
+                player.sendMessage(ChatColor.GOLD + " - Money earned from wins: " + ChatColor.YELLOW + NumberFormat.getCurrencyInstance().format(stats.getMoneyWon(player)));
             }
+            player.sendMessage(border);
         } else {
             commandSender.sendMessage("This command is for players only.");
         }

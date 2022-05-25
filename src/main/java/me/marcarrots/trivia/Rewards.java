@@ -172,6 +172,7 @@ public class Rewards {
         // send experience to player
         if (experience != 0) {
             player.giveExp(getExperience());
+            trivia.getStats().addExperienceWon(player, experience);
         }
 
         if (place != 0) {
@@ -190,11 +191,12 @@ public class Rewards {
             if (itemsIndex != -1) {
                 formattedMessage = formattedMessage.replace("%items%", itemsToString(items));
             }
-            String moneyFormatted = NumberFormat.getIntegerInstance().format(money);
+            String moneyFormatted = NumberFormat.getCurrencyInstance().format(money);
             formattedMessage = formattedMessage.replace("%money%", moneyFormatted);
-            String experienceFormatted = NumberFormat.getCurrencyInstance().format(experience);
+            String experienceFormatted = NumberFormat.getIntegerInstance().format(experience);
             formattedMessage = formattedMessage.replace("%experience%", experienceFormatted);
 
+            Lang.fillPlaceholders(new Placeholder.PlaceholderBuilder().player(player).build(), formattedMessage);
             String finalFormattedMessage = formattedMessage;
             scheduler.scheduleSyncDelayedTask(trivia, () -> player.sendMessage(finalFormattedMessage), 3);
         }

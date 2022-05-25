@@ -4,26 +4,25 @@
 
 package me.marcarrots.trivia;
 
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Arrays;
-import java.util.List;
-
+@SuppressWarnings("SameParameterValue")
 public class PlayerDataContainer {
 
     private final NamespacedKey participatedKey;
     private final NamespacedKey roundsWonKey;
     private final NamespacedKey gamesWonKey;
     private final NamespacedKey moneyWonKey;
+    private final NamespacedKey experienceWonKey;
 
     public PlayerDataContainer(Trivia trivia) {
         gamesWonKey = new NamespacedKey(trivia, "trivia_wins");
         roundsWonKey = new NamespacedKey(trivia, "trivia_answered");
         moneyWonKey = new NamespacedKey(trivia, "trivia_money");
         participatedKey = new NamespacedKey(trivia, "trivia_participation");
+        experienceWonKey = new NamespacedKey(trivia, "trivia_experience");
     }
 
     public void addGameParticipated(Player player) {
@@ -42,6 +41,10 @@ public class PlayerDataContainer {
         addDoubleType(player, moneyWonKey, amount);
     }
 
+    public void addExperienceWon(Player player, int amount) {
+        addIntegerType(player, experienceWonKey, amount);
+    }
+
     public int getGamesParticipated(Player player) {
         return getIntegerType(player, participatedKey);
     }
@@ -56,6 +59,10 @@ public class PlayerDataContainer {
 
     public double getMoneyWon(Player player) {
         return getDoubleType(player, moneyWonKey);
+    }
+
+    public int getExperienceWon(Player player) {
+        return getIntegerType(player, experienceWonKey);
     }
 
     @SuppressWarnings("SameParameterValue")
