@@ -22,7 +22,7 @@ public class Reload extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Reloads all the trivia files.";
+        return Lang.COMMANDS_HELP_RELOAD.format_single();
     }
 
     @Override

@@ -195,7 +195,7 @@ public final class Trivia extends JavaPlugin {
         // add new keys to file
         List<String> addedKeys = new ArrayList<>();
         for (Lang val : langValues) {
-            if (!messagesFile.getData().getKeys(false).contains(val.getPath())) {
+            if (!messagesFile.getData().getKeys(true).contains(val.getPath())) {
                 addedKeys.add(val.getPath());
                 messagesFile.getData().set(val.getPath(), val.getDefault());
             }

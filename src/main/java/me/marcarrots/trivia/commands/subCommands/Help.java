@@ -32,7 +32,7 @@ public class Help extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Displays a help menu describing trivia commands.";
+        return Lang.COMMANDS_HELP_HELP.format_single();
     }
 
     @Override
@@ -48,11 +48,15 @@ public class Help extends SubCommand {
     @Override
     public boolean perform(CommandSender commandSender, String[] args) {
         commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&m------------&e[ &6Trivia &e]&m------------"));
-        commandSender.sendMessage(ChatColor.GOLD + "/trivia" + ChatColor.GRAY + " - " + ChatColor.WHITE + "(Main command) Opens up the Trivia menu to manage or start trivia.");
+        commandSender.sendMessage(Lang.COMMANDS_HELP_PREFIX.format_single() + Lang.COMMANDS_HELP_MAIN.format_single());
 
         for (SubCommand sc : subCommands) {
             if (commandSender.hasPermission(sc.getPermission())) {
-                commandSender.sendMessage(String.format(ChatColor.GOLD + "/trivia %1$s" + ChatColor.GRAY + " - " + ChatColor.WHITE + "%2$s", sc.getSyntax(), sc.getDescription()));
+                if (sc.getName().equals("schedule") && !trivia.getAutomatedGameManager().isSchedulingEnabled()) {
+                       continue;
+                }
+                commandSender.sendMessage(Lang.COMMANDS_HELP_PREFIX.format_single() + sc.getDescription());
+
             }
         }
         commandSender.sendMessage(Lang.BORDER.format_single());

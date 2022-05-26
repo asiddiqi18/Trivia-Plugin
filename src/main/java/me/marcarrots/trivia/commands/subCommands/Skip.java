@@ -6,6 +6,7 @@ package me.marcarrots.trivia.commands.subCommands;
 
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.commands.SubCommand;
+import me.marcarrots.trivia.language.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -21,7 +22,7 @@ public class Skip extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Skips the current question during a game.";
+        return Lang.COMMANDS_HELP_SKIP.format_single();
     }
 
     @Override

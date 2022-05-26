@@ -32,6 +32,8 @@ public class CommandManager implements CommandExecutor {
         subCommands.add(new Reload(trivia));
         subCommands.add(new Version(trivia));
 
+        subCommands.add(new Schedule(trivia));
+
         help = new Help(trivia);
         help.setSubCommands(subCommands);
         subCommands.add(help);

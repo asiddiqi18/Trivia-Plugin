@@ -6,6 +6,7 @@ package me.marcarrots.trivia.commands.subCommands;
 
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.commands.SubCommand;
+import me.marcarrots.trivia.language.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -21,7 +22,7 @@ public class Version extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Gets the current plugin's version number.";
+        return Lang.COMMANDS_HELP_VERSION.format_single();
     }
 
     @Override

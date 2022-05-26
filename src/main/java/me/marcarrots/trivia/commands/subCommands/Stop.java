@@ -22,7 +22,7 @@ public class Stop extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Stops the current trivia game in progress.";
+        return Lang.COMMANDS_HELP_STOP.format_single();
     }
 
     @Override

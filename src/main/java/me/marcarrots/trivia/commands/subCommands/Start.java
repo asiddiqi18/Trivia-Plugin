@@ -7,6 +7,7 @@ package me.marcarrots.trivia.commands.subCommands;
 import me.marcarrots.trivia.Game;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.commands.SubCommand;
+import me.marcarrots.trivia.language.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -23,7 +24,7 @@ public class Start extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Quickly starts up a trivia game. Optionally, specify number of rounds.";
+        return Lang.COMMANDS_HELP_START.format_single();
     }
 
     @Override

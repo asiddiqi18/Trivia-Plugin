@@ -8,7 +8,7 @@ import me.marcarrots.trivia.PlayerDataContainer;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.commands.SubCommand;
 import me.marcarrots.trivia.language.Lang;
-import org.bukkit.ChatColor;
+import me.marcarrots.trivia.language.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -26,7 +26,7 @@ public class Stats extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Shows your trivia stats record.";
+        return Lang.COMMANDS_HELP_STATS.format_single();
     }
 
     @Override
@@ -47,16 +47,17 @@ public class Stats extends SubCommand {
             int[] gamesWon = trivia.getStats().getGamesWon(player);
             String border = Lang.BORDER.format_single();
             player.sendMessage(border);
-            player.sendMessage(ChatColor.GREEN + "Trivia stats for " + player.getName() + ":");
-            player.sendMessage(ChatColor.GOLD + " - Number of games participated in: " + ChatColor.YELLOW + stats.getGamesParticipated(player));
-            player.sendMessage(ChatColor.GOLD + " - Number of rounds won: " + ChatColor.YELLOW + stats.getRoundsWon(player));
-            player.sendMessage(ChatColor.GOLD + " - Victories: ");
-            player.sendMessage(ChatColor.GOLD + "   - 1st place: " + ChatColor.YELLOW + gamesWon[0]);
-            player.sendMessage(ChatColor.GOLD + "   - 2nd place: " + ChatColor.YELLOW + gamesWon[1]);
-            player.sendMessage(ChatColor.GOLD + "   - 3rd place: " + ChatColor.YELLOW + gamesWon[2]);
-            player.sendMessage(ChatColor.GOLD + " - Enchanting exp earned from wins: " + ChatColor.YELLOW + NumberFormat.getIntegerInstance().format(stats.getExperienceWon(player)));
+
+            player.sendMessage(Lang.COMMANDS_STATS_NAME.format_single(new Placeholder.PlaceholderBuilder().player(player).build()));
+            player.sendMessage(Lang.COMMANDS_STATS_PARTICIPATED.format_single().replace("%val%", String.valueOf(stats.getGamesParticipated(player))));
+            player.sendMessage(Lang.COMMANDS_STATS_ROUNDS_WON.format_single().replace("%val%", String.valueOf(stats.getRoundsWon(player))));
+            player.sendMessage(Lang.COMMANDS_STATS_VICTORIES.format_single());
+            player.sendMessage(Lang.COMMANDS_STATS_FIRST.format_single().replace("%val%", String.valueOf(gamesWon[0])));
+            player.sendMessage(Lang.COMMANDS_STATS_SECOND.format_single().replace("%val%", String.valueOf(gamesWon[1])));
+            player.sendMessage(Lang.COMMANDS_STATS_THIRD.format_single().replace("%val%", String.valueOf(gamesWon[2])));
+            player.sendMessage(Lang.COMMANDS_STATS_ENCHANTING.format_single().replace("%val%", NumberFormat.getIntegerInstance().format(stats.getExperienceWon(player))));
             if (trivia.isVaultEnabled()) {
-                player.sendMessage(ChatColor.GOLD + " - Money earned from wins: " + ChatColor.YELLOW + NumberFormat.getCurrencyInstance().format(stats.getMoneyWon(player)));
+                player.sendMessage(Lang.COMMANDS_STATS_MONEY.format_single().replace("%val%", NumberFormat.getCurrencyInstance().format(stats.getMoneyWon(player))));
             }
             player.sendMessage(border);
         } else {
