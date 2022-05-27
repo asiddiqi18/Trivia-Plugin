@@ -1,13 +1,14 @@
 package me.marcarrots.trivia.menu.subMenus;
 
 import me.marcarrots.trivia.Game;
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
-import me.marcarrots.trivia.menu.*;
+import me.marcarrots.trivia.menu.ConversationPrompt;
+import me.marcarrots.trivia.menu.Menu;
+import me.marcarrots.trivia.menu.MenuType;
+import me.marcarrots.trivia.menu.PromptType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
@@ -19,8 +20,8 @@ import java.util.Arrays;
 public class ParameterMenu extends Menu {
 
 
-    public ParameterMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
-        super(playerMenuUtility, trivia, questionHolder);
+    public ParameterMenu(Trivia trivia, Player player) {
+        super(trivia, player);
     }
 
 
@@ -42,18 +43,17 @@ public class ParameterMenu extends Menu {
         Player player = (Player) event.getWhoClicked();
 
         ConversationFactory conversationFactory = new ConversationFactory(trivia);
-        playerMenuUtility.setPreviousMenu(MenuType.MAIN_MENU);
+        trivia.getPlayerMenuUtility(player).setPreviousMenu(MenuType.MAIN_MENU);
         if (type == Material.GREEN_TERRACOTTA) {
             if (trivia.getGame() != null) {
                 player.sendMessage(ChatColor.RED + "A trivia game is already in progress.");
                 return;
             }
             try {
-                long timePerQuestion = playerMenuUtility.getTimePer();
-                int amountOfRounds = playerMenuUtility.getTotalRounds();
-                boolean doRepetition = playerMenuUtility.isRepeatEnabled();
-                CommandSender commandSender = playerMenuUtility.getOwner();
-                Game game = new Game(trivia, questionHolder, timePerQuestion, amountOfRounds, doRepetition, commandSender);
+                long timePerQuestion = trivia.getPlayerMenuUtility(player).getTimePer();
+                int amountOfRounds = trivia.getPlayerMenuUtility(player).getTotalRounds();
+                boolean doRepetition = trivia.getPlayerMenuUtility(player).isRepeatEnabled();
+                Game game = new Game(trivia, player, timePerQuestion, amountOfRounds, doRepetition);
                 trivia.setGame(game);
                 trivia.getGame().start();
             } catch (IllegalAccessException e) {
@@ -61,20 +61,20 @@ public class ParameterMenu extends Menu {
             }
             player.closeInventory();
         } else if (type == Material.OAK_SIGN) {
-            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_ROUNDS
-                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(trivia, PromptType.SET_ROUNDS
+            )).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.CLOCK) {
-            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(PromptType.SET_TIME
-                    , playerMenuUtility, trivia, questionHolder)).withLocalEcho(false).withTimeout(60).buildConversation(player);
+            Conversation conversation = conversationFactory.withFirstPrompt(new ConversationPrompt(trivia, PromptType.SET_TIME
+            )).withLocalEcho(false).withTimeout(60).buildConversation(player);
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.RED_DYE || type == Material.LIME_DYE) {
-            playerMenuUtility.setRepeatEnabled();
+            trivia.getPlayerMenuUtility(player).setRepeatEnabled();
             setMenuItems();
         } else if (type == Material.ARROW) {
-            new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
+            new MainMenu(trivia, player).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }
@@ -92,16 +92,16 @@ public class ParameterMenu extends Menu {
 
         insertItem(10, Material.OAK_SIGN,
                 Lang.PARAMS_MENU_TOTAL.format_single(),
-                ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds() + " rounds.",
+                ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + trivia.getPlayerMenuUtility(player).getTotalRounds() + " rounds.",
                 true, false);
 
         insertItem(12, Material.CLOCK,
                 Lang.PARAMS_MENU_TIME.format_single(),
-                ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer() + " seconds.",
+                ChatColor.DARK_PURPLE + "Current: " + ChatColor.LIGHT_PURPLE + trivia.getPlayerMenuUtility(player).getTimePer() + " seconds.",
                 true, false);
 
 
-        if (playerMenuUtility.isRepeatEnabled()) {
+        if (trivia.getPlayerMenuUtility(player).isRepeatEnabled()) {
             insertItem(14, Material.LIME_DYE,
                     Lang.PARAMS_MENU_REPEAT.format_single(),
                     ChatColor.DARK_PURPLE + "Current: " + ChatColor.DARK_GREEN + "True",
@@ -115,7 +115,7 @@ public class ParameterMenu extends Menu {
 
         insertItem(16, Material.GREEN_TERRACOTTA,
                 Lang.PARAMS_MENU_START.format_single(),
-                Arrays.asList(ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + "--------------------", ChatColor.DARK_PURPLE + "Rounds: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTotalRounds(), ChatColor.DARK_PURPLE + "Seconds per round: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.getTimePer(), ChatColor.DARK_PURPLE + "Repeat questions: " + ChatColor.LIGHT_PURPLE + playerMenuUtility.isRepeatEnabled()),
+                Arrays.asList(ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + "--------------------", ChatColor.DARK_PURPLE + "Rounds: " + ChatColor.LIGHT_PURPLE + trivia.getPlayerMenuUtility(player).getTotalRounds(), ChatColor.DARK_PURPLE + "Seconds per round: " + ChatColor.LIGHT_PURPLE + trivia.getPlayerMenuUtility(player).getTimePer(), ChatColor.DARK_PURPLE + "Repeat questions: " + ChatColor.LIGHT_PURPLE + trivia.getPlayerMenuUtility(player).isRepeatEnabled()),
                 false, false);
         inventory.setItem(27, BACK);
         inventory.setItem(31, CLOSE);

@@ -4,7 +4,8 @@
 
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.api.UpdateChecker;
+import me.marcarrots.trivia.commands.CommandManager;
+import me.marcarrots.trivia.utils.TriviaPlaceholder;
 import me.marcarrots.trivia.data.FileManager;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.listeners.ChatEvent;
@@ -12,23 +13,23 @@ import me.marcarrots.trivia.listeners.EntityDamage;
 import me.marcarrots.trivia.listeners.InventoryClick;
 import me.marcarrots.trivia.listeners.PlayerJoin;
 import me.marcarrots.trivia.menu.PlayerMenuUtility;
+import me.marcarrots.trivia.utils.UpdateChecker;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public final class Trivia extends JavaPlugin {
 
     private static Economy econ = null;
-    private final QuestionHolder questionHolder = new QuestionHolder();
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
-    private int largestQuestionNum = 0;
+    private QuestionContainer questionContainer;
     private Rewards[] rewards;
     private Game game = null;
     private FileManager questionsFile;
@@ -36,9 +37,15 @@ public final class Trivia extends JavaPlugin {
     private FileManager rewardsFile;
     private String updateNotice = null;
     private AutomatedGameManager automatedGameManager;
+    private NamespacedKey namespacedQuestionKey;
+    private PlayerDataContainer stats;
 
     public static Economy getEcon() {
         return econ;
+    }
+
+    public NamespacedKey getNamespacedQuestionKey() {
+        return namespacedQuestionKey;
     }
 
     public FileManager getQuestionsFile() {
@@ -78,14 +85,21 @@ public final class Trivia extends JavaPlugin {
         if (playerMenuUtilityMap.containsKey(player)) {
             return playerMenuUtilityMap.get(player);
         } else {
-            playerMenuUtility = new PlayerMenuUtility(getConfig(), player);
+            playerMenuUtility = new PlayerMenuUtility(getConfig());
             playerMenuUtilityMap.put(player, playerMenuUtility);
             return playerMenuUtility;
         }
     }
 
+    public QuestionContainer getQuestionHolder() {
+        return questionContainer;
+    }
+
     @Override
     public void onEnable() {
+
+
+        questionContainer = new QuestionContainer();
 
         // load stuff from files
         loadConfigFile();
@@ -93,38 +107,47 @@ public final class Trivia extends JavaPlugin {
         loadMessages();
         loadRewards();
 
-        // bStats
-
-        try {
-            new Metrics(this, 7912);
-            Bukkit.getLogger().info("bStats successfully loaded");
-        } catch (NoClassDefFoundError e) {
-            Bukkit.getLogger().warning("bStats failed to load.");
-            e.printStackTrace();
-        }
-
         // register listeners and commands
         getServer().getPluginManager().registerEvents(new InventoryClick(), this);
         getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
         getServer().getPluginManager().registerEvents(new EntityDamage(), this);
-        getCommand("trivia").setExecutor(new TriviaCommand(this, questionHolder));
+        Objects.requireNonNull(getCommand("trivia")).setExecutor(new CommandManager(this));
 
-        // check for soft-dependencies
-        if (!setupEconomy()) {
-            Bukkit.getLogger().info("[Trivia!] No vault has been detected, disabling vault features...");
+        // bStats
+        try {
+            new Metrics(this, 7912);
+            getLogger().info("bStats has been loaded.");
+        } catch (NoClassDefFoundError e) {
+            getLogger().warning("bStats failed to load.");
+            e.printStackTrace();
         }
+
+        // vault
+        if (setupEconomy()) {
+            getLogger().info("Optional dependency 'vault' has been loaded");
+        } else {
+            getLogger().info("No vault has been detected, disabling vault features...");
+        }
+
+        // placeholder API
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new TriviaPlaceholder(this).register();
+            getLogger().info("Optional dependency 'PlaceholderAPI' has been loaded");
+        } else {
+            getLogger().info("No PlaceholderAPI has been detected, disabling placeholder features...");
+        }
+
+        namespacedQuestionKey = new NamespacedKey(this, "trivia_question_id");
+
+        stats = new PlayerDataContainer(this);
 
         // check for updates
         new UpdateChecker(this, 80401).getVersion(newVersion -> {
             String currentVersion = getDescription().getVersion();
             if (Integer.parseInt(newVersion.substring(2)) > Integer.parseInt(currentVersion.substring(2))) {
-                updateNotice = String.format("%s - There is a new version available for Trivia (new version: %s, current version: %s)! Get it at: %s.",
-                        ChatColor.AQUA + "[Trivia!]" + ChatColor.YELLOW,
-                        ChatColor.GREEN + newVersion + ChatColor.YELLOW,
-                        ChatColor.GREEN + currentVersion + ChatColor.YELLOW,
-                        ChatColor.WHITE + "https://www.spigotmc.org/resources/trivia-easy-to-setup-game-%C2%BB-custom-rewards-%C2%BB-in-game-gui-menus-more.80401/" + ChatColor.YELLOW);
-                Bukkit.getLogger().info(ChatColor.stripColor(updateNotice));
+                updateNotice = String.format("%s - There is a new version available for Trivia (new version: %s, current version: %s)! Get it at: %s.", ChatColor.AQUA + "[Trivia!]" + ChatColor.YELLOW, ChatColor.GREEN + newVersion + ChatColor.YELLOW, ChatColor.GREEN + currentVersion + ChatColor.YELLOW, ChatColor.WHITE + "https://www.spigotmc.org/resources/trivia-easy-to-setup-game-%C2%BB-custom-rewards-%C2%BB-in-game-gui-menus-more.80401/" + ChatColor.YELLOW);
+                getLogger().info(ChatColor.stripColor(updateNotice));
             }
         });
 
@@ -135,7 +158,7 @@ public final class Trivia extends JavaPlugin {
     @Override
     public void onDisable() {
         if (game != null) {
-            game.hideBossBar();
+            game.getGameBossBar().hideBossBar();
             game = null;
         }
     }
@@ -154,34 +177,13 @@ public final class Trivia extends JavaPlugin {
 
     public void loadQuestions() {
         questionsFile = new FileManager(this, "questions.yml");
-        readQuestions();
+        questionContainer.readQuestions(questionsFile);
     }
 
 
     public void loadMessages() {
         if (messagesFile == null) {
             messagesFile = new FileManager(this, "messages.yml");
-        }
-        // migrate old way of storing messages to new way
-        if (getConfig().contains("Messages")) {
-            Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old message data to new data...");
-            List<String> messageKeys = Arrays.asList(
-                    "Trivia Start",
-                    "Trivia Over",
-                    "Winner Line",
-                    "Winner List",
-                    "No Winners",
-                    "Solved Message",
-                    "Question Time Up",
-                    "Question Display",
-                    "Question Skipped"
-            );
-
-            for (String key : messageKeys) {
-                messagesFile.getData().set(key, getConfig().getString("Messages." + key, ""));
-            }
-            getConfig().set("Messages", null);
-            saveConfig();
         }
 
         messagesFile.reloadFiles();
@@ -193,7 +195,7 @@ public final class Trivia extends JavaPlugin {
         // add new keys to file
         List<String> addedKeys = new ArrayList<>();
         for (Lang val : langValues) {
-            if (!messagesFile.getData().getKeys(false).contains(val.getPath())) {
+            if (!messagesFile.getData().getKeys(true).contains(val.getPath())) {
                 addedKeys.add(val.getPath());
                 messagesFile.getData().set(val.getPath(), val.getDefault());
             }
@@ -217,11 +219,11 @@ public final class Trivia extends JavaPlugin {
 
 
         if (addedKeys.size() > 0) {
-            Bukkit.getLogger().info("[Trivia!] The following keys were added to messages.yml: " + addedKeys);
+            getLogger().info("[Trivia] The following keys were added to messages.yml: " + addedKeys);
             messagesFile.saveData();
         }
         if (removedKeys.size() > 0) {
-            Bukkit.getLogger().info("[Trivia!] The following keys were removed from messages.yml: " + removedKeys);
+            getLogger().info("[Trivia] The following keys were removed from messages.yml: " + removedKeys);
             messagesFile.saveData();
         }
 
@@ -232,20 +234,6 @@ public final class Trivia extends JavaPlugin {
         if (rewardsFile == null) {
             rewardsFile = new FileManager(this, "rewards.yml");
         }
-        if (getConfig().contains("Rewards")) {
-            for (int i = 0; i < 4; i++) {
-                if (getConfig().contains("Rewards." + i)) {
-                    Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old rewards data to new data...");
-                    rewardsFile.getData().set(i + ".Money", getConfig().getDouble("Rewards." + i + ".Money"));
-                    rewardsFile.getData().set(i + ".Experience", getConfig().getDouble("Rewards." + i + ".Experience"));
-                    rewardsFile.getData().set(i + ".Message", getConfig().getString("Rewards." + i + ".Message"));
-                    rewardsFile.getData().set(i + ".Items", getConfig().getList("Rewards." + i + ".Items"));
-                    rewardsFile.saveData();
-                }
-            }
-            getConfig().set("Rewards", null);
-            saveConfig();
-        }
         int rewardAmt = 4;
         rewardsFile.reloadFiles();
         rewards = new Rewards[rewardAmt];
@@ -254,68 +242,9 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
-    // save question as object
-    public void readQuestions() {
-
-        questionHolder.clear();
-
-        // legacy storage method
-        if (getConfig().contains("Questions and Answers")) {
-            Bukkit.getLogger().log(Level.INFO, "[Trivia] Migrating old question data to new data...");
-            List<String> unparsedQuestions = getConfig().getStringList("Questions and Answers");
-            if (unparsedQuestions.size() != 0)
-                for (String item : unparsedQuestions) {
-                    int posBefore = item.indexOf("/$/");
-                    if (posBefore == -1)
-                        continue;
-                    int posAfter = posBefore + 3;
-                    writeQuestions(item.substring(0, posBefore).trim(), Collections.singletonList(item.substring(posAfter).trim()), null);
-                }
-            getConfig().set("Questions and Answers", null);
-            saveConfig();
-        }
-
-        questionsFile.reloadFiles();
-        for (String key : questionsFile.getData().getKeys(false)) {
-            try {
-                Question triviaQuestion = new Question();
-                triviaQuestion.setId(Integer.parseInt(key));
-                extractLargestQuestionNum(key);
-                triviaQuestion.setQuestion(questionsFile.getData().getString(key + ".question"));
-                triviaQuestion.setAnswer(questionsFile.getData().getStringList(key + ".answer"));
-                triviaQuestion.setAuthor(questionsFile.getData().getString(key + ".author"));
-                questionHolder.add(triviaQuestion);
-            } catch (NumberFormatException | NullPointerException e) {
-                Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));
-            }
-        }
-    }
-
-    // write question to questions.yml
-    public void writeQuestions(String question, List<String> answer, String author) {
-        HashMap<String, Object> questionMap = new HashMap<>();
-        questionMap.put("question", question);
-        questionMap.put("answer", answer);
-        if (author != null) {
-            questionMap.put("author", author);
-        }
-        questionsFile.getData().createSection(String.valueOf(++largestQuestionNum), questionMap);
-        questionsFile.saveData();
-    }
-
-
-    private void extractLargestQuestionNum(String questionNum) {
-        try {
-            if (Integer.parseInt(questionNum) > largestQuestionNum)
-                largestQuestionNum = Integer.parseInt(questionNum);
-        } catch (NumberFormatException e) {
-            Bukkit.getLogger().log(Level.WARNING, String.format("The key '%s' is invalid and cannot be interpreted.", questionNum));
-        }
-    }
-
 
     private boolean setupEconomy() {
-        if (!vaultEnabled()) {
+        if (!isVaultEnabled()) {
             return false;
         }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
@@ -326,40 +255,42 @@ public final class Trivia extends JavaPlugin {
         return true;
     }
 
-
-    public boolean vaultEnabled() {
+    public boolean isVaultEnabled() {
         return getServer().getPluginManager().getPlugin("Vault") != null;
     }
 
+    public void removeOldSoundKeys(HashMap<String, Object> newConfigKeys, String path, String defaultSound, double defaultPitch) {
+        newConfigKeys.put(path + ".sound", getConfig().getString(path + " sound", defaultSound));
+        getConfig().set(path + " sound", null);
+        newConfigKeys.put(path + ".pitch", getConfig().getDouble(path + " pitch", defaultPitch));
+        getConfig().set(path + " pitch", null);
+        newConfigKeys.put(path + ".volume", 0.6d);
+        getLogger().info("Removed old keys for " + path);
+    }
 
     // transform old config to new config
     private void configUpdater() {
         HashMap<String, Object> newConfigKeys = new HashMap<>();
         HashMap<String, Object> newLangKeys = new HashMap<>();
         int currentConfigVersion = getConfig().getInt("Config Version");
-        // if they have version 1 of the config...
-        if (currentConfigVersion <= 1) {
-            newConfigKeys.put("Scheduled games", false);
-            newConfigKeys.put("Scheduled games interval", 60);
-            newConfigKeys.put("Scheduled games minimum players", 6);
-            newConfigKeys.put("Time between rounds", 2);
-            currentConfigVersion = 2;
-        }
 
-        if (currentConfigVersion == 2) {
-            newConfigKeys.put(Lang.SKIP.getPath(), Lang.SKIP.getDefault());
-        }
+        if (currentConfigVersion == 5) {
 
-        if (currentConfigVersion == 3) {
-            newConfigKeys.put("Enable boss bar", true);
-            newLangKeys.put("Boss Bar Game Info", "Trivia Match (%questionNumber%/%totalQuestions%)");
-            newLangKeys.put("Boss Bar Game Over", "Trivia is over!");
-            newLangKeys.put("Boss Bar Thanks", "Thanks for playing!");
+            removeOldSoundKeys(newConfigKeys, "Answer correct", "BLOCK_NOTE_BLOCK_PLING", 1.5);
+            removeOldSoundKeys(newConfigKeys, "Time up", "ENTITY_VILLAGER_NO", 0.9);
+            removeOldSoundKeys(newConfigKeys, "Game start", "ENTITY_PLAYER_LEVELUP", 1.0);
+            removeOldSoundKeys(newConfigKeys, "Game over", "ENTITY_PLAYER_LEVELUP", 0.9);
+
+            newConfigKeys.put("Question skipped.sound", "BLOCK_NOTE_BLOCK_PLING");
+            newConfigKeys.put("Question skipped.pitch", 1.5d);
+            newConfigKeys.put("Question skipped.volume", 0.6d);
+
+            currentConfigVersion = 6;
         }
 
         if (!newConfigKeys.isEmpty()) {
             // iterate through all the new keys
-            getConfig().set("Config Version", 5);
+            getConfig().set("Config Version", currentConfigVersion);
             for (Map.Entry<String, Object> entry : newConfigKeys.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
@@ -388,4 +319,7 @@ public final class Trivia extends JavaPlugin {
         }
     }
 
+    public PlayerDataContainer getStats() {
+        return stats;
+    }
 }

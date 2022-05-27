@@ -1,45 +1,49 @@
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.api.StringSimilarity;
+import me.marcarrots.trivia.effects.GameBossBar;
+import me.marcarrots.trivia.effects.GameSound;
+import me.marcarrots.trivia.effects.SoundType;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.MessageUtil;
 import me.marcarrots.trivia.language.Placeholder;
+import me.marcarrots.trivia.utils.Broadcaster;
+import me.marcarrots.trivia.utils.Elapsed;
+import me.marcarrots.trivia.utils.StringSimilarity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Collections;
 
 public class Game {
-    private final QuestionHolder questionHolder;
+    private final QuestionContainer questionContainer;
     private final Trivia trivia;
     private final BukkitScheduler scheduler;
     private final double similarityScore;
-    private final boolean bossBarEnabled;
     private final int timeBetween;
     private final long timePerQuestion;
     private final int amountOfRounds;
     private final boolean doRepetition;
     private final CommandSender commandSender;
+    private final GameBossBar gameBossBar;
+    private final GameSound gameSound;
+    private final Placeholder.PlaceholderBuilder placeholderBuilder;
     private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
     private Timer timer;
     private RoundResult roundResult;
     private int task;
-    private BossBar bossBar;
     private Player roundWinner;
     private String userRightAnswer;
 
-    public Game(Trivia trivia, QuestionHolder questionHolder, long timePerQuestion, int amountOfRounds, boolean doRepetition, CommandSender commandSender) throws IllegalAccessException {
-        if (questionHolder.getSize() == 0) {
+
+    public Game(Trivia trivia, CommandSender commandSender, long timePerQuestion, int amountOfRounds, boolean doRepetition) throws IllegalAccessException {
+        if (trivia.getQuestionHolder().getSize() == 0) {
             throw new IllegalAccessException("There are no Trivia questions loaded. Create some questions before hosting a game!");
         }
         this.trivia = trivia;
@@ -47,14 +51,22 @@ public class Game {
         this.amountOfRounds = amountOfRounds;
         this.doRepetition = doRepetition;
         this.commandSender = commandSender;
-
-        this.questionHolder = new QuestionHolder(questionHolder);
+        this.questionContainer = new QuestionContainer(trivia.getQuestionHolder());
         this.scores = new PlayerScoreHolder(trivia);
         this.roundResult = RoundResult.IN_BETWEEN;
         this.scheduler = Bukkit.getServer().getScheduler();
-        this.similarityScore = trivia.getConfig().getDouble("Similarity score");
+        this.similarityScore = trivia.getConfig().getDouble("Similarity score", 1);
         this.timeBetween = trivia.getConfig().getInt("Time between rounds", 2);
-        this.bossBarEnabled = trivia.getConfig().getBoolean("Enable boss bar", true);
+        boolean bossBarEnabled = trivia.getConfig().getBoolean("Enable boss bar", true);
+        gameBossBar = new GameBossBar(trivia, bossBarEnabled);
+        gameSound = new GameSound(trivia);
+
+        placeholderBuilder = new Placeholder.PlaceholderBuilder().totalQuestionNum(amountOfRounds);
+
+    }
+
+    public GameBossBar getGameBossBar() {
+        return gameBossBar;
     }
 
     public PlayerScoreHolder getScores() {
@@ -62,17 +74,17 @@ public class Game {
     }
 
     private void setRandomQuestion() {
-        this.currentQuestion = this.questionHolder.getRandomQuestion().getQuestionObj();
+        this.currentQuestion = this.questionContainer.getRandomQuestion();
     }
 
     public void start() {
         if (doRepetition) {
-            questionHolder.setUniqueQuestions(false);
-        } else if (questionHolder.getSize() < amountOfRounds) {
-            commandSender.sendMessage("There are more rounds than questions, so questions will repeat.");
-            questionHolder.setUniqueQuestions(false);
+            questionContainer.setUniqueQuestions(false);
+        } else if (questionContainer.getSize() < amountOfRounds) {
+            commandSender.sendMessage(ChatColor.RED + "There are more rounds than questions, so questions will repeat.");
+            questionContainer.setUniqueQuestions(false);
         } else {
-            questionHolder.setUniqueQuestions(true);
+            questionContainer.setUniqueQuestions(true);
         }
 
         String border = Lang.BORDER.format_single();
@@ -86,66 +98,78 @@ public class Game {
         commandSender.sendMessage(border);
 
         scores.addOnlinePlayersToGame();
-        Lang.broadcastMessage(Lang.TRIVIA_START.format_multiple(null));
-        Effects.playSoundToAll("Game start sound", trivia.getConfig(), "Game start pitch");
-        startBossBar();
-        timer = new Timer(trivia, amountOfRounds, timePerQuestion, bossBar,
-                () -> { // after game
-                    handleRoundOutcome();
-                    Effects.playSoundToAll("Game over sound", trivia.getConfig(), "Game over pitch");
-                    scores.broadcastLargestScores();
-                    scores = null;
-                    trivia.clearGame();
-                    gameOverBossBar();
-                },
+        Broadcaster.broadcastMessage(Lang.TRIVIA_START.format_multiple(null));
+        gameSound.playSoundToAll(SoundType.GAME_START);
+        gameBossBar.startBossBar(amountOfRounds);
+        timer = new Timer(trivia, amountOfRounds, timePerQuestion, gameBossBar,
                 (t) -> { // after each round
                     roundTimeStart = System.currentTimeMillis();
                     handleRoundOutcome();
                     handleNextQuestion(t);
+                },
+                () -> { // after game
+                    handleRoundOutcome();
+                    gameSound.playSoundToAll(SoundType.GAME_OVER);
+                    scores.deliverRewardsToWinners();
+                    scores = null;
+                    trivia.clearGame();
+                    if (roundResult == RoundResult.HALTED) {
+                        gameBossBar.gameOverBossBar(BarColor.RED, Lang.BOSS_BAR_HALTED.format_single());
+                    } else {
+                        gameBossBar.gameOverBossBar(BarColor.GREEN, Lang.BOSS_BAR_GAME_OVER.format_single());
+                    }
                 }
         );
         timer.handleNextRound();
     }
 
-
     private void handleRoundOutcome() {
-        if (roundResult == RoundResult.UNANSWERED) { // if time ran out
-            Lang.broadcastMessage(Lang.TIME_UP.format_multiple(new Placeholder.PlaceholderBuilder()
-                    .question(currentQuestion.getQuestionString())
-                    .answer(currentQuestion.getAnswerList())
-                    .questionNum(getQuestionNum())
-                    .totalQuestionNum(amountOfRounds)
-                    .build()
-            ));
-            Effects.playSoundToAll("Time up sound", trivia.getConfig(), "Time up pitch");
-        } else if (roundResult == RoundResult.SKIPPED) { // if round was skipped
-            afterAnswerFillBossBar(BarColor.YELLOW);
-            Lang.broadcastMessage(Lang.SKIP.format_multiple(new Placeholder.PlaceholderBuilder()
-                    .question(currentQuestion.getQuestionString())
-                    .answer(currentQuestion.getAnswerList())
-                    .questionNum(getQuestionNum())
-                    .build()
-            ));
-        } else if (roundResult == RoundResult.ANSWERED) { // if question was answered
-            String timeToAnswer = Elapsed.millisToElapsedTime(roundTimeStart).getElapsedFormattedString();
-            afterAnswerFillBossBar(BarColor.GREEN);
-            Lang.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
-                    .player(roundWinner)
-                    .question(currentQuestion.getQuestionString())
-                    .answer(Collections.singletonList(userRightAnswer))
-                    .questionNum(getQuestionNum())
-                    .totalQuestionNum(amountOfRounds)
-                    .elapsedTime(timeToAnswer)
-                    .build()
-            ));
-            if (roundWinner != null) {
-                Effects.playSound(roundWinner, trivia.getConfig(), "Answer correct sound", "Answer correct pitch");
-                scores.addScore(roundWinner, getQuestionNum());
-                trivia.getRewards()[0].giveReward(roundWinner);
-                roundWinner = null;
-            }
-            userRightAnswer = null;
+        switch (roundResult) {
+            case ANSWERED:
+                String timeToAnswer = Elapsed.millisToElapsedTime(roundTimeStart).getElapsedFormattedString();
+                gameBossBar.fillAfterAnswer(BarColor.GREEN, getQuestionNum(), amountOfRounds);
+                Broadcaster.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(placeholderBuilder
+                        .player(roundWinner)
+                        .question(currentQuestion.getQuestionString())
+                        .answer(Collections.singletonList(userRightAnswer))
+                        .questionNum(getQuestionNum())
+                        .elapsedTime(timeToAnswer)
+                        .build()
+                ));
+                if (roundWinner != null) {
+                    gameSound.playSound(roundWinner, SoundType.CORRECT);
+                    scores.addScore(roundWinner, getQuestionNum());
+                    trivia.getRewards()[0].giveReward(roundWinner);
+                    roundWinner = null;
+                }
+                userRightAnswer = null;
+                break;
+
+            case SKIPPED:
+                gameBossBar.fillAfterAnswer(BarColor.YELLOW, getQuestionNum(), amountOfRounds);
+                gameSound.playSoundToAll(SoundType.QUESTION_SKIPPED);
+                Broadcaster.broadcastMessage(Lang.SKIP.format_multiple(placeholderBuilder
+                        .question(currentQuestion.getQuestionString())
+                        .answer(currentQuestion.getAnswerList())
+                        .questionNum(getQuestionNum())
+                        .build()
+                ));
+                break;
+
+            case UNANSWERED:
+                Broadcaster.broadcastMessage(Lang.TIME_UP.format_multiple(placeholderBuilder
+                        .question(currentQuestion.getQuestionString())
+                        .answer(currentQuestion.getAnswerList())
+                        .questionNum(getQuestionNum())
+                        .build()
+                ));
+                gameSound.playSoundToAll(SoundType.TIME_UP);
+                break;
+
+            case HALTED:
+                return;
         }
+
         roundResult = RoundResult.IN_BETWEEN;
     }
 
@@ -156,20 +180,20 @@ public class Game {
             roundResult = RoundResult.UNANSWERED;
             setRandomQuestion();
             t.startTimer();
-            perRoundBossBarUpdate();
-            Lang.broadcastMessage(Lang.QUESTION.format_multiple(new Placeholder.PlaceholderBuilder()
+            gameBossBar.perRoundBossBarUpdate(getQuestionNum(), amountOfRounds);
+            Broadcaster.broadcastMessage(Lang.QUESTION.format_multiple(placeholderBuilder
                     .question(currentQuestion.getQuestionString())
                     .answer(currentQuestion.getAnswerList())
                     .questionNum(getQuestionNum())
-                    .totalQuestionNum(amountOfRounds)
                     .build()
             ));
         }, timeBetween * 20L);
     }
 
     public void stop() {
-        hideBossBar();
+        gameBossBar.fillAfterStop();
         scheduler.cancelTask(task);
+        roundResult = RoundResult.HALTED;
         timer.endTimer();
     }
 
@@ -178,7 +202,6 @@ public class Game {
     }
 
     public void playerAnswer(AsyncPlayerChatEvent e) {
-
 
         if (currentQuestion == null || roundResult != RoundResult.UNANSWERED) {
             return;
@@ -191,6 +214,9 @@ public class Game {
             String correctAnswerStripped = ChatColor.stripColor(MessageUtil.HexColorMessage(correctAnswer));
             if (StringSimilarity.similarity(userAnswerStripped.toLowerCase(), correctAnswerStripped.toLowerCase()) >= similarityScore) {
                 roundResult = RoundResult.ANSWERED;
+
+                trivia.getStats().addRoundWon(player);
+
                 Bukkit.getScheduler().scheduleSyncDelayedTask(trivia, () -> {
                     roundWinner = player;
                     userRightAnswer = correctAnswer;
@@ -208,104 +234,6 @@ public class Game {
         roundResult = RoundResult.SKIPPED;
         timer.handleNextRound();
         return true;
-    }
-
-    private void startBossBar() {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar = Bukkit.createBossBar(Lang.TRIVIA_START.format_single(), BarColor.YELLOW, BarStyle.SOLID);
-        bossBar.setProgress(0);
-        if (amountOfRounds % 10 == 0) {
-            if (amountOfRounds % 20 == 0) {
-                bossBar.setStyle(BarStyle.SEGMENTED_20);
-            } else {
-                bossBar.setStyle(BarStyle.SEGMENTED_10);
-            }
-        } else if (amountOfRounds % 6 == 0) {
-            if (amountOfRounds % 12 == 0) {
-                bossBar.setStyle(BarStyle.SEGMENTED_12);
-            } else {
-                bossBar.setStyle(BarStyle.SEGMENTED_6);
-            }
-        }
-        bossBar.setVisible(true);
-        Bukkit.getOnlinePlayers().forEach((p) -> bossBar.addPlayer(p));
-    }
-
-    private void perRoundBossBarUpdate() {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar.setTitle(Lang.BOSS_BAR_INFO.format_single(new Placeholder.PlaceholderBuilder()
-                .questionNum(getQuestionNum())
-                .totalQuestionNum(amountOfRounds)
-                .build()
-        ));
-        bossBar.setColor(BarColor.RED);
-        bossBar.setProgress(((float) getQuestionNum() - 1) / amountOfRounds);
-    }
-
-    private void afterAnswerFillBossBar(BarColor color) {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar.setColor(color);
-        double incrementAmt = 1 / ((double) amountOfRounds * 20);
-        double goal = ((float) getQuestionNum() - 1) / amountOfRounds;
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                double currentProgress = bossBar.getProgress();
-                double amtToSet = currentProgress + incrementAmt;
-                if (currentProgress < goal) {
-                    if (amtToSet >= 1) {
-                        bossBar.setProgress(1);
-                        this.cancel();
-                    } else if (amtToSet >= goal) {
-                        bossBar.setProgress(goal);
-                    } else {
-                        currentProgress = amtToSet;
-                        bossBar.setProgress(currentProgress);
-                    }
-                } else {
-                    this.cancel();
-                }
-            }
-        }.runTaskTimer(trivia, 0, 1);
-    }
-
-    public void hideBossBar() {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar.setVisible(true);
-        bossBar.removeAll();
-    }
-
-    public void gameOverBossBar() {
-        if (!bossBarEnabled) {
-            return;
-        }
-        bossBar.setTitle(Lang.BOSS_BAR_GAME_OVER.format_single());
-        bossBar.setColor(BarColor.GREEN);
-        new BukkitRunnable() {
-            boolean turn = false;
-
-            @Override
-            public void run() {
-                if (turn) {
-                    hideBossBar();
-                    this.cancel();
-                }
-                bossBar.setTitle(Lang.BOSS_BAR_THANKS.format_single());
-                turn = true;
-            }
-        }.runTaskTimer(trivia, 100, 100);
-    }
-
-    public void showBarToPlayer(Player player) {
-        bossBar.addPlayer(player);
     }
 
 }

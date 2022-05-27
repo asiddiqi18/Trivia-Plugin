@@ -21,7 +21,7 @@
 
 Plugin Prefix: "&6[Trivia]&r"
 Border: "&e&m------------------------------"
-Trivia Start: "%prefix% &eTrivia is commencing. Get ready!"
+Trivia Start: "%prefix% &eTrivia is commencing. First player to answer the question wins the round! Get ready!"
 Winner Message: "%border% ; &eTrivia is over! ; &6Winners: ; %winner_list% ; %border%"
 Winner List: "&0- &3%player%: &b%points%"
 No Winners: "%prefix% &6There are no winners of this trivia event!"
@@ -29,10 +29,39 @@ Solved Message: "&b%player% [#86fe4c]has answered the question correctly! The an
 Question Time Up: "&cTime is up! Next question..."
 Question Display: "&6(%questionNumber%) &e%question%"
 Question Skipped: "&cQuestion skipped! On to the next question... "
+Boss Bar Start: "Trivia is commencing. Get ready!"
 Boss Bar Game Info: "Trivia Match (%questionNumber%/%totalQuestions%)"
 Boss Bar Game Over: "Trivia is over!"
+Boss Bar Halted: "Trivia has been stopped!"
 Boss Bar Thanks: "Thanks for playing!"
 Game Halted: "&cTrivia has been forcibly halted!"
+
+Commands:
+  schedule:
+    display: "&aTime until next trivia game: &e%time% &6(Players needed: %players_needed%)"
+    not_enabled: "&cScheduling of games is currently not enabled."
+  stats:
+    name: "&aTrivia stats for %player%:"
+    participated: " &6 - Number of games participated in: &e%val%"
+    rounds_won: " &6 - Number of rounds won: &e%val%"
+    victories: " &6 - Victories"
+    first_place: " &6   - 1st place: &e%val%"
+    second_place: " &6   - 2nd place: &e%val%"
+    third_place: " &6   - 3rd place: &e%val%"
+    enchanting: " &6  - Enchanting exp earned from wins: &e%val%"
+    money: " &6  - Money earned from wins: &e%val%"
+  help:
+    prefix: "&6/trivia"
+    main: " &7- &f(Main command) Opens up the Trivia menu to manage or start trivia."
+    help: " help &7- &fDisplays a help menu describing trivia commands."
+    reload: " reload &7- &fReloads all the trivia files."
+    schedule: " schedule &7- &fGets the time remaining until the next scheduled trivia game begins"
+    skip: " skip &7- &fSkips the current question during a game."
+    start: " start <# of rounds>&7 - &fQuickly starts up a trivia game. Optionally, specify number of rounds."
+    stats: " stats &7- &fShows your trivia stats record."
+    stop: " stop &7- &fStops the current trivia game in progress."
+    version: " version &7- &fGets the current plugin's version number."
+
 #
 # The rest of these messages are for the GUI, these won't be seen by your players, but only by mods/admins.
 #
@@ -68,4 +97,4 @@ Rewards General Third: "&eThird Place"
 Rewards Specific Money: "&2Rewarded Money"
 Rewards Specific Exp: "&cRewarded Experience Points"
 Rewards Specific Firework: "&eSummon Fireworks on Victory"
-Rewards Specific Message: "&dReward Message"
+Rewards Specific Message: "&dRewarded Message"

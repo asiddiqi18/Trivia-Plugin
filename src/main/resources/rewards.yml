@@ -4,8 +4,8 @@
 # The only setting you can ONLY change from here and not in-game, is 'Commands'
 # -------------------------------------------------------------------------
 # You can write your own commands below the 'Commands' section and that command will
-# be ran by the server console when a player wins the game.
-# You may like this feature if your server has a points or crates plugin and you'd
+# be run by the server console when a player wins the game.
+# You may like this feature if your server has a points or crates plugin, and you'd
 # like to give winners stuff from those plugins!
 # The placeholders for commands are shown below.
 # -------------------------------------------------------------------------
@@ -21,7 +21,7 @@
   Money: 1000.0
   Experience: 1500
   Summon Fireworks: true
-  Message: '&b&lCongratulations! &eYou finished in &6First Place&e! Received &b%items%&e and &b%experience% experience&e.'
+  Message: '&b&lCongratulations! &eYou finished in &6First Place&e! Received &b%items%&e, &a%money%&e and &b%experience% &eexp.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
       v: 2580
@@ -34,7 +34,7 @@
   Money: 500.0
   Experience: 1000
   Summon Fireworks: true
-  Message: '&lSo Close! &eYou finished in &6Second Place&e! Received &b%items%&e and &b%experience% experience&e.'
+  Message: '&lSo Close! &eYou finished in &6Second Place&e! Received &b%items%&e, &a%money%&e and &b%experience% &eexp.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
       v: 2580
@@ -47,7 +47,7 @@
   Money: 200.0
   Experience: 500
   Summon Fireworks: true
-  Message: 'Nice! &eYou finished in &6Third Place&e! Received &b%items%&e and &b%experience% experience&e.'
+  Message: 'Nice! &eYou finished in &6Third Place&e! Received &b%items%&e, &a%money%&e and &b%experience% &eexp.'
   Items:
     - ==: org.bukkit.inventory.ItemStack
       v: 2580

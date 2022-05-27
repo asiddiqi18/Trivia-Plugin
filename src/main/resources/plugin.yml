@@ -1,15 +1,22 @@
 name: Trivia
-version: "1.12"
+version: "1.14"
 main: me.marcarrots.trivia.Trivia
-api-version: 1.16
+api-version: 1.17
 authors: [ MarCarrot ]
 description: Trivia plugin for Minecraft Spigot
+website: https://github.com/asiddiqi18/Trivia-Plugin
+prefix: Trivia
 softdepend:
   - Vault
+  - PlaceholderAPI
 permissions:
   trivia.admin:
+    description: "Allows for full administrative control of Trivia"
     default: op
+  trivia.player:
+    description: "Allows for participation in trivia as well as seeing personal stats."
+    default: true
 commands:
   trivia:
     description: Main trivia command.
-    permission: trivia.admin
+    permission: trivia.player

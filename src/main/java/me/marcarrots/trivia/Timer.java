@@ -5,8 +5,8 @@
 package me.marcarrots.trivia;
 
 
+import me.marcarrots.trivia.effects.GameBossBar;
 import org.bukkit.Bukkit;
-import org.bukkit.boss.BossBar;
 
 import java.util.function.Consumer;
 
@@ -20,20 +20,20 @@ public class Timer implements Runnable {
     private final Consumer<Timer> everyRound;
     private final Runnable afterTimer;
     private final Trivia trivia;
-    private final BossBar bossBar;
+    private final GameBossBar gameBossBar;
     private int counter;
     private int taskID;
     private int roundsLeft;
 
 
-    public Timer(Trivia trivia, int rounds, long secondsPer, BossBar bossBar, Runnable afterTimer, Consumer<Timer> everyRound) {
+    public Timer(Trivia trivia, int rounds, long secondsPer, GameBossBar gameBossBar, Consumer<Timer> afterRound, Runnable afterGame) {
         this.trivia = trivia;
         this.rounds = rounds;
         this.roundsLeft = rounds;
         this.secondsPer = secondsPer;
-        this.afterTimer = afterTimer;
-        this.everyRound = everyRound;
-        this.bossBar = bossBar;
+        this.afterTimer = afterGame;
+        this.everyRound = afterRound;
+        this.gameBossBar = gameBossBar;
     }
 
     public int getRounds() {
@@ -50,8 +50,8 @@ public class Timer implements Runnable {
     @Override
     public void run() {
         counter += 1; // 100 ms
-        if (counter % 5 == 0 && bossBar != null) {
-            bossBar.setProgress(((rounds - roundsLeft - 1) + ((float) counter / (secondsPer * 10))) / rounds);
+        if (counter % 5 == 0 && gameBossBar.isBossBarEnabled()) {
+            gameBossBar.getBossBar().setProgress(((rounds - roundsLeft - 1) + ((float) counter / (secondsPer * 10))) / rounds);
         }
         if (counter >= secondsPer * 10) {
             handleNextRound();

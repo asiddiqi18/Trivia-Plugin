@@ -2,7 +2,11 @@
  * Trivia by MarCarrot, 2020
  */
 
-package me.marcarrots.trivia;
+/*
+ * Trivia by MarCarrot, 2020
+ */
+
+package me.marcarrots.trivia.utils;
 
 public class Elapsed {
 

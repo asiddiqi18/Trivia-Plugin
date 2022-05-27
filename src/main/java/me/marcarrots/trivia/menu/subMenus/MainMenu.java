@@ -1,12 +1,10 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.Elapsed;
-import me.marcarrots.trivia.QuestionHolder;
+import me.marcarrots.trivia.utils.Elapsed;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.MenuType;
-import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,8 +21,8 @@ public class MainMenu extends Menu {
 
     private int taskID = 0;
 
-    public MainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
-        super(playerMenuUtility, trivia, questionHolder);
+    public MainMenu(Trivia trivia, Player player) {
+        super(trivia, player);
     }
 
     @Override
@@ -44,16 +42,16 @@ public class MainMenu extends Menu {
         Material type = Objects.requireNonNull(event.getCurrentItem()).getType();
         Player player = (Player) event.getWhoClicked();
 
-        playerMenuUtility.setPreviousMenu(MenuType.MAIN_MENU);
+        trivia.getPlayerMenuUtility(player).setPreviousMenu(MenuType.MAIN_MENU);
         if (type == Material.GREEN_TERRACOTTA) {
-            new ParameterMenu(playerMenuUtility, trivia, questionHolder).open();
+            new ParameterMenu(trivia, player).open();
         } else if (type == Material.RED_TERRACOTTA) {
             player.performCommand("trivia stop");
             player.closeInventory();
         } else if (type == Material.PAPER) {
-            new ListMenu(playerMenuUtility, trivia, questionHolder).open();
+            new ListMenu(trivia, player).open();
         } else if (type == Material.EMERALD) {
-            new RewardsMainMenu(playerMenuUtility, trivia, questionHolder).open();
+            new RewardsMainMenu(trivia, player).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }
@@ -101,7 +99,7 @@ public class MainMenu extends Menu {
             insertItem(35,
                     Material.CLOCK,
                     ChatColor.RED + "Scheduled Games Not Enabled",
-                    Arrays.asList(ChatColor.YELLOW + "Enable this feature through the " + ChatColor.UNDERLINE + "config.yml", ChatColor.YELLOW + "in order to automatically host games!"),
+                    Arrays.asList(ChatColor.YELLOW + "Enable this feature through the " + ChatColor.UNDERLINE + "config.yml", ChatColor.YELLOW + "in order to automatically host games in intervals!"),
                     false,
                     false);
         }

@@ -4,6 +4,7 @@
 
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.effects.Fireworks;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -23,8 +24,8 @@ import static org.bukkit.Bukkit.getServer;
 
 public class Rewards {
 
-    Trivia trivia;
-    int place;
+    final Trivia trivia;
+    final int place; // place = 0 -> per round reward
     int experience;
     double money;
 
@@ -55,7 +56,7 @@ public class Rewards {
 
             String name;
 
-            if (itemStack.getItemMeta().hasDisplayName()) {
+            if (itemStack.getItemMeta() != null && itemStack.getItemMeta().hasDisplayName()) {
                 name = itemStack.getItemMeta().getDisplayName();
             } else {
                 name = itemStack.getType().toString().toLowerCase().replace("_", " ");
@@ -63,7 +64,7 @@ public class Rewards {
 
             str.append(ChatColor.RESET).append(amount).append(" ").append(name);
 
-            if (amount > 1) {
+            if (amount > 1 && !name.endsWith("s")) {
                 str.append("s");
             }
 
@@ -148,7 +149,7 @@ public class Rewards {
     public void giveReward(Player player) {
 
         // send money to player if vault is enabled
-        if (trivia.vaultEnabled() && money > 0) {
+        if (trivia.isVaultEnabled() && money > 0) {
             EconomyResponse r = Trivia.getEcon().depositPlayer(player, getMoney());
             if (!r.transactionSuccess()) {
                 player.sendMessage(String.format("An error occurred: %s", r.errorMessage));
@@ -165,12 +166,21 @@ public class Rewards {
         }
 
         if (summonFireworks) {
-            Effects.summonFireWork(player);
+            Fireworks.summonFireWork(player);
         }
 
         // send experience to player
         if (experience != 0) {
             player.giveExp(getExperience());
+            trivia.getStats().addExperienceWon(player, experience);
+        }
+
+        if (place != 0) {
+            trivia.getStats().addGamesWon(player, place);
+        }
+
+        if (trivia.isVaultEnabled()) {
+            trivia.getStats().addMoneyWon(player, money);
         }
 
         // send reward message to player if there is one
@@ -181,11 +191,12 @@ public class Rewards {
             if (itemsIndex != -1) {
                 formattedMessage = formattedMessage.replace("%items%", itemsToString(items));
             }
-            String moneyFormatted = NumberFormat.getIntegerInstance().format(money);
+            String moneyFormatted = NumberFormat.getCurrencyInstance().format(money);
             formattedMessage = formattedMessage.replace("%money%", moneyFormatted);
             String experienceFormatted = NumberFormat.getIntegerInstance().format(experience);
             formattedMessage = formattedMessage.replace("%experience%", experienceFormatted);
 
+            Lang.fillPlaceholders(new Placeholder.PlaceholderBuilder().player(player).build(), formattedMessage);
             String finalFormattedMessage = formattedMessage;
             scheduler.scheduleSyncDelayedTask(trivia, () -> player.sendMessage(finalFormattedMessage), 3);
         }
@@ -194,7 +205,6 @@ public class Rewards {
         if (items == null || items.size() == 0) {
             return;
         }
-
 
         // otherwise, iterate through all items and give to player
         // drop item to ground if inventory full

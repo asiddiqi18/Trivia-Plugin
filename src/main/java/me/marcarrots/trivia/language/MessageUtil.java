@@ -48,7 +48,7 @@ public class MessageUtil {
     public static String HexGradient(String input) {
         Matcher matcher = patternGradientHex.matcher(input);
         StringBuilder sb = new StringBuilder();
-        int startIndex = 0;
+        int startIndex;
         int endIndex = 0;
         while (matcher.find()) {
             String firstGrad = matcher.group(1);

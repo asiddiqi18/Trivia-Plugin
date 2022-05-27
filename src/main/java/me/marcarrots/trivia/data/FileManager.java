@@ -54,7 +54,7 @@ public class FileManager {
         try {
             getData().save(dataFile);
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not save " + fileName);
+            trivia.getLogger().log(Level.SEVERE, "Could not save " + fileName);
             e.printStackTrace();
         }
     }

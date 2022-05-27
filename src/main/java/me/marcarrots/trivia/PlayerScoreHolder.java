@@ -1,5 +1,6 @@
 package me.marcarrots.trivia;
 
+import me.marcarrots.trivia.utils.Broadcaster;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.Placeholder;
 import org.bukkit.Bukkit;
@@ -21,6 +22,7 @@ public class PlayerScoreHolder {
         scores.clear();
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
         for (Player player : onlinePlayers) {
+            trivia.getStats().addGameParticipated(player);
             scores.put(player.getName(), new PlayerScore((player)));
         }
     }
@@ -37,7 +39,7 @@ public class PlayerScoreHolder {
         scores.put(player.getName(), score);
     }
 
-    public void broadcastLargestScores() {
+    public void deliverRewardsToWinners() {
         int displayAmount = Math.min(scores.size(), trivia.getConfig().getInt("Top winner amount", 3));
 
         List<PlayerScore> scoreValues = new ArrayList<>(scores.values());
@@ -47,12 +49,13 @@ public class PlayerScoreHolder {
         List<String> winnerList = new ArrayList<>();
 
         if (scoreValues.size() == 0 || scoreValues.get(0).getPoints() == 0) {
-            Lang.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format_multiple(null));
+            Broadcaster.broadcastMessage(Lang.TRIVIA_NO_WINNERS.format_multiple(null));
             return;
         }
 
         for (int i = 0; i < displayAmount; i++) {
             final PlayerScore score = scoreValues.get(i);
+
             if (score != null) {
                 if (score.getPoints() == 0) { // don't show winners if they didn't score at all.
                     break;
@@ -84,7 +87,7 @@ public class PlayerScoreHolder {
         }
 
         String[] resultArray = new String[result.size()];
-        Lang.broadcastMessage(result.toArray(resultArray));
+        Broadcaster.broadcastMessage(result.toArray(resultArray));
 
 
     }

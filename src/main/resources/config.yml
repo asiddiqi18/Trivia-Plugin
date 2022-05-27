@@ -26,22 +26,39 @@ Scheduled games minimum players: 6
 # Enabling boss bar will display a progress bar on the top of the screen as the game goes on.
 Enable boss bar: true
 
-# Answer correct sound will be played after a player answers the question correctly. Enter 'none' to play no sound.
+# The remaining values are to adjust the sounds that are played during Trivia.
+# You can adjust the type of sound, pitch and volume of what's played after an event during a game
+# for instance, when a player answers a question, they get played a block note sound by default
 # Use sound values found at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
-Answer correct sound: BLOCK_NOTE_BLOCK_PLING
-Answer correct pitch: 1.5
+
+# Answer correct sound will be played after a player answers the question correctly. Enter 'none' to play no sound.
+Answer correct:
+  sound: BLOCK_NOTE_BLOCK_PLING
+  volume: 0.6
+  pitch: 1.5
+
+Question skipped:
+  sound: BLOCK_ANVIL_BREAK
+  volume: 0.6
+  pitch: 1.0
 
 # Time up sound will be played after no one has answered the question correctly in time.
-Time up sound: ENTITY_VILLAGER_NO
-Time up pitch: 0.9
+Time up:
+  sound: ENTITY_VILLAGER_NO
+  volume: 0.6
+  pitch: 0.9
 
-# Game start sound will be played when the trivia game starts. By default, there is no sound.
-Game start sound: none
-Game start pitch: 1.0
+# Game start sound will be played when the trivia game starts.
+Game start:
+  sound: ENTITY_PLAYER_LEVELUP
+  volume: 0.6
+  pitch: 1.0
 
 # Game over sound will be played after the trivia game is over.
-Game over sound: ENTITY_PLAYER_LEVELUP
-Game over pitch: 0.9
+Game over:
+  sound: ENTITY_PLAYER_LEVELUP
+  volume: 0.6
+  pitch: 0.9
 
 # This is to keep track of what config version this is. Do not modify!
-Config Version: 5
+Config Version: 6

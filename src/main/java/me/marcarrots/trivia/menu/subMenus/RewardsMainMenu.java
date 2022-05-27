@@ -4,20 +4,20 @@
 
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.QuestionHolder;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.Menu;
-import me.marcarrots.trivia.menu.PlayerMenuUtility;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
+import java.text.MessageFormat;
+
 public class RewardsMainMenu extends Menu {
-    public RewardsMainMenu(PlayerMenuUtility playerMenuUtility, Trivia trivia, QuestionHolder questionHolder) {
-        super(playerMenuUtility, trivia, questionHolder);
+    public RewardsMainMenu(Trivia trivia, Player player) {
+        super(trivia, player);
     }
 
     @Override
@@ -34,26 +34,30 @@ public class RewardsMainMenu extends Menu {
     public void handleMenuClick(InventoryClickEvent event) {
         event.setCancelled(true);
 
+        if (event.getCurrentItem() == null) {
+            return;
+        }
+
         Material type = event.getCurrentItem().getType();
         Player player = (Player) event.getWhoClicked();
 
         switch (event.getSlot()) {
             case 11:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 1).open();
+                new RewardsSpecificMenu(trivia, player, 1).open();
                 break;
             case 13:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 2).open();
+                new RewardsSpecificMenu(trivia, player, 2).open();
                 break;
             case 15:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 3).open();
+                new RewardsSpecificMenu(trivia, player, 3).open();
                 break;
             case 35:
-                new RewardsSpecificMenu(playerMenuUtility, trivia, questionHolder, 0).open();
+                new RewardsSpecificMenu(trivia, player, 0).open();
                 break;
         }
 
         if (type == Material.ARROW) {
-            new MainMenu(trivia.getPlayerMenuUtility(player), trivia, questionHolder).open();
+            new MainMenu(trivia, player).open();
         } else if (event.getCurrentItem().equals(CLOSE)) {
             player.closeInventory();
         }
@@ -68,13 +72,13 @@ public class RewardsMainMenu extends Menu {
     @Override
     public void setMenuItems() {
 
-        String lore = "View and modify rewards given to the %s place winner at the end of a trivia game.";
+        String lore = "{0}View and modify rewards given to the {1}{2}{0} place winner at the end of a trivia game.";
 
-        insertItem(11, Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format_single(), String.format(ChatColor.DARK_PURPLE + lore, "first"), true, true);
+        insertItem(11, Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format_single(), MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "first"), true, true);
 
-        insertItem(13, Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(), String.format(ChatColor.DARK_PURPLE + lore, "second"), true, true);
+        insertItem(13, Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(),  MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "second"), true, true);
 
-        insertItem(15, Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(), String.format(ChatColor.DARK_PURPLE + lore, "third"), true, true);
+        insertItem(15, Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(),  MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "third"), true, true);
 
         insertItem(35, Material.ENDER_CHEST, ChatColor.LIGHT_PURPLE + "Per-Round Reward", ChatColor.DARK_PURPLE + "View and modify rewards given per round basis to the first answerer.", true, true);
 
