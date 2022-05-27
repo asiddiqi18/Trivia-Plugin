@@ -3,12 +3,12 @@ package me.marcarrots.trivia;
 import me.marcarrots.trivia.effects.GameBossBar;
 import me.marcarrots.trivia.effects.GameSound;
 import me.marcarrots.trivia.effects.SoundType;
-import me.marcarrots.trivia.utils.Broadcaster;
-import me.marcarrots.trivia.utils.Elapsed;
-import me.marcarrots.trivia.utils.StringSimilarity;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.language.MessageUtil;
 import me.marcarrots.trivia.language.Placeholder;
+import me.marcarrots.trivia.utils.Broadcaster;
+import me.marcarrots.trivia.utils.Elapsed;
+import me.marcarrots.trivia.utils.StringSimilarity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -31,6 +31,7 @@ public class Game {
     private final CommandSender commandSender;
     private final GameBossBar gameBossBar;
     private final GameSound gameSound;
+    private final Placeholder.PlaceholderBuilder placeholderBuilder;
     private long roundTimeStart;
     private PlayerScoreHolder scores;
     private Question currentQuestion;
@@ -39,6 +40,7 @@ public class Game {
     private int task;
     private Player roundWinner;
     private String userRightAnswer;
+
 
     public Game(Trivia trivia, CommandSender commandSender, long timePerQuestion, int amountOfRounds, boolean doRepetition) throws IllegalAccessException {
         if (trivia.getQuestionHolder().getSize() == 0) {
@@ -58,6 +60,9 @@ public class Game {
         boolean bossBarEnabled = trivia.getConfig().getBoolean("Enable boss bar", true);
         gameBossBar = new GameBossBar(trivia, bossBarEnabled);
         gameSound = new GameSound(trivia);
+
+        placeholderBuilder = new Placeholder.PlaceholderBuilder().totalQuestionNum(amountOfRounds);
+
     }
 
     public GameBossBar getGameBossBar() {
@@ -118,18 +123,16 @@ public class Game {
         timer.handleNextRound();
     }
 
-
     private void handleRoundOutcome() {
         switch (roundResult) {
             case ANSWERED:
                 String timeToAnswer = Elapsed.millisToElapsedTime(roundTimeStart).getElapsedFormattedString();
                 gameBossBar.fillAfterAnswer(BarColor.GREEN, getQuestionNum(), amountOfRounds);
-                Broadcaster.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(new Placeholder.PlaceholderBuilder()
+                Broadcaster.broadcastMessage(Lang.SOLVED_MESSAGE.format_multiple(placeholderBuilder
                         .player(roundWinner)
                         .question(currentQuestion.getQuestionString())
                         .answer(Collections.singletonList(userRightAnswer))
                         .questionNum(getQuestionNum())
-                        .totalQuestionNum(amountOfRounds)
                         .elapsedTime(timeToAnswer)
                         .build()
                 ));
@@ -145,7 +148,7 @@ public class Game {
             case SKIPPED:
                 gameBossBar.fillAfterAnswer(BarColor.YELLOW, getQuestionNum(), amountOfRounds);
                 gameSound.playSoundToAll(SoundType.QUESTION_SKIPPED);
-                Broadcaster.broadcastMessage(Lang.SKIP.format_multiple(new Placeholder.PlaceholderBuilder()
+                Broadcaster.broadcastMessage(Lang.SKIP.format_multiple(placeholderBuilder
                         .question(currentQuestion.getQuestionString())
                         .answer(currentQuestion.getAnswerList())
                         .questionNum(getQuestionNum())
@@ -154,11 +157,10 @@ public class Game {
                 break;
 
             case UNANSWERED:
-                Broadcaster.broadcastMessage(Lang.TIME_UP.format_multiple(new Placeholder.PlaceholderBuilder()
+                Broadcaster.broadcastMessage(Lang.TIME_UP.format_multiple(placeholderBuilder
                         .question(currentQuestion.getQuestionString())
                         .answer(currentQuestion.getAnswerList())
                         .questionNum(getQuestionNum())
-                        .totalQuestionNum(amountOfRounds)
                         .build()
                 ));
                 gameSound.playSoundToAll(SoundType.TIME_UP);
@@ -179,11 +181,10 @@ public class Game {
             setRandomQuestion();
             t.startTimer();
             gameBossBar.perRoundBossBarUpdate(getQuestionNum(), amountOfRounds);
-            Broadcaster.broadcastMessage(Lang.QUESTION.format_multiple(new Placeholder.PlaceholderBuilder()
+            Broadcaster.broadcastMessage(Lang.QUESTION.format_multiple(placeholderBuilder
                     .question(currentQuestion.getQuestionString())
                     .answer(currentQuestion.getAnswerList())
                     .questionNum(getQuestionNum())
-                    .totalQuestionNum(amountOfRounds)
                     .build()
             ));
         }, timeBetween * 20L);
