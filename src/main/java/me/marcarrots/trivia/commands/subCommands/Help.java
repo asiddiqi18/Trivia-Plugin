@@ -48,7 +48,11 @@ public class Help extends SubCommand {
     @Override
     public boolean perform(CommandSender commandSender, String[] args) {
         commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&m------------&e[ &6Trivia &e]&m------------"));
-        commandSender.sendMessage(Lang.COMMANDS_HELP_PREFIX.format_single() + Lang.COMMANDS_HELP_MAIN.format_single());
+
+
+        if (commandSender.hasPermission("trivia.admin")) {
+            commandSender.sendMessage(Lang.COMMANDS_HELP_PREFIX.format_single() + Lang.COMMANDS_HELP_MAIN.format_single());
+        }
 
         for (SubCommand sc : subCommands) {
             if (commandSender.hasPermission(sc.getPermission())) {
