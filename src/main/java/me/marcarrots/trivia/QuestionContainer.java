@@ -79,7 +79,7 @@ public class QuestionContainer {
         return -1;
     }
 
-    public void updateQuestionToFile(Trivia trivia, Question question, String newString, PromptType promptType) {
+    public void updateQuestion(Trivia trivia, Question question, String newString, PromptType promptType) {
         int questionIndex = findQuestionIndexByID(question.getId());
         switch (promptType) {
             case EDIT_QUESTION:

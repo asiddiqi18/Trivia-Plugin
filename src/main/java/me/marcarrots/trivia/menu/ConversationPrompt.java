@@ -58,11 +58,11 @@ public class ConversationPrompt extends StringPrompt {
                     List<String> answers = Arrays.asList(input.split("\\s*,\\s*"));
                     trivia.getQuestionHolder().writeQuestions(trivia, (String) context.getSessionData("new_question"), answers, player.getName());
                 case EDIT_QUESTION:
-                    trivia.getQuestionHolder().updateQuestionToFile(trivia, trivia.getPlayerMenuUtility(player).getQuestion(), input, promptType);
+                    trivia.getQuestionHolder().updateQuestion(trivia, trivia.getPlayerMenuUtility(player).getQuestion(), input, promptType);
                     trivia.getPlayerMenuUtility(player).setQuestionString(input);
                     break;
                 case EDIT_ANSWER:
-                    trivia.getQuestionHolder().updateQuestionToFile(trivia, trivia.getPlayerMenuUtility(player).getQuestion(), input, promptType);
+                    trivia.getQuestionHolder().updateQuestion(trivia, trivia.getPlayerMenuUtility(player).getQuestion(), input, promptType);
                     trivia.getPlayerMenuUtility(player).setAnswerString(Arrays.asList(input.split("\\s*,\\s*")));
                     break;
                 case SET_MONEY:
