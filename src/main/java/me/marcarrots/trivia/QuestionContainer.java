@@ -1,8 +1,8 @@
 package me.marcarrots.trivia;
 
-import me.marcarrots.trivia.data.FileManager;
 import me.marcarrots.trivia.menu.PromptType;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -24,10 +24,6 @@ public class QuestionContainer {
         this.triviaQuestionList.addAll(questionContainer.getTriviaQuestionList());
         this.uniqueQuestions = questionContainer.isUniqueQuestions();
         this.largestQuestionNum = questionContainer.getLargestQuestionNum();
-    }
-
-    public QuestionContainer() {
-        this.triviaQuestionList = new ArrayList<>();
     }
 
     public int getLargestQuestionNum() {
@@ -101,26 +97,27 @@ public class QuestionContainer {
         trivia.getQuestionsFile().saveData();
     }
 
-
-    public void readQuestions(FileManager questionsFile) {
-
+    public void readQuestions(Trivia trivia) {
         triviaQuestionList.clear();
-
-        questionsFile.reloadFiles();
-        for (String key : questionsFile.getData().getKeys(false)) {
+        trivia.getQuestionsFile().reloadFiles();
+        for (String key : trivia.getQuestionsFile().getData().getKeys(false)) {
             try {
                 Question triviaQuestion = new Question();
                 triviaQuestion.setId(Integer.parseInt(key));
                 extractLargestQuestionNum(key);
-                triviaQuestion.setQuestion(questionsFile.getData().getString(key + ".question"));
-                triviaQuestion.setAnswer(questionsFile.getData().getStringList(key + ".answer"));
-                triviaQuestion.setAuthor(questionsFile.getData().getString(key + ".author"));
+                ConfigurationSection questionSection = trivia.getQuestionsFile().getData().getConfigurationSection(key);
+                if (questionSection == null) {
+                    trivia.getLogger().warning("Failed to parse key " + key + ".");
+                    continue;
+                }
+                triviaQuestion.setQuestion(questionSection.getString("question"));
+                triviaQuestion.setAnswer(questionSection.getStringList("answer"));
+                triviaQuestion.setAuthor(questionSection.getString( "author"));
                 triviaQuestionList.add(triviaQuestion);
             } catch (NumberFormatException | NullPointerException e) {
                 Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));
             }
         }
-
     }
 
     public void writeQuestions(Trivia trivia, String questionString, List<String> answerStrings, String author) {
@@ -144,7 +141,6 @@ public class QuestionContainer {
         triviaQuestionList.add(question);
 
         trivia.getLogger().info(String.format("New question created by %s with question as '%s' and answer(s) as '%s'.", author, questionString, answerStrings));
-
     }
 
     private void extractLargestQuestionNum(String questionNum) {
