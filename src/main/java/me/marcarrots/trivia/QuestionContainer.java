@@ -15,6 +15,10 @@ public class QuestionContainer {
     private boolean uniqueQuestions;
     private int largestQuestionNum;
 
+    public QuestionContainer() {
+        this.triviaQuestionList = new ArrayList<>();
+    }
+
     public QuestionContainer(QuestionContainer questionContainer) {
         this.triviaQuestionList = new ArrayList<>();
         this.triviaQuestionList.addAll(questionContainer.getTriviaQuestionList());
@@ -31,12 +35,7 @@ public class QuestionContainer {
     }
 
     public int getSize() {
-        try {
-            return triviaQuestionList.size();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return 0;
-        }
+        return triviaQuestionList.size();
     }
 
     public Question getRandomQuestion() {

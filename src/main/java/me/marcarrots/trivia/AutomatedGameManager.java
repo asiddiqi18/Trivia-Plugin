@@ -22,30 +22,21 @@ public class AutomatedGameManager {
         automatedPlayerReq = trivia.getConfig().getInt("Scheduled games minimum players", 6);
     }
 
-
     public boolean isSchedulingEnabled() {
         return schedulingEnabled;
     }
 
-
     public int getAutomatedPlayerReq() {
         return automatedPlayerReq;
-    }
-
-
-    private long getNextAutomatedTimeEpoch() {
-        return nextAutomatedTimeEpoch;
     }
 
     public long getNextAutomatedTimeFromNow() {
         return nextAutomatedTimeEpoch - System.currentTimeMillis();
     }
 
-
     private void setNextAutomatedTimeEpoch() {
         nextAutomatedTimeEpoch = System.currentTimeMillis() + ((long) automatedTimeMinutes * 60 * 1000);
     }
-
 
     public void automatedSchedule() {
         if (!schedulingEnabled) {
