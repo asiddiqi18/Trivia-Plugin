@@ -90,11 +90,11 @@ public class Game {
         String border = Lang.BORDER.format_single();
 
         commandSender.sendMessage(border);
-        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lTrivia match started!"));
-        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eGame summary:"));
-        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&0- &eRounds: &f") + amountOfRounds);
-        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&0- &eSeconds per round: &f") + timePerQuestion);
-        commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&0- &eRepeat questions: &f") + doRepetition);
+        commandSender.sendMessage(Lang.GAME_SUMMARY_MATCH_STARTED.format_single());
+        commandSender.sendMessage(Lang.GAME_SUMMARY_SUMMARY.format_single());
+        commandSender.sendMessage(Lang.GAME_SUMMARY_ROUNDS.format_multiple(placeholderBuilder.val(String.valueOf(amountOfRounds)).build()));
+        commandSender.sendMessage(Lang.GAME_SUMMARY_SECONDS_PER.format_multiple(placeholderBuilder.val(String.valueOf(timePerQuestion)).build()));
+        commandSender.sendMessage(Lang.GAME_SUMMARY_REPEAT_ENABLED.format_multiple(placeholderBuilder.val(String.valueOf(doRepetition)).build()));
         commandSender.sendMessage(border);
 
         scores.addOnlinePlayersToGame();
