@@ -46,7 +46,7 @@ There are three ways a trivia game can start:
 When a trivia game starts, it'll give you a summary about the game.
 ![img.png](imgs/game_start_summary.png)
 In this example, this trivia match will have a total of 30 questions, 15 seconds to answer each question, and no
-repeition of questions.
+repitition of questions.
 
 When Trivia starts, questions will be asked round by round. The first player to enter the answer into chat wins
 that round. If no one answers the question within the time limit, the round is skipped. Whoever wins the most amount of
@@ -78,13 +78,13 @@ All messages in this plugin are in English by default, but this plugin features 
 for custom messages to be set in `messages.yml`. There are placeholders to fill in values with their meanings explained
 in the file.
 
-You can also change the colors of the messages to your preferances
+You can also change the colors of the messages to your preferences
 using [& color codes](https://wiki.ess3.net/mc/) or [hexadecimal](https://htmlcolorcodes.com/color-picker/) codes. To
 use hexadecimal, use the format [#ABCDEF] for the color #ABCEDEF.
 
 ## Commands
 
-These are the commands registed for Trivia:
+These are the commands registered for Trivia:
 
 - `/trivia` - opens the menu to either start the game or modify questions & rewards. (*trivia.admin*)
 - `/trivia start <# of rounds>` - a shortcut to quickly start a trivia game with # of rounds. Not specifying # will
