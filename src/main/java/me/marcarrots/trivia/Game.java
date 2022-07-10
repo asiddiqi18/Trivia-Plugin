@@ -173,7 +173,6 @@ public class Game {
         roundResult = RoundResult.IN_BETWEEN;
     }
 
-
     private void handleNextQuestion(Timer t) {
         currentQuestion = null;
         task = scheduler.scheduleSyncDelayedTask(trivia, () -> {
@@ -212,7 +211,7 @@ public class Game {
 
         for (String correctAnswer : currentQuestion.getAnswerList()) {
             String correctAnswerStripped = ChatColor.stripColor(MessageUtil.HexColorMessage(correctAnswer));
-            if (StringSimilarity.similarity(userAnswerStripped.toLowerCase(), correctAnswerStripped.toLowerCase()) >= similarityScore) {
+            if (StringSimilarity.calculateSimilarity(userAnswerStripped.toLowerCase(), correctAnswerStripped.toLowerCase()) >= similarityScore) {
                 roundResult = RoundResult.ANSWERED;
 
                 trivia.getStats().addRoundWon(player);

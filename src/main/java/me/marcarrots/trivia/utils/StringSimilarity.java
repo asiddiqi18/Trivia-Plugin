@@ -1,25 +1,42 @@
 package me.marcarrots.trivia.utils;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.Arrays;
+
+import static java.lang.Math.max;
 
 public class StringSimilarity {
 
     /**
      * Calculates the similarity (a number within 0 and 1) between two strings.
      */
-    public static double similarity(String s1, String s2) {
-        String longer = s1, shorter = s2;
-        if (s1.length() < s2.length()) { // longer should always have greater length
-            longer = s2;
-            shorter = s1;
-        }
-        int longerLength = longer.length();
-        if (longerLength == 0) {
-            return 1.0; /* both strings are zero length */
-        }
-        // If you have StringUtils, you can use it to calculate the edit distance:
-        return (longerLength - StringUtils.getLevenshteinDistance(longer, shorter)) / (double) longerLength;
+    public static double calculateSimilarity(String x, String y) {
+        int[][] dp = new int[x.length() + 1][y.length() + 1];
 
+        for (int i = 0; i <= x.length(); i++) {
+            for (int j = 0; j <= y.length(); j++) {
+                if (i == 0) {
+                    dp[i][j] = j;
+                } else if (j == 0) {
+                    dp[i][j] = i;
+                } else {
+                    dp[i][j] = minNumber(dp[i - 1][j - 1] + costOfSubstitution(x.charAt(i - 1), y.charAt(j - 1)),
+                            dp[i - 1][j] + 1,
+                            dp[i][j - 1] + 1);
+                }
+            }
+        }
+
+        double longerLength = max(x.length(), y.length());
+
+        return (longerLength - dp[x.length()][y.length()]) / longerLength;
+    }
+
+    private static int costOfSubstitution(char a, char b) {
+        return a == b ? 0 : 1;
+    }
+
+    private static int minNumber(int... numbers) {
+        return Arrays.stream(numbers).min().orElse(Integer.MAX_VALUE);
     }
 
 
