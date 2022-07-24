@@ -5,7 +5,6 @@
 package me.marcarrots.trivia.data;
 
 import me.marcarrots.trivia.Trivia;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

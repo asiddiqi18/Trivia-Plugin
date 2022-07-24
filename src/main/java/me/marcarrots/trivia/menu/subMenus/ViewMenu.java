@@ -52,7 +52,7 @@ public class ViewMenu extends Menu {
             conversation.begin();
             player.closeInventory();
         } else if (type == Material.RED_TERRACOTTA) {
-            trivia.getQuestionHolder().updateQuestionToFile(trivia, trivia.getPlayerMenuUtility(player).getQuestion(), null, PromptType.DELETE);
+            trivia.getQuestionHolder().updateQuestion(trivia, trivia.getPlayerMenuUtility(player).getQuestion(), null, PromptType.DELETE);
             player.sendMessage(ChatColor.GREEN + "This trivia question has been been removed.");
             new ListMenu(trivia, player).open();
         } else if (type == Material.ARROW) {

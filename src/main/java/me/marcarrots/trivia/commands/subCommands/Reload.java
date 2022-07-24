@@ -42,7 +42,7 @@ public class Reload extends SubCommand {
             commandSender.sendMessage(border);
             trivia.reloadConfig();
             commandSender.sendMessage(ChatColor.YELLOW + "- Config file reloaded.");
-            trivia.getQuestionHolder().readQuestions(trivia.getQuestionsFile());
+            trivia.getQuestionHolder().readQuestions(trivia);
             commandSender.sendMessage(ChatColor.YELLOW + "- Questions file reloaded.");
             trivia.loadConfigFile();
             trivia.loadMessages();

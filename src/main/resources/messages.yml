@@ -15,7 +15,7 @@
 # %single_answer% - the first answer, if multiple acceptable answers exist
 # %questionNumber% - the question number.
 # %totalQuestions% - total amount of questions in the hosted game.
-# %val% - placeholder for any arbitrary value, used for the GUI.
+# %val% - placeholder for any arbitrary value.
 # %winner_list% - shows a list of the top trivia winners
 # %top_winner% - shows the name of the 1st place winner after trivia match.
 
@@ -35,6 +35,13 @@ Boss Bar Game Over: "Trivia is over!"
 Boss Bar Halted: "Trivia has been stopped!"
 Boss Bar Thanks: "Thanks for playing!"
 Game Halted: "&cTrivia has been forcibly halted!"
+
+Game Summary:
+  match_started: "&6&lTrivia match started!"
+  summary: "&eGame summary:"
+  rounds: "&0- &eRounds: &f%val%"
+  seconds_per: "&0- &eSeconds per round: &f%val%"
+  repeat_enabled: "&0- &eRepeat questions: &f%val%"
 
 Commands:
   schedule:
@@ -61,6 +68,8 @@ Commands:
     stats: " stats &7- &fShows your trivia stats record."
     stop: " stop &7- &fStops the current trivia game in progress."
     version: " version &7- &fGets the current plugin's version number."
+
+
 
 #
 # The rest of these messages are for the GUI, these won't be seen by your players, but only by mods/admins.

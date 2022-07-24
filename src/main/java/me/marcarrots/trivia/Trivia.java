@@ -177,7 +177,7 @@ public final class Trivia extends JavaPlugin {
 
     public void loadQuestions() {
         questionsFile = new FileManager(this, "questions.yml");
-        questionContainer.readQuestions(questionsFile);
+        questionContainer.readQuestions(this);
     }
 
 
