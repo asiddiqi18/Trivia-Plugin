@@ -108,16 +108,17 @@ These are the commands registered for Trivia:
 
 Features optional PlaceholderAPI support:
 
-| Placeholder                 | Description                                             |
-|-----------------------------|---------------------------------------------------------|
-| %trivia_game_wins_first%    | Number of player's wins in first place                  |
-| %trivia_game_wins_second%   | Number of player's wins in second place                 |
-| %trivia_game_wins_third%    | Number of player's wins in third place                  |
-| %trivia_game_participation% | Number of player's games participated in                |
-| %trivia_round_wins%         | Number of player's round's won (questions answered)     | 
-| %money_won%                 | Player's total monetary earnings from Trivia            |
-| %experience_won%            | Player's total experience earnings from Trivia          |
-| %game_in_progress%          | Says 'true' if a game is in progress, 'false' otherwise | 
+| Placeholder                 | Description                                                      |
+|-----------------------------|------------------------------------------------------------------|
+| %trivia_game_wins_first%    | Number of player's wins in first place                           |
+| %trivia_game_wins_second%   | Number of player's wins in second place                          |
+| %trivia_game_wins_third%    | Number of player's wins in third place                           |
+| %trivia_game_participation% | Number of player's games participated in                         |
+| %trivia_round_wins%         | Number of player's round's won (questions answered)              | 
+| %trivia_money_won%          | Player's total monetary earnings from Trivia                     |
+| %trivia_experience_won%     | Player's total experience earnings from Trivia                   |
+| %trivia_game_in_progress%   | Says 'true' if a game is in progress, 'false' otherwise          | 
+ | %trivia_next_game%          | Displays time until next schedudled game will start (if enabled) | 
 
 ### Vault API
 
