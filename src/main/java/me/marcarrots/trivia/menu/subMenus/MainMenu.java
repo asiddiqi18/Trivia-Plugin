@@ -1,10 +1,10 @@
 package me.marcarrots.trivia.menu.subMenus;
 
-import me.marcarrots.trivia.utils.Elapsed;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.Menu;
 import me.marcarrots.trivia.menu.MenuType;
+import me.marcarrots.trivia.utils.Elapsed;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -67,18 +67,24 @@ public class MainMenu extends Menu {
 
         BukkitScheduler scheduler = trivia.getServer().getScheduler();
 
-        insertItem(13, Material.EMERALD, Lang.MAIN_MENU_REWARDS.format_single(), Lang.MAIN_MENU_REWARDS_DESCRIPTION.format_single(), false, true);
+        insertItem(13, Material.EMERALD, Lang.MAIN_MENU_REWARDS.format_single(),
+                Lang.MAIN_MENU_REWARDS_DESCRIPTION.format_single(), false, true);
 
-        insertItem(15, Material.PAPER, Lang.MAIN_MENU_LIST.format_single(), Lang.MAIN_MENU_LIST_DESCRIPTION.format_single(), false, true);
+        insertItem(15, Material.PAPER, Lang.MAIN_MENU_LIST.format_single(),
+                Arrays.asList(Lang.MAIN_MENU_LIST_DESCRIPTION.format_single(),
+                        ChatColor.GREEN.toString() + trivia.getQuestionHolder().getSize() + " questions loaded."),
+                false, true);
 
         new BukkitRunnable() {
 
             @Override
             public void run() {
                 if (trivia.getGame() != null) {
-                    insertItem(11, Material.RED_TERRACOTTA, ChatColor.DARK_RED + "Stop Trivia", ChatColor.RED + "There's currently a game in progress! Click here to stop this current game.", false, true);
+                    insertItem(11, Material.RED_TERRACOTTA, ChatColor.DARK_RED + "Stop Trivia", ChatColor.RED +
+                            "There's currently a game in progress! Click here to stop this current game.", false, true);
                 } else {
-                    insertItem(11, Material.GREEN_TERRACOTTA, Lang.MAIN_MENU_START.format_single(), ChatColor.DARK_PURPLE + Lang.MAIN_MENU_START_DESCRIPTION.format_single(), false, true);
+                    insertItem(11, Material.GREEN_TERRACOTTA, Lang.MAIN_MENU_START.format_single(),
+                            ChatColor.DARK_PURPLE + Lang.MAIN_MENU_START_DESCRIPTION.format_single(), false, true);
                 }
                 taskID = this.getTaskId();
             }
