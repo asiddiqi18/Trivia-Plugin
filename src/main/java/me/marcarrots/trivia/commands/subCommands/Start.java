@@ -40,7 +40,7 @@ public class Start extends SubCommand {
     @Override
     public boolean perform(CommandSender commandSender, String[] args) {
         if (trivia.getGame() != null) {
-            commandSender.sendMessage(ChatColor.RED + "There is already a trivia game in progress.");
+            commandSender.sendMessage(Lang.COMMANDS_ERROR_GAME_IN_PROGRESS.format_single());
             return false;
         }
 

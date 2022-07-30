@@ -6,6 +6,7 @@ package me.marcarrots.trivia.commands;
 
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.commands.subCommands.*;
+import me.marcarrots.trivia.language.Lang;
 import me.marcarrots.trivia.menu.subMenus.MainMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -61,13 +62,13 @@ public class CommandManager implements CommandExecutor {
                 if (subCommand.hasPermission(commandSender)) {
                     return subCommand.perform(commandSender, args);
                 } else {
-                    commandSender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    commandSender.sendMessage(Lang.COMMANDS_ERROR_NO_PERMISSION.format_single());
                     return false;
                 }
             }
         }
 
-        commandSender.sendMessage(ChatColor.RED + "Command not found.");
+        commandSender.sendMessage(Lang.COMMANDS_ERROR_NOT_FOUND.format_single());
         help.perform(commandSender, args);
         return false;
     }

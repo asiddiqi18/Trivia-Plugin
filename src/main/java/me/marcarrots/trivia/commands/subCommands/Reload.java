@@ -7,7 +7,6 @@ package me.marcarrots.trivia.commands.subCommands;
 import me.marcarrots.trivia.Trivia;
 import me.marcarrots.trivia.commands.SubCommand;
 import me.marcarrots.trivia.language.Lang;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class Reload extends SubCommand {
@@ -41,17 +40,17 @@ public class Reload extends SubCommand {
         try {
             commandSender.sendMessage(border);
             trivia.reloadConfig();
-            commandSender.sendMessage(ChatColor.YELLOW + "- Config file reloaded.");
+            commandSender.sendMessage(Lang.COMMANDS_RELOAD_CONFIG.format_single());
             trivia.getQuestionHolder().readQuestions(trivia);
-            commandSender.sendMessage(ChatColor.YELLOW + "- Questions file reloaded.");
+            commandSender.sendMessage(Lang.COMMANDS_RELOAD_QUESTIONS.format_single());
             trivia.loadConfigFile();
             trivia.loadMessages();
-            commandSender.sendMessage(ChatColor.YELLOW + "- Messages file reloaded.");
+            commandSender.sendMessage(Lang.COMMANDS_RELOAD_MESSAGES.format_single());
             trivia.loadRewards();
-            commandSender.sendMessage(ChatColor.YELLOW + "- Rewards file reloaded.");
-            commandSender.sendMessage(ChatColor.GREEN + "✔ Successfully reloaded all files!");
+            commandSender.sendMessage(Lang.COMMANDS_RELOAD_REWARDS.format_single());
+            commandSender.sendMessage(Lang.COMMANDS_RELOAD_SUCCESSFUL.format_single());
         } catch (Exception e) {
-            commandSender.sendMessage(ChatColor.RED + "- Failed to reload files");
+            commandSender.sendMessage(Lang.COMMANDS_RELOAD_FAILURE.format_single());
             e.printStackTrace();
         } finally {
             commandSender.sendMessage(border);

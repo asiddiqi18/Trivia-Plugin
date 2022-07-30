@@ -29,6 +29,8 @@ Solved Message: "&b%player% [#86fe4c]has answered the question correctly! The an
 Question Time Up: "&cTime is up! Next question..."
 Question Display: "&6(%questionNumber%) &e%question%"
 Question Skipped: "&cQuestion skipped! On to the next question... "
+No Questions Loaded: "&cThere are no Trivia questions loaded. Create some questions before hosting a game!"
+Force Repeat: "&cThere are more rounds than questions, so questions will repeat."
 Boss Bar Start: "Trivia is commencing. Get ready!"
 Boss Bar Game Info: "Trivia Match (%questionNumber%/%totalQuestions%)"
 Boss Bar Game Over: "Trivia is over!"
@@ -57,6 +59,19 @@ Commands:
     third_place: " &6   - 3rd place: &e%val%"
     enchanting: " &6  - Enchanting exp earned from wins: &e%val%"
     money: " &6  - Money earned from wins: &e%val%"
+  reload:
+    config_file: "- &eConfig file reloaded."
+    questions_file: "- &eQuestions file reloaded."
+    messages_file: "- &eMessages file reloaded."
+    rewards_file: "- &eRewards file reloaded."
+    successful: "&a✔ Successfully reloaded all files!"
+    failure: "- &cFailed to reload files"
+  errors:
+    no_permission: "&cYou do not have permission to use this command."
+    not_found: "&cCommand not found."
+    game_in_progress: "&cThere is a game already in progress"
+    game_not_in_progress: "&cThere is no trivia game in progress."
+    skip_not_allowed: "&cFailed to skip round. Reason: Skip request made in-between rounds."
   help:
     prefix: "&6/trivia"
     main: " &7- &f(Main command) Opens up the Trivia menu to manage or start trivia."
