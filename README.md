@@ -118,7 +118,7 @@ Features optional PlaceholderAPI support:
 | %trivia_money_won%          | Player's total monetary earnings from Trivia                     |
 | %trivia_experience_won%     | Player's total experience earnings from Trivia                   |
 | %trivia_game_in_progress%   | Says 'true' if a game is in progress, 'false' otherwise          | 
- | %trivia_next_game%          | Displays time until next schedudled game will start (if enabled) | 
+| %trivia_next_game%         | Displays time until next schedudled game                        | 
 
 ### Vault API
 
