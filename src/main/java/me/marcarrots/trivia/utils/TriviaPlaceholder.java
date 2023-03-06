@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.NumberFormat;
+
 public class TriviaPlaceholder extends PlaceholderExpansion {
 
     private final Trivia trivia;
@@ -63,11 +65,23 @@ public class TriviaPlaceholder extends PlaceholderExpansion {
         }
 
         if (params.equalsIgnoreCase("money_won")) {
-            return String.valueOf(stats.getMoneyWon(player));
+            return NumberFormat.getCurrencyInstance().format(stats.getMoneyWon(player));
+        }
+
+        if (params.equalsIgnoreCase("experience_won")) {
+            return NumberFormat.getIntegerInstance().format(stats.getExperienceWon(player));
         }
 
         if (params.equalsIgnoreCase("game_in_progress")) {
             return String.valueOf(trivia.getGame() != null);
+        }
+
+        if (params.equalsIgnoreCase("next_game")) {
+            if (trivia.getAutomatedGameManager().isSchedulingEnabled()) {
+                return Elapsed.millisToElapsedTime(trivia.getAutomatedGameManager().getNextAutomatedTimeFromNow()).getElapsedFormattedString();
+            } else {
+                return "Scheduling is disabled";
+            }
         }
 
         return null;

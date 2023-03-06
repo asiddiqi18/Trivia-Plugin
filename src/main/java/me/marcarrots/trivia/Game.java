@@ -44,7 +44,7 @@ public class Game {
 
     public Game(Trivia trivia, CommandSender commandSender, long timePerQuestion, int amountOfRounds, boolean doRepetition) throws IllegalAccessException {
         if (trivia.getQuestionHolder().getSize() == 0) {
-            throw new IllegalAccessException("There are no Trivia questions loaded. Create some questions before hosting a game!");
+            throw new IllegalAccessException(Lang.NO_QUESTIONS_LOADED.format_single());
         }
         this.trivia = trivia;
         this.timePerQuestion = timePerQuestion;
@@ -81,7 +81,7 @@ public class Game {
         if (doRepetition) {
             questionContainer.setUniqueQuestions(false);
         } else if (questionContainer.getSize() < amountOfRounds) {
-            commandSender.sendMessage(ChatColor.RED + "There are more rounds than questions, so questions will repeat.");
+            commandSender.sendMessage(Lang.FORCE_REPEAT.format_single());
             questionContainer.setUniqueQuestions(false);
         } else {
             questionContainer.setUniqueQuestions(true);
