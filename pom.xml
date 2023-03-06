@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.marcarrots</groupId>
-    <artifactId>trivia</artifactId>
+    <artifactId>TriviaTreasure</artifactId>
     <version>1.16</version>
     <packaging>jar</packaging>
 
-    <name>Trivia</name>
+    <name>Trivia Treasure</name>
 
-    <description>Trivia plugin for Minecraft Spigot</description>
+    <description>Trivia Treasure for Minecraft Spigot</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,7 +37,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>me.marcarrots.trivia</shadedPattern>
+                            <shadedPattern>me.marcarrots.triviatreasure</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

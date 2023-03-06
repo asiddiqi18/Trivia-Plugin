@@ -4,13 +4,13 @@
 
 With Trivia, you can host a chat game to put your players to the test!
 Use an in-game menu to create your own questions/answers and set rewards for winners.
-Then, start the game with `/trivia start`, and your questions will start to show up in chat.
+Then, start the game with `/triviaTreasure start`, and your questions will start to show up in chat.
 The player to answer the question on the screen first wins that round,
 and whoever answers the most by the end of the match is the winner and runs off with the rewards.
 
 ## Customize Questions and Answers
 
-In trivia, you can view all your questions you created from a graphical menu, as shown below.  
+In triviaTreasure, you can view all your questions you created from a graphical menu, as shown below.  
 ![img.png](imgs/questions_list_menu.png)
 Clicking on a particular question will let you modify the question/answer or remove it entirely.    
 Create new questions by clicking on the emerald icon,
@@ -19,7 +19,7 @@ and then a chat prompt will show up to set the new question and answer.
 
 ## Customize Rewards
 
-It can't be trivia without rewards!
+It can't be triviaTreasure without rewards!
 
 Winners of Trivia will receive any rewards set by you. Like questions, you can view and modify rewards from the menu.
 You can configure the rewards for first place, second place, and third place winners. Obviously, you'd want to give the
@@ -37,15 +37,15 @@ To save changes, simply exit out of the menu, and winners will receive these rew
 
 ## Starting the Game
 
-There are three ways a trivia game can start:
+There are three ways a triviaTreasure game can start:
 
 - From the menu, where you can adjust a few additional settings before starting
-- From the chat, `/trivia start <# of rounds>`
+- From the chat, `/triviaTreasure start <# of rounds>`
 - From scheduled games (more on that later)
 
-When a trivia game starts, it'll give you a summary about the game.
+When a triviaTreasure game starts, it'll give you a summary about the game.
 ![img.png](imgs/game_start_summary.png)
-In this example, this trivia match will have a total of 30 questions, 15 seconds to answer each question, and no
+In this example, this triviaTreasure match will have a total of 30 questions, 15 seconds to answer each question, and no
 repitition of questions.
 
 When Trivia starts, questions will be asked round by round. The first player to enter the answer into chat wins
@@ -70,7 +70,7 @@ To enable this feature, set `Scheduled games` to true, and set `Scheduled games 
 between hosted games. Finally, set `Scheduled games minimum players` to the amount of players that are needed to be
 online for the hosted game to start!
 
-Players can find out when the next game is scheduled to start by running `/trivia schedule`
+Players can find out when the next game is scheduled to start by running `/triviaTreasure schedule`
 
 ## Language Support
 
@@ -86,17 +86,17 @@ use hexadecimal, use the format [#ABCDEF] for the color #ABCEDEF.
 
 These are the commands registered for Trivia:
 
-- `/trivia` - opens the menu to either start the game or modify questions & rewards. (*trivia.admin*)
-- `/trivia start <# of rounds>` - a shortcut to quickly start a trivia game with # of rounds. Not specifying # will
-  default to 10. (*trivia.admin*)
-- `/trivia stop` - a command to immediately stop the current trivia match in-progress. (*trivia.admin*)
-- `/trivia skip` - a command to skip the current question being asked during a trivia match in-progress.
-  (*trivia.admin*)
-- `/trivia version` - shows the plugin's version, API version, and author, (*trivia.admin*)
-- `/trivia reload` - a command to reload the local plugin files after you've made changes to them. (*trivia.admin*)
-- `/trivia stats` - shows the player's stats, including their win count, money and experience earned (*trivia.player*)
-- `/trivia schedule` - shows the time until the next scheduled game if it is enabled (*trivia.player*)
-- `/trivia help` - a helpful command to get an in-game reference to the commands above. (*trivia.player*)
+- `/triviaTreasure` - opens the menu to either start the game or modify questions & rewards. (*triviaTreasure.admin*)
+- `/triviaTreasure start <# of rounds>` - a shortcut to quickly start a triviaTreasure game with # of rounds. Not specifying # will
+  default to 10. (*triviaTreasure.admin*)
+- `/triviaTreasure stop` - a command to immediately stop the current triviaTreasure match in-progress. (*triviaTreasure.admin*)
+- `/triviaTreasure skip` - a command to skip the current question being asked during a triviaTreasure match in-progress.
+  (*triviaTreasure.admin*)
+- `/triviaTreasure version` - shows the plugin's version, API version, and author, (*triviaTreasure.admin*)
+- `/triviaTreasure reload` - a command to reload the local plugin files after you've made changes to them. (*triviaTreasure.admin*)
+- `/triviaTreasure stats` - shows the player's stats, including their win count, money and experience earned (*triviaTreasure.player*)
+- `/triviaTreasure schedule` - shows the time until the next scheduled game if it is enabled (*triviaTreasure.player*)
+- `/triviaTreasure help` - a helpful command to get an in-game reference to the commands above. (*triviaTreasure.player*)
 
 ## Demo
 
@@ -131,7 +131,7 @@ plugin: [https://bstats.org/plugin/bukkit/TriviaGUI/7912](https://bstats.org/plu
 
 ### Compatibility 
 
-The native version of this plugin is for Spigot 1.17 (shown in /trivia version) and tested in Spigot 1.18.
+The native version of this plugin is for Spigot 1.17 (shown in /triviaTreasure version) and tested in Spigot 1.18.
 The plugin was compiled in Java 17, but it should (most likely) compile in Java 11.
 
 
