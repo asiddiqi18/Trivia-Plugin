@@ -8,6 +8,7 @@ public class Question {
     private int id;
     private List<String> answer = null;
     private String author;
+
     public Question() {
     }
 

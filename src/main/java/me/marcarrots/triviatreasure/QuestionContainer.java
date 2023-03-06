@@ -112,7 +112,7 @@ public class QuestionContainer {
                 }
                 triviaQuestion.setQuestion(questionSection.getString("question"));
                 triviaQuestion.setAnswer(questionSection.getStringList("answer"));
-                triviaQuestion.setAuthor(questionSection.getString( "author"));
+                triviaQuestion.setAuthor(questionSection.getString("author"));
                 triviaQuestionList.add(triviaQuestion);
             } catch (NumberFormatException | NullPointerException e) {
                 Bukkit.getLogger().log(Level.SEVERE, String.format("Error with interpreting '%s': Invalid ID. (%s)", key, e.getMessage()));

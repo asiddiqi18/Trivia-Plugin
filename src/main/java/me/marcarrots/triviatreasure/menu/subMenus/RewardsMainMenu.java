@@ -76,9 +76,9 @@ public class RewardsMainMenu extends Menu {
 
         insertItem(11, Material.CHEST, Lang.REWARDS_GENERAL_FIRST.format_single(), MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "first"), true, true);
 
-        insertItem(13, Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(),  MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "second"), true, true);
+        insertItem(13, Material.CHEST, Lang.REWARDS_GENERAL_SECOND.format_single(), MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "second"), true, true);
 
-        insertItem(15, Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(),  MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "third"), true, true);
+        insertItem(15, Material.CHEST, Lang.REWARDS_GENERAL_THIRD.format_single(), MessageFormat.format(lore, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, "third"), true, true);
 
         insertItem(35, Material.ENDER_CHEST, ChatColor.LIGHT_PURPLE + "Per-Round Reward", ChatColor.DARK_PURPLE + "View and modify rewards given per round basis to the first answerer.", true, true);
 

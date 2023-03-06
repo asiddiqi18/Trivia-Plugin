@@ -5,7 +5,6 @@
 package me.marcarrots.triviatreasure;
 
 import me.marcarrots.triviatreasure.commands.CommandManager;
-import me.marcarrots.triviatreasure.utils.TriviaPlaceholder;
 import me.marcarrots.triviatreasure.data.FileManager;
 import me.marcarrots.triviatreasure.language.Lang;
 import me.marcarrots.triviatreasure.listeners.ChatEvent;
@@ -13,6 +12,7 @@ import me.marcarrots.triviatreasure.listeners.EntityDamage;
 import me.marcarrots.triviatreasure.listeners.InventoryClick;
 import me.marcarrots.triviatreasure.listeners.PlayerJoin;
 import me.marcarrots.triviatreasure.menu.PlayerMenuUtility;
+import me.marcarrots.triviatreasure.utils.TriviaPlaceholder;
 import me.marcarrots.triviatreasure.utils.UpdateChecker;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;

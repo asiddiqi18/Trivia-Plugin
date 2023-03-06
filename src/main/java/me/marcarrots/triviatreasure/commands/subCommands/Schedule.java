@@ -36,7 +36,7 @@ public class Schedule extends SubCommand {
 
         if (!triviaTreasure.getAutomatedGameManager().isSchedulingEnabled()) {
             commandSender.sendMessage(Lang.COMMANDS_SCHEDULE_DISABLED.format_single());
-            return  false;
+            return false;
         }
 
         String time = Elapsed.millisToElapsedTime(triviaTreasure.getAutomatedGameManager().getNextAutomatedTimeFromNow()).getElapsedFormattedString();

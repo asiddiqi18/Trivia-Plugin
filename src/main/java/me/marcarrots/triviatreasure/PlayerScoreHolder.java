@@ -1,8 +1,8 @@
 package me.marcarrots.triviatreasure;
 
-import me.marcarrots.triviatreasure.utils.Broadcaster;
 import me.marcarrots.triviatreasure.language.Lang;
 import me.marcarrots.triviatreasure.language.Placeholder;
+import me.marcarrots.triviatreasure.utils.Broadcaster;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

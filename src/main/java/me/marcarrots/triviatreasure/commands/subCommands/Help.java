@@ -57,7 +57,7 @@ public class Help extends SubCommand {
         for (SubCommand sc : subCommands) {
             if (commandSender.hasPermission(sc.getPermission())) {
                 if (sc.getName().equals("schedule") && !triviaTreasure.getAutomatedGameManager().isSchedulingEnabled()) {
-                       continue;
+                    continue;
                 }
                 commandSender.sendMessage(Lang.COMMANDS_HELP_PREFIX.format_single() + sc.getDescription());
 
