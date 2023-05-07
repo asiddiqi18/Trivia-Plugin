@@ -76,6 +76,8 @@ Commands:
     prefix: "&6/trivia"
     main: " &7- &f(Main command) Opens up the Trivia menu to manage or start trivia."
     help: " help &7- &fDisplays a help menu describing trivia commands."
+    rewards: " rewards &7- &fOpens up rewards menu to modify rewards for winners."
+    questions: " questions &7- &fOpens up questions menu to create/update questions or answers."
     reload: " reload &7- &fReloads all the trivia files."
     schedule: " schedule &7- &fGets the time remaining until the next scheduled trivia game begins"
     skip: " skip &7- &fSkips the current question during a game."

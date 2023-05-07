@@ -6,6 +6,7 @@ package me.marcarrots.triviatreasure.commands.subCommands;
 
 import me.marcarrots.triviatreasure.TriviaTreasure;
 import me.marcarrots.triviatreasure.commands.SubCommand;
+import me.marcarrots.triviatreasure.language.Lang;
 import me.marcarrots.triviatreasure.menu.subMenus.RewardsMainMenu;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +23,7 @@ public class Rewards extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Opens up rewards menu to modify rewards for winners";
+        return Lang.COMMANDS_HELP_REWARDS.format_single();
     }
 
     @Override
