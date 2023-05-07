@@ -35,7 +35,7 @@ public enum Lang {
     COMMANDS_SCHEDULE("Commands.schedule.display", "&aTime until next trivia game: &e%time% &6(Players needed: %players_needed%)"),
     COMMANDS_SCHEDULE_DISABLED("Commands.schedule.not_enabled", "&cScheduling of games is currently not enabled."),
     COMMANDS_STATS_NAME("Commands.stats.name", "&aTrivia stats for %player%:"),
-    COMMANDS_STATS_PARTICIPATED("Commands.stats.participation", " &6-  Number of games participated in: &e%val%"),
+    COMMANDS_STATS_PARTICIPATED("Commands.stats.participated", " &6-  Number of games participated in: &e%val%"),
     COMMANDS_STATS_ROUNDS_WON("Commands.stats.rounds_won", " &6-  Number of rounds won: &e%val%"),
     COMMANDS_STATS_VICTORIES("Commands.stats.victories", " &6-  Victories"),
     COMMANDS_STATS_FIRST("Commands.stats.first_place", " &6  -  1st place: &e%val%"),
