@@ -27,6 +27,8 @@ public class CommandManager implements CommandExecutor {
     public CommandManager(TriviaTreasure triviaTreasure) {
         this.triviaTreasure = triviaTreasure;
         subCommands.add(new Start(triviaTreasure));
+        subCommands.add(new Rewards(triviaTreasure));
+        subCommands.add(new Questions(triviaTreasure));
         subCommands.add(new Skip(triviaTreasure));
         subCommands.add(new Stop(triviaTreasure));
         subCommands.add(new Stats(triviaTreasure));

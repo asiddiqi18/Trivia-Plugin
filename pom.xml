@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.marcarrots</groupId>
-    <artifactId>TriviaTreasure</artifactId>
-    <version>1.16</version>
+    <artifactId>Trivia</artifactId>
+    <version>1.17</version>
     <packaging>jar</packaging>
 
     <name>Trivia Treasure</name>

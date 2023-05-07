@@ -6,11 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="trivia" />
+        <module name="Trivia" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11">
       <module name="trivia" target="9" />
+      <module name="Trivia" target="9" />
+      <module name="TriviaTreasure" target="9" />
     </bytecodeTargetLevel>
   </component>
 </project>
