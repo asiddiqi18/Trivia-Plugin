@@ -16,19 +16,23 @@ Java source/target compatibility is set to 9. Dependencies: Spigot API 1.17.1 (p
 
 This is a Spigot/Bukkit Minecraft plugin. Entry point is `TriviaTreasure.java` (extends `JavaPlugin`), which initializes all components in `onEnable()` in this order: questions → messages → rewards → listeners → commands → integrations.
 
-**Game flow:** `CommandManager` routes `/trivia` subcommands. `Game.java` orchestrates trivia rounds — selecting questions from `QuestionContainer`, managing timers, processing chat answers via `ChatEvent` listener, scoring via `PlayerScoreHolder`/`PlayerScore`, and distributing rewards via `Rewards`.
+**Game flow:** `CommandManager` routes `/trivia` subcommands. `GameManager` owns game lifecycle (`startGame`, `stopGame`, `isGameRunning`, `getGame`, `clearGame`) — all commands and listeners go through `triviaTreasure.getGameManager()`. `Game.java` orchestrates trivia rounds — selecting questions from `QuestionContainer`, managing timers, processing chat answers via `ChatEvent` listener, scoring via `PlayerScoreHolder`/`PlayerScore`, and distributing rewards via `Rewards`.
 
 **Key subsystems:**
+- **Game lifecycle:** `GameManager` — single owner of the active `Game` instance; extracted from `TriviaTreasure` to isolate the one piece of global mutable state
+- **Config:** `TriviaConfig` — typed snapshot of `config.yml` values, created in `loadConfigFile()` and replaced on reload; a running `Game` captures its own snapshot at construction so mid-game reloads don't affect it
 - **Questions:** `Question` + `QuestionContainer` (random/unique selection), backed by `questions.yml`
 - **Scoring:** `PlayerScore`, `PlayerScoreHolder`; fuzzy answer matching via `StringSimilarity` (configurable threshold, default 0.85)
 - **Rewards:** `Rewards[4]` array — index 0=per-round, 1=1st, 2=2nd, 3=3rd place; supports money (Vault), XP, items, commands
 - **Persistent stats:** `PlayerDataContainer` uses Bukkit's `PersistentDataContainer` API on the player
 - **UI/Menus:** Abstract `Menu` (implements `InventoryHolder`) → concrete subclasses (MainMenu, ParameterMenu, ListMenu, ViewMenu, RewardsMainMenu, etc.); `InventoryClick` listener routes all menu interactions
-- **Localization:** `Lang` enum defines all message keys with defaults; resolved at runtime from `messages.yml`; `Gradient.java` handles hex color gradients
+- **Localization:** `Lang` enum defines all message keys with defaults; resolved at runtime from `messages.yml`. Placeholder substitution lives on `Placeholder.apply(String)` — `Lang.fillPlaceholders` is a delegate to it. `Placeholder` fields `questionNum`/`totalQuestionNum`/`points` are boxed `Integer`; substitution only occurs when explicitly set by the caller.
 - **Automation:** `AutomatedGameManager` runs scheduled trivia via BukkitScheduler with configurable interval and min-player requirement
 - **Integrations:** Vault (economy rewards), PlaceholderAPI (`TriviaPlaceholder`)
 
 **Dependency injection pattern:** `TriviaTreasure` plugin instance is passed to most components as a constructor argument.
+
+**Async safety:** `ChatEvent` fires on an async thread. `Game.playerAnswer()` uses `AtomicBoolean roundAnswered` (`compareAndSet`) to ensure only one answer is accepted per round, preventing two near-simultaneous correct answers from both advancing the round.
 
 ## Configuration files (in `src/main/resources/`)
 
