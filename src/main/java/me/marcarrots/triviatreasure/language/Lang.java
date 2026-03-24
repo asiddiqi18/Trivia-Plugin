@@ -114,35 +114,11 @@ public enum Lang {
     }
 
     public static String fillPlaceholders(Placeholder placeholder, String message) {
+        if (placeholder != null) {
+            return placeholder.apply(message);
+        }
         message = message.replace("%prefix%", Lang.PREFIX.getVal());
         message = message.replace("%border%", Lang.BORDER.getVal());
-        if (placeholder != null) {
-            if (placeholder.getPlayer() != null) {
-                message = message.replace("%player%", placeholder.getPlayer().getDisplayName());
-                message = message.replace("%username%", placeholder.getPlayer().getName());
-            }
-            if (placeholder.getQuestionString() != null) {
-                message = message.replace("%question%", placeholder.getQuestionString());
-            }
-            if (placeholder.getAnswerString() != null) {
-                message = message.replace("%single_answer%", placeholder.getAnswerString().get(0));
-                if (placeholder.getAnswerString().size() == 1) {
-                    message = message.replace("%answer%", String.valueOf(placeholder.getAnswerString().get(0)));
-                } else {
-                    message = message.replace("%answer%", String.valueOf(placeholder.getAnswerString()));
-                }
-            }
-            if (placeholder.getElapsedTime() != null) {
-                message = message.replace("%time_to_answer%", placeholder.getElapsedTime());
-            }
-            if (placeholder.getVal() != null) {
-                message = message.replace("%val%", placeholder.getVal());
-            }
-            message = message.replace("%questionNumber%", String.valueOf(placeholder.getQuestionNum()));
-            message = message.replace("%totalQuestions%", String.valueOf(placeholder.getTotalQuestionNum()));
-            message = message.replace("%points%", String.valueOf(placeholder.getPoints()));
-        }
-
         return MessageUtil.HexGradient(message);
     }
 

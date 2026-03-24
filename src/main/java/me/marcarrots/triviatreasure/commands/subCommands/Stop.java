@@ -36,13 +36,13 @@ public class Stop extends SubCommand {
 
     @Override
     public boolean perform(CommandSender commandSender, String[] args) {
-        if (triviaTreasure.getGame() == null) {
+        if (!triviaTreasure.getGameManager().isGameRunning()) {
             commandSender.sendMessage(Lang.COMMANDS_ERROR_GAME_NOT_IN_PROGRESS.format_single());
-            return false;
+            return true;
         }
-        triviaTreasure.getGame().stop();
+        triviaTreasure.getGameManager().stopGame();
         commandSender.sendMessage(Lang.GAME_HALTED.format_multiple(null));
-        return false;
+        return true;
     }
 
 }

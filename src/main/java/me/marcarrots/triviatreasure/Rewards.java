@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -24,16 +25,14 @@ import static org.bukkit.Bukkit.getServer;
 
 public class Rewards {
 
-    final TriviaTreasure triviaTreasure;
-    final int place; // place = 0 -> per round reward
-    int experience;
-    double money;
-
-
-    boolean summonFireworks;
-    String message;
-    List<ItemStack> items;
-    List<String> commands;
+    private final TriviaTreasure triviaTreasure;
+    private final int place; // place = 0 -> per round reward
+    private int experience;
+    private double money;
+    private boolean summonFireworks;
+    private String message;
+    private List<ItemStack> items;
+    private List<String> commands;
 
     public Rewards(TriviaTreasure triviaTreasure, int place) {
         items = new ArrayList<>();
@@ -134,16 +133,21 @@ public class Rewards {
     public void setItems(List<ItemStack> items) {
         this.items = items;
         triviaTreasure.getRewardsFile().getData().set(place + ".Items", items);
+        triviaTreasure.getRewardsFile().saveData();
     }
 
-    @SuppressWarnings("unchecked")
     private void getValuesFromRewardsFile() {
         money = triviaTreasure.getRewardsFile().getData().getDouble(place + ".Money");
         experience = triviaTreasure.getRewardsFile().getData().getInt(place + ".Experience");
         message = triviaTreasure.getRewardsFile().getData().getString(place + ".Message");
         summonFireworks = triviaTreasure.getRewardsFile().getData().getBoolean(place + ".Summon Fireworks");
-        items = (List<ItemStack>) triviaTreasure.getRewardsFile().getData().get(place + ".Items");
-        commands = (List<String>) triviaTreasure.getRewardsFile().getData().get(place + ".Commands");
+        commands = triviaTreasure.getRewardsFile().getData().getStringList(place + ".Commands");
+        items = new ArrayList<>();
+        for (Map<?, ?> rawItem : triviaTreasure.getRewardsFile().getData().getMapList(place + ".Items")) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> itemMap = (Map<String, Object>) rawItem;
+            items.add(ItemStack.deserialize(itemMap));
+        }
     }
 
     public void giveReward(Player player) {
@@ -179,7 +183,7 @@ public class Rewards {
             triviaTreasure.getStats().addGamesWon(player, place);
         }
 
-        if (triviaTreasure.isVaultEnabled()) {
+        if (triviaTreasure.isVaultEnabled() && money > 0) {
             triviaTreasure.getStats().addMoneyWon(player, money);
         }
 
@@ -196,7 +200,7 @@ public class Rewards {
             String experienceFormatted = NumberFormat.getIntegerInstance().format(experience);
             formattedMessage = formattedMessage.replace("%experience%", experienceFormatted);
 
-            Lang.fillPlaceholders(new Placeholder.PlaceholderBuilder().player(player).build(), formattedMessage);
+            formattedMessage = Lang.fillPlaceholders(new Placeholder.PlaceholderBuilder().player(player).build(), formattedMessage);
             String finalFormattedMessage = formattedMessage;
             scheduler.scheduleSyncDelayedTask(triviaTreasure, () -> player.sendMessage(finalFormattedMessage), 3);
         }

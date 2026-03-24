@@ -79,7 +79,7 @@ public class MainMenu extends Menu {
 
             @Override
             public void run() {
-                if (triviaTreasure.getGame() != null) {
+                if (triviaTreasure.getGameManager().isGameRunning()) {
                     insertItem(11, Material.RED_TERRACOTTA, ChatColor.DARK_RED + "Stop Trivia", ChatColor.RED +
                             "There's currently a game in progress! Click here to stop this current game.", false, true);
                 } else {

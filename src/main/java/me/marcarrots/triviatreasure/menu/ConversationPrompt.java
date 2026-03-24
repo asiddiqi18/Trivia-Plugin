@@ -38,6 +38,10 @@ public class ConversationPrompt extends StringPrompt {
     @Nullable
     @Override
     public Prompt acceptInput(ConversationContext context, String input) {
+        if (!(context.getForWhom() instanceof Player)) {
+            context.getForWhom().sendRawMessage("This prompt is for players only.");
+            return Prompt.END_OF_CONVERSATION;
+        }
         Player player = ((Player) context.getForWhom()).getPlayer();
         if (input == null || input.equalsIgnoreCase("back") || player == null) {
             context.getForWhom().sendRawMessage("You have exited the prompt.");

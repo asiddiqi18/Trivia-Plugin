@@ -36,18 +36,24 @@ public abstract class Menu implements InventoryHolder {
         this.player = player;
         FILLER_GLASS = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta FILLER_GLASS_META = FILLER_GLASS.getItemMeta();
-        FILLER_GLASS_META.setDisplayName(" ");
-        FILLER_GLASS.setItemMeta(FILLER_GLASS_META);
+        if (FILLER_GLASS_META != null) {
+            FILLER_GLASS_META.setDisplayName(" ");
+            FILLER_GLASS.setItemMeta(FILLER_GLASS_META);
+        }
 
         CLOSE = new ItemStack(Material.BARRIER, 1);
         ItemMeta close_meta = CLOSE.getItemMeta();
-        close_meta.setDisplayName(Lang.MENU_CLOSE.format_multiple(null)[0]);
-        CLOSE.setItemMeta(close_meta);
+        if (close_meta != null) {
+            close_meta.setDisplayName(Lang.MENU_CLOSE.format_multiple(null)[0]);
+            CLOSE.setItemMeta(close_meta);
+        }
 
         BACK = new ItemStack(Material.ARROW, 1);
         ItemMeta back_meta = BACK.getItemMeta();
-        back_meta.setDisplayName(Lang.MENU_BACK.format_multiple(null)[0]);
-        BACK.setItemMeta(back_meta);
+        if (back_meta != null) {
+            back_meta.setDisplayName(Lang.MENU_BACK.format_multiple(null)[0]);
+            BACK.setItemMeta(back_meta);
+        }
     }
 
     public abstract String getMenuName();

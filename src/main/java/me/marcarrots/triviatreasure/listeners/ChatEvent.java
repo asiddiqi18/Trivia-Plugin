@@ -17,7 +17,7 @@ public class ChatEvent implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
-        if (triviaTreasure.getGame() == null) {
+        if (!triviaTreasure.getGameManager().isGameRunning()) {
             return;
         }
 
@@ -25,7 +25,7 @@ public class ChatEvent implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                triviaTreasure.getGame().playerAnswer(event);
+                triviaTreasure.getGameManager().getGame().playerAnswer(event);
             }
         }.runTask(triviaTreasure);
 

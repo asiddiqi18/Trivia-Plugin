@@ -1,5 +1,6 @@
 package me.marcarrots.triviatreasure;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,7 +51,7 @@ public class Question {
     }
 
     public List<String> getAnswerList() {
-        return this.answer;
+        return this.answer != null ? Collections.unmodifiableList(this.answer) : Collections.emptyList();
     }
 
     public void setAnswer(List<String> answer) {

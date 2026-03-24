@@ -13,9 +13,9 @@ public class Placeholder {
     private final Player player;
     private final String questionString;
     private final List<String> answerString;
-    private final int questionNum;
-    private final int totalQuestionNum;
-    private final int points;
+    private final Integer questionNum;
+    private final Integer totalQuestionNum;
+    private final Integer points;
     private final String elapsedTime;
     private final String val;
 
@@ -42,15 +42,15 @@ public class Placeholder {
         return answerString;
     }
 
-    public int getQuestionNum() {
+    public Integer getQuestionNum() {
         return questionNum;
     }
 
-    public int getTotalQuestionNum() {
+    public Integer getTotalQuestionNum() {
         return totalQuestionNum;
     }
 
-    public int getPoints() {
+    public Integer getPoints() {
         return points;
     }
 
@@ -62,14 +62,49 @@ public class Placeholder {
         return val;
     }
 
+    public String apply(String message) {
+        message = message.replace("%prefix%", Lang.PREFIX.getVal());
+        message = message.replace("%border%", Lang.BORDER.getVal());
+        if (player != null) {
+            message = message.replace("%player%", player.getDisplayName());
+            message = message.replace("%username%", player.getName());
+        }
+        if (questionString != null) {
+            message = message.replace("%question%", questionString);
+        }
+        if (answerString != null) {
+            message = message.replace("%single_answer%", answerString.get(0));
+            if (answerString.size() == 1) {
+                message = message.replace("%answer%", answerString.get(0));
+            } else {
+                message = message.replace("%answer%", String.valueOf(answerString));
+            }
+        }
+        if (elapsedTime != null) {
+            message = message.replace("%time_to_answer%", elapsedTime);
+        }
+        if (val != null) {
+            message = message.replace("%val%", val);
+        }
+        if (questionNum != null) {
+            message = message.replace("%questionNumber%", String.valueOf(questionNum));
+        }
+        if (totalQuestionNum != null) {
+            message = message.replace("%totalQuestions%", String.valueOf(totalQuestionNum));
+        }
+        if (points != null) {
+            message = message.replace("%points%", String.valueOf(points));
+        }
+        return MessageUtil.HexGradient(message);
+    }
+
     public static class PlaceholderBuilder {
         private Player player;
         private String questionString;
         private List<String> answerString;
-        private int questionNum;
-
-        private int totalQuestionNum;
-        private int points;
+        private Integer questionNum;
+        private Integer totalQuestionNum;
+        private Integer points;
         private String elapsedTime;
         private String val;
 

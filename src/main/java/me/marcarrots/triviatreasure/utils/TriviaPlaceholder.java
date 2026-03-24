@@ -73,7 +73,7 @@ public class TriviaPlaceholder extends PlaceholderExpansion {
         }
 
         if (params.equalsIgnoreCase("game_in_progress")) {
-            return String.valueOf(triviaTreasure.getGame() != null);
+            return String.valueOf(triviaTreasure.getGameManager().isGameRunning());
         }
 
         if (params.equalsIgnoreCase("next_game")) {

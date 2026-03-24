@@ -18,6 +18,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Collections;
+import java.util.concurrent.AtomicBoolean;
 
 public class Game {
     private final QuestionContainer questionContainer;
@@ -40,11 +41,12 @@ public class Game {
     private int task;
     private Player roundWinner;
     private String userRightAnswer;
+    private final AtomicBoolean roundAnswered = new AtomicBoolean(false);
 
 
-    public Game(TriviaTreasure triviaTreasure, CommandSender commandSender, long timePerQuestion, int amountOfRounds, boolean doRepetition) throws IllegalAccessException {
+    public Game(TriviaTreasure triviaTreasure, CommandSender commandSender, long timePerQuestion, int amountOfRounds, boolean doRepetition) {
         if (triviaTreasure.getQuestionHolder().getSize() == 0) {
-            throw new IllegalAccessException(Lang.NO_QUESTIONS_LOADED.format_single());
+            throw new IllegalStateException(Lang.NO_QUESTIONS_LOADED.format_single());
         }
         this.triviaTreasure = triviaTreasure;
         this.timePerQuestion = timePerQuestion;
@@ -55,10 +57,10 @@ public class Game {
         this.scores = new PlayerScoreHolder(triviaTreasure);
         this.roundResult = RoundResult.IN_BETWEEN;
         this.scheduler = Bukkit.getServer().getScheduler();
-        this.similarityScore = triviaTreasure.getConfig().getDouble("Similarity score", 1);
-        this.timeBetween = triviaTreasure.getConfig().getInt("Time between rounds", 2);
-        boolean bossBarEnabled = triviaTreasure.getConfig().getBoolean("Enable boss bar", true);
-        gameBossBar = new GameBossBar(triviaTreasure, bossBarEnabled);
+        TriviaConfig config = triviaTreasure.getTriviaConfig();
+        this.similarityScore = config.similarityScore;
+        this.timeBetween = config.timeBetweenRounds;
+        gameBossBar = new GameBossBar(triviaTreasure, config.bossBarEnabled);
         gameSound = new GameSound(triviaTreasure);
 
         placeholderBuilder = new Placeholder.PlaceholderBuilder().totalQuestionNum(amountOfRounds);
@@ -112,7 +114,7 @@ public class Game {
                     gameSound.playSoundToAll(SoundType.GAME_OVER);
                     scores.deliverRewardsToWinners();
                     scores = null;
-                    triviaTreasure.clearGame();
+                    triviaTreasure.getGameManager().clearGame();
                     if (roundResult == RoundResult.HALTED) {
                         gameBossBar.gameOverBossBar(BarColor.RED, Lang.BOSS_BAR_HALTED.format_single());
                     } else {
@@ -176,6 +178,7 @@ public class Game {
     private void handleNextQuestion(Timer t) {
         currentQuestion = null;
         task = scheduler.scheduleSyncDelayedTask(triviaTreasure, () -> {
+            roundAnswered.set(false);
             roundResult = RoundResult.UNANSWERED;
             setRandomQuestion();
             t.startTimer();
@@ -212,6 +215,9 @@ public class Game {
         for (String correctAnswer : currentQuestion.getAnswerList()) {
             String correctAnswerStripped = ChatColor.stripColor(MessageUtil.HexColorMessage(correctAnswer));
             if (StringSimilarity.calculateSimilarity(userAnswerStripped.toLowerCase(), correctAnswerStripped.toLowerCase()) >= similarityScore) {
+                if (!roundAnswered.compareAndSet(false, true)) {
+                    return;
+                }
                 roundResult = RoundResult.ANSWERED;
 
                 triviaTreasure.getStats().addRoundWon(player);

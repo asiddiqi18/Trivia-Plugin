@@ -4,7 +4,6 @@
 
 package me.marcarrots.triviatreasure.commands.subCommands;
 
-import me.marcarrots.triviatreasure.Game;
 import me.marcarrots.triviatreasure.TriviaTreasure;
 import me.marcarrots.triviatreasure.commands.SubCommand;
 import me.marcarrots.triviatreasure.language.Lang;
@@ -39,9 +38,9 @@ public class Start extends SubCommand {
 
     @Override
     public boolean perform(CommandSender commandSender, String[] args) {
-        if (triviaTreasure.getGame() != null) {
+        if (triviaTreasure.getGameManager().isGameRunning()) {
             commandSender.sendMessage(Lang.COMMANDS_ERROR_GAME_IN_PROGRESS.format_single());
-            return false;
+            return true;
         }
 
         String param1 = null;
@@ -49,20 +48,17 @@ public class Start extends SubCommand {
             param1 = args[1];
         }
 
-        int setRounds = triviaTreasure.getConfig().getInt("Default rounds", 10);
+        int setRounds = triviaTreasure.getTriviaConfig().defaultRounds;
         if (param1 != null && param1.trim().matches("-?\\d+")) {
             setRounds = Integer.parseInt(param1);
         }
         try {
-            long timePerQuestion = triviaTreasure.getConfig().getLong("Default time per round", 10L);
-            boolean doRepetition = false;
-            Game game = new Game(triviaTreasure, commandSender, timePerQuestion, setRounds, doRepetition);
-            triviaTreasure.setGame(game);
-            triviaTreasure.getGame().start();
-        } catch (IllegalAccessException e) {
+            long timePerQuestion = triviaTreasure.getTriviaConfig().defaultTimePer;
+            triviaTreasure.getGameManager().startGame(commandSender, timePerQuestion, setRounds, false);
+        } catch (IllegalStateException e) {
             commandSender.sendMessage(ChatColor.RED + e.getMessage());
         }
-        return false;
+        return true;
     }
 
 }

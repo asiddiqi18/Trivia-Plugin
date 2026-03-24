@@ -28,7 +28,7 @@ public class Questions extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "rewards";
+        return "questions";
     }
 
     @Override

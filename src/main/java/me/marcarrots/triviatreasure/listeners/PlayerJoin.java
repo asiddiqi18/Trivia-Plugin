@@ -22,12 +22,12 @@ public class PlayerJoin implements Listener {
             }
         }
 
-        if (triviaTreasure.getGame() == null) {
+        if (!triviaTreasure.getGameManager().isGameRunning()) {
             return;
         }
 
-        triviaTreasure.getGame().getGameBossBar().showBarToPlayer(event.getPlayer());
-        triviaTreasure.getGame().getScores().addPlayerToGame(event.getPlayer());
+        triviaTreasure.getGameManager().getGame().getGameBossBar().showBarToPlayer(event.getPlayer());
+        triviaTreasure.getGameManager().getGame().getScores().addPlayerToGame(event.getPlayer());
 
     }
 

@@ -12,6 +12,7 @@ import java.util.logging.Level;
 public class QuestionContainer {
 
     private final List<Question> triviaQuestionList;
+    private final Random random = new Random();
     private boolean uniqueQuestions;
     private int largestQuestionNum;
 
@@ -35,7 +36,6 @@ public class QuestionContainer {
     }
 
     public Question getRandomQuestion() {
-        Random random = new Random();
         int randomIndex = random.nextInt(getSize());
         Question question = triviaQuestionList.get(randomIndex);
         if (uniqueQuestions) {
@@ -77,6 +77,10 @@ public class QuestionContainer {
 
     public void updateQuestion(TriviaTreasure triviaTreasure, Question question, String newString, PromptType promptType) {
         int questionIndex = findQuestionIndexByID(question.getId());
+        if (questionIndex == -1) {
+            triviaTreasure.getLogger().warning("updateQuestion: question ID " + question.getId() + " not found in list.");
+            return;
+        }
         switch (promptType) {
             case EDIT_QUESTION:
                 triviaTreasure.getQuestionsFile().getData().set(question.getId() + ".question", newString);

@@ -54,7 +54,7 @@ public class PlayerMenuUtility {
     }
 
     public void setTimePer(long timePer) {
-        if (totalRounds < 0) {
+        if (timePer < 0) {
             this.timePer = Math.abs(timePer);
         } else if (timePer == 0) {
             this.timePer = 1;

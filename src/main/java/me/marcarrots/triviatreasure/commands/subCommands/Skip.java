@@ -37,14 +37,14 @@ public class Skip extends SubCommand {
 
     @Override
     public boolean perform(CommandSender commandSender, String[] args) {
-        if (triviaTreasure.getGame() == null) {
+        if (!triviaTreasure.getGameManager().isGameRunning()) {
             commandSender.sendMessage(Lang.COMMANDS_ERROR_GAME_NOT_IN_PROGRESS.format_single());
-            return false;
+            return true;
         }
-        if (!triviaTreasure.getGame().forceSkipRound()) {
+        if (!triviaTreasure.getGameManager().getGame().forceSkipRound()) {
             commandSender.sendMessage(ChatColor.RED + "Failed to skip round. Reason: Skip request made in-between rounds.");
         }
-        return false;
+        return true;
     }
 
 }

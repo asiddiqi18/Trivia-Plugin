@@ -31,7 +31,8 @@ public final class TriviaTreasure extends JavaPlugin {
     private final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
     private QuestionContainer questionContainer;
     private Rewards[] rewards;
-    private Game game = null;
+    private GameManager gameManager;
+    private TriviaConfig triviaConfig;
     private FileManager questionsFile;
     private FileManager messagesFile;
     private FileManager rewardsFile;
@@ -60,16 +61,12 @@ public final class TriviaTreasure extends JavaPlugin {
         return rewards;
     }
 
-    public Game getGame() {
-        return game;
+    public GameManager getGameManager() {
+        return gameManager;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public void clearGame() {
-        game = null;
+    public TriviaConfig getTriviaConfig() {
+        return triviaConfig;
     }
 
     public AutomatedGameManager getAutomatedGameManager() {
@@ -100,6 +97,7 @@ public final class TriviaTreasure extends JavaPlugin {
 
 
         questionContainer = new QuestionContainer();
+        gameManager = new GameManager(this);
 
         // load stuff from files
         loadConfigFile();
@@ -157,15 +155,16 @@ public final class TriviaTreasure extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (game != null) {
-            game.getGameBossBar().hideBossBar();
-            game = null;
+        if (gameManager.isGameRunning()) {
+            gameManager.getGame().getGameBossBar().hideBossBar();
+            gameManager.clearGame();
         }
     }
 
     public void loadConfigFile() {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+        triviaConfig = new TriviaConfig(getConfig());
 
         if (automatedGameManager != null) {
             automatedGameManager.cancel();

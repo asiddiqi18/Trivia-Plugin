@@ -1,6 +1,5 @@
 package me.marcarrots.triviatreasure.menu.subMenus;
 
-import me.marcarrots.triviatreasure.Game;
 import me.marcarrots.triviatreasure.TriviaTreasure;
 import me.marcarrots.triviatreasure.language.Lang;
 import me.marcarrots.triviatreasure.menu.ConversationPrompt;
@@ -45,7 +44,7 @@ public class ParameterMenu extends Menu {
         ConversationFactory conversationFactory = new ConversationFactory(triviaTreasure);
         triviaTreasure.getPlayerMenuUtility(player).setPreviousMenu(MenuType.MAIN_MENU);
         if (type == Material.GREEN_TERRACOTTA) {
-            if (triviaTreasure.getGame() != null) {
+            if (triviaTreasure.getGameManager().isGameRunning()) {
                 player.sendMessage(ChatColor.RED + "A trivia game is already in progress.");
                 return;
             }
@@ -53,10 +52,8 @@ public class ParameterMenu extends Menu {
                 long timePerQuestion = triviaTreasure.getPlayerMenuUtility(player).getTimePer();
                 int amountOfRounds = triviaTreasure.getPlayerMenuUtility(player).getTotalRounds();
                 boolean doRepetition = triviaTreasure.getPlayerMenuUtility(player).isRepeatEnabled();
-                Game game = new Game(triviaTreasure, player, timePerQuestion, amountOfRounds, doRepetition);
-                triviaTreasure.setGame(game);
-                triviaTreasure.getGame().start();
-            } catch (IllegalAccessException e) {
+                triviaTreasure.getGameManager().startGame(player, timePerQuestion, amountOfRounds, doRepetition);
+            } catch (IllegalStateException e) {
                 player.sendMessage(ChatColor.RED + e.getMessage());
             }
             player.closeInventory();

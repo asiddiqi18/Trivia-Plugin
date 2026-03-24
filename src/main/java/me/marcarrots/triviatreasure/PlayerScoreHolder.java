@@ -35,12 +35,16 @@ public class PlayerScoreHolder {
 
     public void addScore(Player player, int round) {
         PlayerScore score = scores.get(player.getName());
+        if (score == null) {
+            addPlayerToGame(player);
+            score = scores.get(player.getName());
+        }
         score.incrementScore(round);
         scores.put(player.getName(), score);
     }
 
     public void deliverRewardsToWinners() {
-        int displayAmount = Math.min(scores.size(), triviaTreasure.getConfig().getInt("Top winner amount", 3));
+        int displayAmount = Math.min(scores.size(), triviaTreasure.getTriviaConfig().topWinnerAmount);
 
         List<PlayerScore> scoreValues = new ArrayList<>(scores.values());
         Collections.sort(scoreValues);
@@ -68,7 +72,7 @@ public class PlayerScoreHolder {
                         .build()
                 ));
 
-                if (i < 3) {
+                if (i < rewards.length - 1) {
                     rewards[i + 1].giveReward(player);
                 }
 
